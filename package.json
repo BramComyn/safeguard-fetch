@@ -1,7 +1,12 @@
 {
   "name": "safeguard-fetch",
   "version": "0.0.1",
+  "description": "A fetch wrapper that adds some safeguards regarding resource querying for Linked Data query engines.",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BramComyn/safeguard-fetch.git"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "lsd:module": "https://linkedsoftwaredependencies.org/bundles/npm/safeguard-fetch",
@@ -27,6 +32,9 @@
     "lint:markdown": "markdownlint-cli2",
     "release": "commit-and-tag-version",
     "test": "jest"
+  },
+  "dependencies": {
+    "tsconfig": "^7.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.4.0",
@@ -58,13 +66,5 @@
     "writerOpts": {
       "commitsSort": false
     }
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/BramComyn/safeguard-fetch.git"
-  },
-  "description": "A fetch wrapper that adds some safeguards regarding resource querying for Linked Data query engines.",
-  "dependencies": {
-    "tsconfig": "^7.0.0"
   }
 }
