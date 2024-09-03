@@ -35,6 +35,29 @@ There are a few other events that can be emitted as a result of receiving certai
 
 Once the client's session is connected, it can open a ``ClientHttp2Stream`` via the ``clienthttp2session.request()``-method (or in response to a ``push``-event, see [later](#client-side-stream-events)). This will make the session emit a ``stream``-event. Next, we describe the possible events emitted by such streams.
 
+### TL;DR
+
 ## Client side stream events
 
+Once the stream is ready for use a ``ready``-event will be emitted. When it is destructed, there will be a ``close``-event emitted by the stream in the same way as the session's ``close``, but this will only affect the corresponding stream. When a ``frameError`` in a session occurs that can be associated to a certain stream, only that stream will be shut down instead of the entire corresponding session.
 
+Because of inheritance, when a ``Http2Stream`` shuts down, it will also emit an ``end``-event. If the stream was destroyed for a specific ``Error``, it might also emit an ``error``-event. The ``aborted``-event will be emitted wen a stream is abnormally aborted mid-communication and when the writable side of the stream has not been ended. The ``timeout``-event can also be emitted by a stream in an analogue manner as it can be by a session.
+
+A stream van also emit two different events in the context of trailers:
+
+- ``trailers``: when a block of headers associated with trailing header fields is received;
+- ``wantTrailers``: when final ``DATA``-frame is queued to be sent and the stream is ready to send trailing headers.
+
+### Specifally for ``ClientHttp2Stream``
+
+There's specific events for when a client stream receives extra information:
+
+- ``continue``: emitted when ``100 Continue`` is received;
+- ``headers``: emitted when additional header blocks are received (e.g. ``1xx`` blocks);
+
+In the same way, there are two events for when the client stream receives a response (whether it be via a push or not):
+
+- ``push``: emitted response headers for Server Push Stream received;
+- ``response``: emitted when response ``HEADERS``-frame has been received for the stream.
+
+## TL;DR
