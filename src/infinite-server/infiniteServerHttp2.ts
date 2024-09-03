@@ -1,34 +1,45 @@
-const http2 = require('node:http2');
-const fs = require('node:fs');
-const { INTERVAL_TIME, HTTP2MSSG, HTTPS_PORT, CONTENT_LENGTH } = require('./infinite-server-constants');
+import type { Http2SecureServer, ServerHttp2Stream } from 'node:http2';
+import { createSecureServer } from 'node:http2';
+import { readFileSync } from 'node:fs';
+
+import {
+  CONTENT_LENGTH,
+  HTTP2MSSG,
+  HTTPS_PORT,
+  INTERVAL_TIME,
+} from './infiniteServerConstants';
 
 /* eslint no-sync: ["error", { allowAtRootLevel: true }] */
-const server = http2.createSecureServer({
-  key: fs.readFileSync('localhost-privkey.pem'),
-  cert: fs.readFileSync('localhost-cert.pem'),
-});
+const options = {
+  key: readFileSync('localhost-privkey.pem'),
+  cert: readFileSync('localhost-cert.pem'),
+};
 
-server.on('stream', (stream, headers) => {
+const server: Http2SecureServer = createSecureServer(options);
+server.on('stream', (stream: ServerHttp2Stream, headers): void => {
   const path = headers[':path'];
 
   if (path === '/infinite') {
     stream.respond({
+      // eslint-disable-next-line ts/naming-convention
       'content-type': 'text/plain',
+      // eslint-disable-next-line ts/naming-convention
       ':status': 200,
       // ! Stream will abort once DATA size is larger than the Content-Length header (if specified)
       // ! Ommiting the content-length header will allow the stream to be infinite
       // * See also https://datatracker.ietf.org/doc/html/rfc9113#name-malformed-messages
       // * TD: figure out if this is Node.js specific or HTTP/2 specific
       // Setting this header allows for checking whether all browser clients stop reading data
+      // eslint-disable-next-line ts/naming-convention
       'content-length': CONTENT_LENGTH,
     });
 
     // Infinite response cycle
-    const interval = setInterval(() => {
+    const interval = setInterval((): void => {
       stream.write(`${path.slice(1)}\n`);
     }, INTERVAL_TIME);
 
-    stream.on('close', () => {
+    stream.on('close', (): void => {
       clearInterval(interval);
       stream.end();
     });
@@ -37,7 +48,7 @@ server.on('stream', (stream, headers) => {
   }
 
   stream.respond({
-    'content-type': 'text/html',
+    // eslint-disable-next-line ts/naming-convention
     ':status': 200,
   });
 
