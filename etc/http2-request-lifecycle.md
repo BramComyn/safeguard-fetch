@@ -1,7 +1,9 @@
 # HTTP/2-request life cycle in the Node.js ``http2``-module
 
 This is strongly based off of the [API-documentation](https://nodejs.org/api/http2.html).
-We will describe all events that are usually emitted during the processing of a normal GET-request via ``client.request()`` from the client's point of view. We'll consider [this example](https://nodejs.org/api/http2.html#client-side-example) as top-level example.
+We will describe all events that are usually emitted during the processing of a normal GET-request
+via ``client.request()`` from the client's point of view.
+We'll consider [this example](https://nodejs.org/api/http2.html#client-side-example) as top-level example.
 
 ## Client side session events
 
@@ -11,11 +13,18 @@ Normal users will start their client side by creating a ``ClientHttp2Session`` v
 const client = http2.connect('https://example.org');
 ```
 
-Once connected to the server, this session will emit a ``connect``-event. Once the connection has been destroyed, this session will emit a ``close``-event. For normal users, all their requests will thus start (resp. end) with a ``connect``- (resp. ``close``-)event emitted by this session.
+Once connected to the server, this session will emit a ``connect``-event.
+Once the connection has been destroyed, this session will emit a ``close``-event.
+For normal users, all their requests will thus start (resp. end) with a ``connect``-
+(resp. ``close``-)event emitted by this session.
 
-Whenever something goes wrong during the session processing, an ``error``-event will be emitted. Likewise, when something goes wrong while attempting to send a frame that cannot be associated to a specific ``Http2Stream``, a ``frameError``-event will be emitted. In this case, the entire ``Http2Session`` will be shut down following this event.
+Whenever something goes wrong during the session processing, an ``error``-event will be emitted.
+Likewise, when something goes wrong while attempting to send a frame that cannot be associated
+to a specific ``Http2Stream``, a ``frameError``-event will be emitted.
+In this case, the entire ``Http2Session`` will be shut down following this event.
 
-The ``timeout``-event will be emitted when the session's time-out is reached after not registering any activity during a configured amount of time.
+The ``timeout``-event will be emitted when the session's time-out is reached
+after not registering any activity during a configured amount of time.
 
 There are a few other events that can be emitted as a result of receiving certain types of frames:
 
@@ -33,7 +42,11 @@ There are a few other events that can be emitted as a result of receiving certai
 
 ### Opening a stream: the normal way to go
 
-Once the client's session is connected, it can open a ``ClientHttp2Stream`` via the ``clienthttp2session.request()``-method (or in response to a ``push``-event, see [later](#client-side-stream-events)). This will make the session emit a ``stream``-event. Next, we describe the possible events emitted by such streams.
+Once the client's session is connected, it can open a ``ClientHttp2Stream``
+via the ``clienthttp2session.request()``-method
+(or in response to a ``push``-event, see [later](#client-side-stream-events)).
+This will make the session emit a ``stream``-event.
+Next, we describe the possible events emitted by such streams.
 
 ### TL;DR
 
@@ -53,9 +66,17 @@ Once the client's session is connected, it can open a ``ClientHttp2Stream`` via 
 
 ## Client side stream events
 
-Once the stream is ready for use a ``ready``-event will be emitted. When it is destructed, there will be a ``close``-event emitted by the stream in the same way as the session's ``close``, but this will only affect the corresponding stream. When a ``frameError`` in a session occurs that can be associated to a certain stream, only that stream will be shut down instead of the entire corresponding session.
+Once the stream is ready for use a ``ready``-event will be emitted.
+When it is destructed, there will be a ``close``-event emitted by the stream in the same way as a session's ``close``,
+but this will only affect the corresponding stream.
+When a ``frameError`` in a session occurs that can be associated to a certain stream,
+only that stream will be shut down instead of the entire corresponding session.
 
-Because of inheritance, when a ``Http2Stream`` shuts down, it will also emit an ``end``-event. If the stream was destroyed for a specific ``Error``, it might also emit an ``error``-event. The ``aborted``-event will be emitted wen a stream is abnormally aborted mid-communication and when the writable side of the stream has not been ended. The ``timeout``-event can also be emitted by a stream in an analogue manner as it can be by a session.
+Because of inheritance, when a ``Http2Stream`` shuts down, it will also emit an ``end``-event.
+If the stream was destroyed for a specific ``Error``, it might also emit an ``error``-event.
+The ``aborted``-event will be emitted when a stream is abnormally aborted mid-communication.
+This will only be done so when the writable side of the stream has not been ended.
+The ``timeout``-event can also be emitted by a stream in an analogue manner as it can be by a session.
 
 A stream van also emit two different events in the context of trailers:
 
