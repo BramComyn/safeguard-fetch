@@ -33,6 +33,8 @@ There are a few other events that can be emitted as a result of receiving certai
 
 ### Opening a stream: the normal way to go
 
-Once the client's session is connected, it can open a ``ClientHttp2Stream`` via the ``clienthttp2session.request()``-method. This will make the session emit a ``stream``-event. Next, we describe the possible events emitted by such streams.
+Once the client's session is connected, it can open a ``ClientHttp2Stream`` via the ``clienthttp2session.request()``-method (or in response to a ``push``-event, see [later](#client-side-stream-events)). This will make the session emit a ``stream``-event. Next, we describe the possible events emitted by such streams.
 
 ## Client side stream events
+
+
