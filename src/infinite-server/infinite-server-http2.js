@@ -1,13 +1,12 @@
 const http2 = require('node:http2');
 const fs = require('node:fs');
-const { INTERVAL_TIME, HTTP2MSSG, HTTPS_PORT } = require('./infinite-server-constants');
+const { INTERVAL_TIME, HTTP2MSSG, HTTPS_PORT, CONTENT_LENGTH } = require('./infinite-server-constants');
 
 /* eslint no-sync: ["error", { allowAtRootLevel: true }] */
 const server = http2.createSecureServer({
   key: fs.readFileSync('localhost-privkey.pem'),
   cert: fs.readFileSync('localhost-cert.pem'),
 });
-/// server.on('error', err => console.error(err));
 
 server.on('stream', (stream, headers) => {
   const path = headers[':path'];
@@ -20,7 +19,8 @@ server.on('stream', (stream, headers) => {
       // ! Ommiting the content-length header will allow the stream to be infinite
       // * See also https://datatracker.ietf.org/doc/html/rfc9113#name-malformed-messages
       // * TD: figure out if this is Node.js specific or HTTP/2 specific
-      // 'content-length': cons.CONTENT_LENGTH
+      // Setting this header allows for checking whether all browser clients stop reading data
+      'content-length': CONTENT_LENGTH,
     });
 
     // Infinite response cycle
