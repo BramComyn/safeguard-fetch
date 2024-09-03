@@ -37,6 +37,20 @@ Once the client's session is connected, it can open a ``ClientHttp2Stream`` via 
 
 ### TL;DR
 
+| Event name         | Reason for emission                              |
+| ------------------ | ------------------------------------------------ |
+| ``connect``        | session connected to server                      |
+| ``close``          | session destroyed                                |
+| ``error``          | something went wrong during session processing   |
+| ``frameError``     | something went wrong with a frame                |
+| ``timeout``        | no activity in session during set amount of time |
+| ``goaway``         | ``GOAWAY`` frame received                        |
+| ``localSettings``  | ``ACK`` for ``SETTINGS`` frame received          |
+| ``remoteSettings`` | ``SETTINGS`` frame received                      |
+| ``ping``           | ``PING`` frame received                          |
+| ``altsvc``         | ``ALTSVC`` frame received                        |
+| ``origin``         | ``ORIGIN`` frame received                        |
+
 ## Client side stream events
 
 Once the stream is ready for use a ``ready``-event will be emitted. When it is destructed, there will be a ``close``-event emitted by the stream in the same way as the session's ``close``, but this will only affect the corresponding stream. When a ``frameError`` in a session occurs that can be associated to a certain stream, only that stream will be shut down instead of the entire corresponding session.
@@ -60,4 +74,20 @@ In the same way, there are two events for when the client stream receives a resp
 - ``push``: emitted response headers for Server Push Stream received;
 - ``response``: emitted when response ``HEADERS``-frame has been received for the stream.
 
-## TL;DR
+### TL;DR
+
+| Event name       | Reason for emission                                                            |
+| ---------------- | ------------------------------------------------------------------------------ |
+| ``ready``        | stream is ready for use                                                        |
+| ``close``        | stream is destroyed                                                            |
+| ``end``          | stream is destroyed (inherited from ``stream.Duplex``)                         |
+| ``error``        | something went wrong                                                           |
+| ``frameError``   | something went wrong with a frame that is associated to this stream            |
+| ``aborted``      | stream is abnormally aborted mid-communication, writable side not ended        |
+| ``timeout``      | no activity in stream during set amount of time                                |
+| ``trailers``     | block of headers associated with trailer fields received                       |
+| ``wantTrailers`` | final ``DATA`` frame queued for send, stream is ready to send trailing headers |
+| ``continue``     | ``100 Continue`` received                                                      |
+| ``headers``      | headers in ``1xx`` range received                                              |
+| ``push``         | response headers for Server Push Stream received                               |
+| ``response``     | response ``HEADERS`` frame received                                            |
