@@ -1,6 +1,6 @@
 # Safeguard Fetch
 
-Wrapper around ``insert chosen module`` for ensuring a less vulnerable resource request enviroment for
+Wrapper around the Node.js ``http2`` module for ensuring a less vulnerable resource request enviroment for
 linked-data query engines.
 
 ## Testing
