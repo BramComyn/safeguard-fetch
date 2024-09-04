@@ -3,11 +3,12 @@ import { createSecureServer } from 'node:http2';
 import { readFileSync } from 'node:fs';
 
 import {
-  CONTENT_LENGTH,
   HTTP2MSSG,
   HTTPS_PORT,
   INTERVAL_TIME,
 } from './infiniteServerConstants';
+
+const mssg = readFileSync('../../assets/example-data.ttl', 'utf-8');
 
 /* eslint no-sync: ["error", { allowAtRootLevel: true }] */
 const options = {
@@ -31,12 +32,12 @@ server.on('stream', (stream: ServerHttp2Stream, headers): void => {
       // * TD: figure out if this is Node.js specific or HTTP/2 specific
       // Setting this header allows for checking whether all browser clients stop reading data
       // eslint-disable-next-line ts/naming-convention
-      'content-length': CONTENT_LENGTH,
+      'content-length': mssg.length * 10,
     });
 
     // Infinite response cycle
     const interval = setInterval((): void => {
-      stream.write(`${path.slice(1)}\n`);
+      stream.write(mssg);
     }, INTERVAL_TIME);
 
     stream.on('close', (): void => {
