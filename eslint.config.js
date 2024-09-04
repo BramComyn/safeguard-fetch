@@ -7,4 +7,8 @@ module.exports = opinionated({
   ignores: [
     '**/*.md',
   ],
+}).append({
+  rules: {
+    'no-console': 'off',
+  },
 });

@@ -11,12 +11,10 @@ const client: ClientHttp2Session = connect(`https://localhost:${HTTPS_PORT}`, {
 const req: ClientHttp2Stream = client.request({ ':path': '/infinite' });
 
 req.on('response', (headers): void => {
-  // eslint-disable-next-line no-console
   console.log('Response headers:', headers);
 });
 
 req.on('data', (chunk: Buffer): void => {
-  // eslint-disable-next-line no-console
   console.log('Received data:', chunk.toString());
 });
 
