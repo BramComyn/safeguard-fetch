@@ -11,8 +11,8 @@ import {
 
 /* eslint no-sync: ["error", { allowAtRootLevel: true }] */
 const options = {
-  key: readFileSync('localhost-privkey.pem'),
-  cert: readFileSync('localhost-cert.pem'),
+  key: readFileSync('../../assets/localhost-privkey.pem'),
+  cert: readFileSync('../../assets/localhost-cert.pem'),
 };
 
 const server: Http2SecureServer = createSecureServer(options);
@@ -56,3 +56,4 @@ server.on('stream', (stream: ServerHttp2Stream, headers): void => {
 });
 
 server.listen(HTTPS_PORT);
+console.log(`Server listening on https://localhost:${HTTPS_PORT}`);

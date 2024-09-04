@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { HTTPS_PORT } from './infiniteServerConstants';
 
 const client: ClientHttp2Session = connect(`https://localhost:${HTTPS_PORT}`, {
-  ca: readFileSync('localhost-cert.pem'),
+  ca: readFileSync('../../assets/localhost-cert.pem'),
 });
 
 // eslint-disable-next-line ts/naming-convention
