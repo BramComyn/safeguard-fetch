@@ -1,0 +1,104 @@
+@prefix ex: <http://example.org/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix schema: <http://schema.org/> .
+
+# University
+ex:University1 a foaf:Organization ;
+    foaf:name "Grand University" ;
+    ex:locatedIn "Ghent, Belgium" .
+
+# Faculties
+ex:Faculty1 a foaf:Organization ;
+    foaf:name "Faculty of Computer Science" ;
+    ex:partOf ex:University1 ;
+    ex:dean ex:Person3 .
+
+ex:Faculty2 a foaf:Organization ;
+    foaf:name "Faculty of Engineering" ;
+    ex:partOf ex:University1 ;
+    ex:dean ex:Person4 .
+
+ex:Faculty3 a foaf:Organization ;
+    foaf:name "Faculty of Humanities" ;
+    ex:partOf ex:University1 ;
+    ex:dean ex:Person5 .
+
+# Deans
+ex:Person3 a foaf:Person ;
+    foaf:name "Dr. Emily White" ;
+    foaf:title "Dean of Computer Science" ;
+    foaf:age 52 ;
+    foaf:mbox <mailto:emily.white@granduniversity.edu> ;
+    dcterms:created "2020-02-10"^^xsd:date .
+
+ex:Person4 a foaf:Person ;
+    foaf:name "Prof. James Black" ;
+    foaf:title "Dean of Engineering" ;
+    foaf:age 48 ;
+    foaf:mbox <mailto:james.black@granduniversity.edu> ;
+    dcterms:created "2019-07-01"^^xsd:date .
+
+ex:Person5 a foaf:Person ;
+    foaf:name "Dr. Sarah Green" ;
+    foaf:title "Dean of Humanities" ;
+    foaf:age 45 ;
+    foaf:mbox <mailto:sarah.green@granduniversity.edu> ;
+    dcterms:created "2021-01-15"^^xsd:date .
+
+# Courses
+ex:Course1 a schema:Course ;
+    schema:name "Introduction to Programming" ;
+    schema:courseMode "Full-time" ;
+    schema:courseCredits 5 ;
+    schema:courseCode "CS101" ;
+    ex:offeredBy ex:Faculty1 .
+
+ex:Course2 a schema:Course ;
+    schema:name "Advanced Algorithms" ;
+    schema:courseMode "Full-time" ;
+    schema:courseCredits 7 ;
+    schema:courseCode "CS202" ;
+    ex:offeredBy ex:Faculty1 .
+
+ex:Course3 a schema:Course ;
+    schema:name "Structural Engineering" ;
+    schema:courseMode "Full-time" ;
+    schema:courseCredits 6 ;
+    schema:courseCode "EN101" ;
+    ex:offeredBy ex:Faculty2 .
+
+ex:Course4 a schema:Course ;
+    schema:name "Renaissance Literature" ;
+    schema:courseMode "Part-time" ;
+    schema:courseCredits 4 ;
+    schema:courseCode "HU101" ;
+    ex:offeredBy ex:Faculty3 .
+
+# Students
+ex:Student1 a foaf:Person ;
+    foaf:name "Alice Johnson" ;
+    foaf:age 20 ;
+    ex:enrolledIn ex:Course1, ex:Course2 ;
+    ex:memberOf ex:Faculty1 .
+
+ex:Student2 a foaf:Person ;
+    foaf:name "Bob Smith" ;
+    foaf:age 22 ;
+    ex:enrolledIn ex:Course3 ;
+    ex:memberOf ex:Faculty2 .
+
+ex:Student3 a foaf:Person ;
+    foaf:name "Clara Brown" ;
+    foaf:age 21 ;
+    ex:enrolledIn ex:Course4 ;
+    ex:memberOf ex:Faculty3 .
+
+ex:Student4 a foaf:Person ;
+    foaf:name "David Green" ;
+    foaf:age 23 ;
+    ex:enrolledIn ex:Course2, ex:Course3 ;
+    ex:memberOf ex:Faculty1, ex:Faculty2 .
+
+# University Courses Relations
+ex:University1 ex:offersCourse ex:Course1, ex:Course2, ex:Course3, ex:Course4 .
