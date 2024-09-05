@@ -22,7 +22,6 @@ export abstract class AttackServer {
     if (!this.started) {
       this.initiateServer();
       this.server.listen(this.port);
-      console.log(`Server listening on localhost:${this.port}`);
       this.started = !this.started;
     }
   }
