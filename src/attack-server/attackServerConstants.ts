@@ -6,12 +6,12 @@ import {
 } from '../reponse-generator/StandardResponseGenerator';
 
 // Main attack server constants
-const INTERVAL_TIME = 200;
+const INTERVAL_TIME = 1;
 const CONTENT_LENGTH = 100;
 const HTTP_PORT = 8080;
 const HTTPS_PORT = 8443;
 const STDHTTP1MSSG = 'Infinite server endpoint (HTTP/1.1)\n';
-const STDHTTP2MSSG = 'Infinite server endpoint (HTTP/2)\n';
+const STDHTTP2MSSG = 'Infinite server endpoint (HTTP/2.0)\n';
 
 // Attack server paths
 

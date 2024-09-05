@@ -39,8 +39,7 @@ export class AttackServerHttp2 extends AttackServer {
           ':status': 200,
           ...response.headers,
         });
-        stream.write(response.body);
-        stream.end();
+        response.body.pipe(stream);
       }
     });
   }

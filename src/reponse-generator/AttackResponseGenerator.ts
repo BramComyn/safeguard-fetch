@@ -1,9 +1,9 @@
 /* eslint-disable ts/naming-convention */
 import type { OutgoingHttpHeaders } from 'node:http';
 import type { OutgoingHttpHeaders as OutgoingHttp2Headers } from 'node:http2';
-import { Readable } from 'node:stream';
+import { PassThrough, Readable } from 'node:stream';
 
-import { CONTENT_LENGTH } from '../attack-server/attackServerConstants';
+import { INTERVAL_TIME } from '../attack-server/attackServerConstants';
 import type { ResponseGenerator } from './ResponseGenerator';
 
 // A generator class that will generate malformed responses for attack servers
@@ -20,13 +20,33 @@ class AttackResponseGenerator implements ResponseGenerator {
     headers: OutgoingHttpHeaders | OutgoingHttp2Headers;
     body: Readable;
   } {
-    return {
+    let stream: Readable;
+    if (this.actualSize === Infinity) {
+      // Create dummy stream that will push data infinitely
+      stream = new PassThrough();
+      stream.push('a');
+
+      // Pushing data to the stream every INTERVAL_TIME milliseconds
+      // Pushing on every data event will cause a stack overflow
+      setInterval((): void => {
+        stream.push('a');
+      }, INTERVAL_TIME);
+    } else {
+      stream = Readable.from('a'.repeat(this.actualSize));
+    }
+
+    const response: { headers: OutgoingHttpHeaders | OutgoingHttp2Headers; body: Readable } = {
       headers: {
         'content-type': 'text/plain',
-        'content-length': this.contentLength ?? CONTENT_LENGTH,
       },
-      body: Readable.from('a'.repeat(this.actualSize)),
+      body: stream,
     };
+
+    if (this.contentLength !== null) {
+      response.headers = { ...response.headers, 'content-length': this.contentLength };
+    }
+
+    return response;
   }
 }
 

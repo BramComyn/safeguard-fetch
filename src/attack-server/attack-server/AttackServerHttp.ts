@@ -24,8 +24,7 @@ export class AttackServerHttp extends AttackServer {
         const response: { headers: OutgoingHttpHeaders; body: Readable } =
           generator.generateResponse();
         res.writeHead(200, response.headers);
-        res.write(response.body);
-        res.end();
+        response.body.pipe(res);
       }
     });
   }
