@@ -10,7 +10,7 @@ import type { AttackServerFactory } from '../attack-server-factory/AttackServerF
 export abstract class AttackServer {
   private readonly port: number;
   protected readonly server: Server | Http2Server | Http2SecureServer;
-  private started = false;
+  protected started = false;
 
   public constructor(port: number, attackServerFactory: AttackServerFactory) {
     this.port = port;

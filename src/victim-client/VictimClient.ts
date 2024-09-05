@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 
 import { fromRoot } from '../util';
 
-// A command line interface for trying Node.js clients
+// A command line interface for trying Node.js clients with HTTP/2.0 over TLS
 export class VictimClient {
   private _host?: string;
   private _port?: number;
