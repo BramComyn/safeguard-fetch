@@ -11,7 +11,7 @@ describe('AttackServerHttpFactory', (): any => {
 
   describe('createHttpServer', (): any => {
     it('should create an HTTP/1.1 server.', (): any => {
-      const server = factory.createHttpServer();
+      const server = factory.createServer({});
       expect(server).toBeDefined();
     });
   });

@@ -2,6 +2,8 @@ import {
   AttackServerHttp2SecureFactory,
 } from '../../../../src/attack-server/attack-server-factory/AttackServerHttp2SecureFactory';
 
+import { secureServerOptions } from '../../../../src/util';
+
 describe('AttackServerHttp2SecureFactory', (): any => {
   let factory: AttackServerHttp2SecureFactory;
 
@@ -11,7 +13,7 @@ describe('AttackServerHttp2SecureFactory', (): any => {
 
   describe('createHttpServer', (): any => {
     it('should create a secure HTTP/2.0 server.', (): any => {
-      const server = factory.createHttpServer();
+      const server = factory.createServer(secureServerOptions);
       expect(server).toBeDefined();
     });
   });

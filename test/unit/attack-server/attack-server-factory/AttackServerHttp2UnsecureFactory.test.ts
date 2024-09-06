@@ -11,7 +11,7 @@ describe('AttackServerHttp2UnsecureFactory', (): any => {
 
   describe('createHttpServer', (): any => {
     it('should create an unsecure HTTP/2.0 server.', (): any => {
-      const server = factory.createHttpServer();
+      const server = factory.createServer({});
       expect(server).toBeDefined();
     });
   });

@@ -1,46 +1,44 @@
 /* eslint-disable ts/naming-convention */
 import type { ResponseGenerator } from '../response-generator/ResponseGenerator';
 import { AttackResponseGenerator } from '../response-generator/AttackResponseGenerator';
+
 import {
   standardHttp2ResponseGenerator,
   standardHttpResponseGenerator,
 } from '../response-generator/StandardResponseGenerator';
 
 // Main attack server constants
-const INTERVAL_TIME = 1;
-const CONTENT_LENGTH = 100;
-const HTTP_PORT = 8080;
-const HTTPS_PORT = 8443;
-const STDHTTP1MSSG = 'Infinite server endpoint (HTTP/1.1)\n';
-const STDHTTP2MSSG = 'Infinite server endpoint (HTTP/2.0)\n';
+export const INTERVAL_TIME = 1;
+export const CONTENT_LENGTH = 100;
+export const HTTP_PORT = 8080;
+export const HTTPS_PORT = 8443;
+export const STDHTTP1MSSG = 'Infinite server endpoint (HTTP/1.1)\n';
+export const STDHTTP2MSSG = 'Infinite server endpoint (HTTP/2.0)\n';
 
 // Attack server paths
 
-const HTTP_SERVER_PATHS = {
+/**
+ * Specifies which response an HTTP/1.1 server should generate for the index
+ */
+export const HTTP_SERVER_PATHS = {
   '/': (): ResponseGenerator => standardHttpResponseGenerator(),
 };
 
-const HTTP2_SERVER_PATHS = {
+/**
+ * Specifies which response an HTTP/2.0 server should generate for the index
+ */
+export const HTTP2_SERVER_PATHS = {
   '/': (): ResponseGenerator => standardHttp2ResponseGenerator(),
 };
 
-const PATHS = {
+/**
+ * Different paths for attack servers to listen to
+ */
+export const PATHS = {
   '/no-difference': (): ResponseGenerator => new AttackResponseGenerator(200, 200),
   '/small-difference': (): ResponseGenerator => new AttackResponseGenerator(200, 100),
   '/large-difference': (): ResponseGenerator => new AttackResponseGenerator(200, 10),
   '/infinite-difference': (): ResponseGenerator => new AttackResponseGenerator(Infinity, 200),
   '/no-content-length-finite': (): ResponseGenerator => new AttackResponseGenerator(200, null),
   '/no-content-length-infinite': (): ResponseGenerator => new AttackResponseGenerator(Infinity, null),
-};
-
-export {
-  INTERVAL_TIME,
-  CONTENT_LENGTH,
-  HTTP_PORT,
-  HTTPS_PORT,
-  STDHTTP1MSSG,
-  STDHTTP2MSSG,
-  HTTP_SERVER_PATHS,
-  HTTP2_SERVER_PATHS,
-  PATHS,
 };

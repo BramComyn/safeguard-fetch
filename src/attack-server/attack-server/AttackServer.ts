@@ -1,23 +1,26 @@
-import type { Server } from 'node:http';
-import type { Http2SecureServer, Http2Server } from 'node:http2';
+import type { Server } from 'node:net';
 
 import type { AttackServerFactory } from '../attack-server-factory/AttackServerFactory';
 
-// An attack server for testing purposes
-// port: the port the server will listen to
-// server: the attacking server
-// startServer: starts the server and makes it listen to the defined port
+/**
+ * An attack server for testing purposes
+ * port: the port the server will listen to
+ * server: the attacking server
+ * startServer: starts the server and makes it listen to the defined port
+ */
 export abstract class AttackServer {
   private readonly port: number;
-  protected readonly server: Server | Http2Server | Http2SecureServer;
+  protected readonly server: Server;
   protected started = false;
 
-  public constructor(port: number, attackServerFactory: AttackServerFactory) {
+  public constructor(port: number, attackServerFactory: AttackServerFactory, options?: object) {
     this.port = port;
-    this.server = attackServerFactory.createHttpServer();
+    this.server = attackServerFactory.createServer(options ?? {});
   }
 
-  // Starts the server and makes it listen to the defined port
+  /**
+   * Starts the server and makes it listen to the defined port
+   */
   public startServer(): void {
     if (!this.started) {
       this.initiateServer();
@@ -26,6 +29,8 @@ export abstract class AttackServer {
     }
   }
 
-  // Initiates the server by specifying its behaviour
+  /**
+   * Initiates the server by specifying its behaviour
+   */
   protected abstract initiateServer(): void;
 }

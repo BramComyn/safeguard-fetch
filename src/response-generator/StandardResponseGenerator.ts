@@ -1,12 +1,13 @@
 /* eslint-disable ts/naming-convention */
 import type { OutgoingHttpHeaders } from 'node:http';
-import type { OutgoingHttpHeaders as OutgoingHttp2Headers } from 'node:http2';
 import { Readable } from 'node:stream';
 
 import { STDHTTP1MSSG, STDHTTP2MSSG } from '../attack-server/attackServerConstants';
 import type { ResponseGenerator } from './ResponseGenerator';
 
-// A generator class that will offer a standard, non-malformed response
+/**
+ * A generator class that will offer a standard, non-malformed response
+ */
 export class StandardResponseGenerator implements ResponseGenerator {
   private readonly contentLength: number;
   private readonly message: string;
@@ -17,7 +18,7 @@ export class StandardResponseGenerator implements ResponseGenerator {
   }
 
   public generateResponse(): {
-    headers: OutgoingHttpHeaders | OutgoingHttp2Headers;
+    headers: OutgoingHttpHeaders;
     body: Readable;
   } {
     return {

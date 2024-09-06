@@ -15,15 +15,18 @@ import type {
 import type { ResponseGenerator } from '../../response-generator/ResponseGenerator';
 import { AttackServer } from './AttackServer';
 
-const paths = { ...HTTP2_SERVER_PATHS, ...PATHS };
+const paths = { ...HTTP2_SERVER_PATHS, ...PATHS } as const;
 
-// An abstract class to describe the common functionality of HTTP/2.0 attack servers
+/**
+ * A class to describe the common functionality of HTTP/2.0 attack servers
+ */
 export class AttackServerHttp2 extends AttackServer {
   public constructor(
     port: number,
     attackServerFactory: AttackServerHttp2UnsecureFactory | AttackServerHttp2SecureFactory,
+    options?: object,
   ) {
-    super(port, attackServerFactory);
+    super(port, attackServerFactory, options);
   }
 
   protected initiateServer(): void {

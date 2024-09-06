@@ -1,13 +1,17 @@
 import type { OutgoingHttpHeaders } from 'node:http';
-import type { OutgoingHttpHeaders as OutgoingHttp2Headers } from 'node:http2';
 import type { Readable } from 'node:stream';
 
-// A generator interface for server responses of different sizes
-// actualSize: the actual size of the response
-// contentLength: the content length of the response -- used to set the header in the response
+/**
+ * A generator interface for server responses of different sizes
+ */
 export interface ResponseGenerator {
+  /**
+   * Generate a response based on what parameters the inheriting class has
+   *
+   * @returns the headers and body of the response
+   */
   generateResponse: () => {
-    headers: OutgoingHttpHeaders | OutgoingHttp2Headers;
+    headers: OutgoingHttpHeaders;
     body: Readable;
   };
 }

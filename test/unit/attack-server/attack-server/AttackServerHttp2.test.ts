@@ -30,8 +30,8 @@ describe('AttackServerHttp2', (): any => {
     server.listen = jest.fn();
 
     factory = {
-      createHttpServer: jest.fn().mockReturnValue(server),
-    };
+      createServer: jest.fn().mockReturnValue(server),
+    } as any;
 
     stream = new PassThrough() as any;
     stream.respond = jest.fn();

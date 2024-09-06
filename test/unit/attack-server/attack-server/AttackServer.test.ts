@@ -23,7 +23,7 @@ describe('AttackServer', (): any => {
     } as any;
 
     factory = {
-      createHttpServer: jest.fn().mockReturnValue(server),
+      createServer: jest.fn().mockReturnValue(server),
     };
   });
 
@@ -31,7 +31,8 @@ describe('AttackServer', (): any => {
     const attackServer = new DummyAttackServer(8080, factory);
     attackServer.startServer();
 
-    expect(factory.createHttpServer).toHaveBeenCalledWith();
+    expect(factory.createServer).toHaveBeenCalledWith({});
+    expect(factory.createServer).toHaveBeenCalledTimes(1);
     expect(server.listen).toHaveBeenCalledWith(8080);
   });
 });

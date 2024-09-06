@@ -1,4 +1,3 @@
-/* eslint-disable jest/prefer-called-with */
 /* eslint-disable jest/prefer-spy-on */
 import type { IncomingMessage, Server, ServerResponse } from 'node:http';
 import { EventEmitter } from 'node:events';
@@ -27,13 +26,15 @@ describe('AttackServerHttp', (): any => {
 
   beforeEach((): any => {
     server = new EventEmitter() as any;
+    // No spyOn, as server doesn't have a listen property when initialised like this
     server.listen = jest.fn();
 
     factory = {
-      createHttpServer: jest.fn().mockReturnValue(server),
+      createServer: jest.fn().mockReturnValue(server),
     };
 
     response = new PassThrough() as any;
+    // No spyOn, as response doesn't have a writeHead property when initialised like this
     response.writeHead = jest.fn();
 
     request = {
@@ -56,6 +57,7 @@ describe('AttackServerHttp', (): any => {
   it.each(Object.keys(paths))('should respond to %s path.', (path: string): any => {
     // Renew response
     response = new PassThrough() as any;
+    // No spyOn, as response doesn't have a writeHead property when initialised like this
     response.writeHead = jest.fn();
 
     // Set URL path to known path
@@ -66,6 +68,6 @@ describe('AttackServerHttp', (): any => {
 
     server.emit('request', request, response);
 
-    expect(response.writeHead).toHaveBeenCalled();
+    expect(response.writeHead).toHaveBeenCalledTimes(1);
   });
 });

@@ -6,12 +6,14 @@ import type { AttackServerHttpFactory } from '../attack-server-factory/AttackSer
 import type { ResponseGenerator } from '../../response-generator/ResponseGenerator';
 import { AttackServer } from './AttackServer';
 
-const paths = { ...HTTP_SERVER_PATHS, ...PATHS };
+const paths = { ...HTTP_SERVER_PATHS, ...PATHS } as const;
 
-// An attack server specifically for HTTP/1.1 clients
+/**
+ * An attack server specifically for HTTP/1.1 clients
+ */
 export class AttackServerHttp extends AttackServer {
-  public constructor(port: number, attackServerFactory: AttackServerHttpFactory) {
-    super(port, attackServerFactory);
+  public constructor(port: number, attackServerFactory: AttackServerHttpFactory, options?: object) {
+    super(port, attackServerFactory, options);
   }
 
   protected initiateServer(): void {

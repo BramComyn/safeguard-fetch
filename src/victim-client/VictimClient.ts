@@ -5,32 +5,31 @@ import { readFileSync } from 'node:fs';
 
 import { fromRoot } from '../util';
 
-// A command line interface for trying Node.js clients with HTTP/2.0 over TLS
+/**
+ * A command line interface for trying Node.js clients with HTTP/2.0 over TLS
+ */
 export class VictimClient {
-  private _host?: string;
-  private _port?: number;
-  private _path?: string;
-  private _cert?: string;
-
   private aborted = false;
 
-  public constructor(host?: string, port?: number, path?: string, cert?: string) {
-    this._host = host;
-    this._port = port;
-    this._path = path;
-    this._cert = cert;
-  }
+  public constructor(
+    private host?: string,
+    private port?: number,
+    private path?: string,
+    private cert?: string,
+  ) {}
 
-  // Start command line session with the user
+  /**
+   * Start command line session with the user
+   */
   public async startSession(): Promise<void> {
     console.log('Client session started (HTTP/2.0 over TLS)');
     while (!this.aborted) {
       await this.askUserDetails();
 
-      const options = { ca: this._cert };
-      const client = connect(`https://${this._host}:${this._port}`, options);
+      const options = { ca: this.cert };
+      const client = connect(`https://${this.host}:${this.port}`, options);
 
-      const req = client.request({ ':path': this._path });
+      const req = client.request({ ':path': this.path });
       req.on('response', (headers): void => {
         console.log('Response headers:', headers);
       });
@@ -55,7 +54,9 @@ export class VictimClient {
     }
   }
 
-  // Ask the user for desired server details
+  /**
+   * Ask the user for desired server details
+   */
   private async askUserDetails(): Promise<void> {
     const rl = readline.createInterface({
       input: process.stdin,
@@ -63,18 +64,20 @@ export class VictimClient {
     });
 
     try {
-      this._host = await rl.question('Enter the host: ');
-      this._port = Number.parseInt(await rl.question('Enter the port: '), 10);
-      this._path = await rl.question('Enter the path: ');
+      this.host = await rl.question('Enter the host: ');
+      this.port = Number.parseInt(await rl.question('Enter the port: '), 10);
+      this.path = await rl.question('Enter the path: ');
       const certificatePath = await rl.question('Enter the certificate path: ');
-      this._cert = readFileSync(fromRoot(certificatePath)).toString();
+      this.cert = readFileSync(fromRoot(certificatePath)).toString();
     } finally {
       rl.close();
     }
   }
 
-  // Ask the user if they want to continue connecting to servers and sending requests
-  // If no, aborted is set to true and the loop stops, ending the cli-session
+  /**
+   * Ask the user if they want to continue connecting to servers and sending requests
+   * If no, aborted is set to true and the loop stops, ending the cli-session
+   */
   private async askUserContinue(): Promise<boolean> {
     const rl = readline.createInterface({
       input: process.stdin,

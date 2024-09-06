@@ -1,7 +1,13 @@
-import type { Server } from 'node:http';
-import type { Http2SecureServer, Http2Server } from 'node:http2';
+import type { Server } from 'node:net';
 
-// Interface for server factories
+/**
+ * Interface for server factories
+ */
 export interface AttackServerFactory {
-  createHttpServer: () => Server | Http2Server | Http2SecureServer;
+  /**
+   * Creates a server of the desired type
+   *
+   * @returns the desired server
+   */
+  createServer: (options: object) => Server;
 }
