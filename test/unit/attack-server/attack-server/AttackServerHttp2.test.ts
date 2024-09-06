@@ -4,13 +4,16 @@ import type { Http2SecureServer, ServerHttp2Stream } from 'node:http2';
 import { EventEmitter } from 'node:events';
 import { PassThrough } from 'node:stream';
 
-import { AttackServerHttp2 } from '../../../../src/attack-server/attack-server/AttackServerHttp2';
+import {
+  AttackServerHttp2Initialiser,
+} from '../../../../src/attack-server/attack-server-initialiser/AttackServerHttp2Initialiser';
+
+import { AttackServer } from '../../../../src/attack-server/attack-server/AttackServer';
+import { HTTP2_SERVER_PATHS, PATHS } from '../../../../src/attack-server/attackServerConstants';
 
 import type {
   AttackServerHttp2SecureFactory,
 } from '../../../../src/attack-server/attack-server-factory/AttackServerHttp2SecureFactory';
-
-import { HTTP2_SERVER_PATHS, PATHS } from '../../../../src/attack-server/attackServerConstants';
 
 const paths = { ...HTTP2_SERVER_PATHS, ...PATHS };
 const port = 8443;
@@ -20,6 +23,7 @@ jest.useFakeTimers();
 jest.spyOn(globalThis, 'setInterval');
 
 describe('AttackServerHttp2', (): any => {
+  let initialiser: AttackServerHttp2Initialiser;
   let factory: jest.Mocked<AttackServerHttp2SecureFactory>;
   let server: jest.Mocked<Http2SecureServer>;
   let stream: jest.Mocked<ServerHttp2Stream>;
@@ -31,7 +35,9 @@ describe('AttackServerHttp2', (): any => {
 
     factory = {
       createServer: jest.fn().mockReturnValue(server),
-    } as any;
+    };
+
+    initialiser = new AttackServerHttp2Initialiser();
 
     stream = new PassThrough() as any;
     stream.respond = jest.fn();
@@ -42,7 +48,7 @@ describe('AttackServerHttp2', (): any => {
     // Set path to unknown path
     headers[':path'] = '/unknown-path';
 
-    const attackServer = new AttackServerHttp2(port, factory);
+    const attackServer = new AttackServer<Http2SecureServer>(port, factory, initialiser);
     attackServer.startServer();
 
     server.emit('stream', stream, headers);
@@ -53,7 +59,7 @@ describe('AttackServerHttp2', (): any => {
     // Set path to known path
     headers[':path'] = path;
 
-    const attackServer = new AttackServerHttp2(port, factory);
+    const attackServer = new AttackServer<Http2SecureServer>(port, factory, initialiser);
     attackServer.startServer();
 
     server.emit('stream', stream, headers);

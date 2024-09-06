@@ -1,11 +1,20 @@
 import type { Server } from 'node:http';
+
 import type { AttackServerFactory } from '../../../../src/attack-server/attack-server-factory/AttackServerFactory';
 import { AttackServer } from '../../../../src/attack-server/attack-server/AttackServer';
 
+import type {
+  AttackServerInitialiser,
+} from '../../../../src/attack-server/attack-server-initialiser/AttackServerInitialiser';
+
 // An attack server for testing purposes
-class DummyAttackServer extends AttackServer {
-  public constructor(port: number, attackServerFactory: AttackServerFactory) {
-    super(port, attackServerFactory);
+class DummyAttackServer extends AttackServer<Server> {
+  public constructor(
+    port: number,
+    attackServerFactory: AttackServerFactory<Server>,
+    attackServerInitialiser: AttackServerInitialiser<Server>,
+  ) {
+    super(port, attackServerFactory, attackServerInitialiser);
   }
 
   public initiateServer(): void {
@@ -14,7 +23,8 @@ class DummyAttackServer extends AttackServer {
 }
 
 describe('AttackServer', (): any => {
-  let factory: jest.Mocked<AttackServerFactory>;
+  let initialiser: jest.Mocked<AttackServerInitialiser<Server>>;
+  let factory: jest.Mocked<AttackServerFactory<Server>>;
   let server: jest.Mocked<Server>;
 
   beforeEach((): any => {
@@ -25,10 +35,14 @@ describe('AttackServer', (): any => {
     factory = {
       createServer: jest.fn().mockReturnValue(server),
     };
+
+    initialiser = {
+      intialize: jest.fn(),
+    };
   });
 
   it('should create a server using the factory.', (): any => {
-    const attackServer = new DummyAttackServer(8080, factory);
+    const attackServer = new DummyAttackServer(8080, factory, initialiser);
     attackServer.startServer();
 
     expect(factory.createServer).toHaveBeenCalledWith({});
