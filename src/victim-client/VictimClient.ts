@@ -31,7 +31,7 @@ export class VictimClient {
 
       const req = client.request({ ':path': this.path });
       req.on('response', (headers): void => {
-        console.log('Response headers:', headers);
+        console.log('\nNew response headers:\n', headers);
       });
 
       req.on('data', (chunk: Buffer): void => {
@@ -42,11 +42,19 @@ export class VictimClient {
         (resolve): void => {
           // eslint-disable-next-line ts/no-misused-promises
           req.on('end', async(): Promise<void> => {
-            console.log('No more data in response.');
+            console.log('\nNo more data in response.');
 
             // Manually close the connection to avoid a lingering process when the user wants to stop
             client.close();
 
+            resolve(await this.askUserContinue());
+          });
+
+          // Prevent the process from crashing when an error occurs
+          // eslint-disable-next-line ts/no-misused-promises
+          req.on('error', async(err): Promise<void> => {
+            console.error('\nAn error occurred:', err);
+            client.close();
             resolve(await this.askUserContinue());
           });
         },
@@ -85,7 +93,7 @@ export class VictimClient {
     });
 
     try {
-      const answer = await rl.question('Do you want to continue? (y/n) ');
+      const answer = await rl.question('\nDo you want to continue? (y/n) ');
       return answer === 'n';
     } finally {
       rl.close();
