@@ -46,6 +46,7 @@ off the remaining data. This is, however, specified behavior, according to
 > vulnerable to cache poisoning.
 >
 > ## 7. Transfer Encodings
+>
 > ...
 
 ### Chrome-HTTP/2.0
