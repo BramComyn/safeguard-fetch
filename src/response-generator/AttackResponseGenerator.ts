@@ -7,9 +7,9 @@ import { INTERVAL_TIME } from '../attack-server/attackServerConstants';
 import type { ResponseGenerator } from './ResponseGenerator';
 
 // A generator class that will generate malformed responses for attack servers
-class AttackResponseGenerator implements ResponseGenerator {
-  public actualSize;
-  public contentLength;
+export class AttackResponseGenerator implements ResponseGenerator {
+  private readonly actualSize: number;
+  private readonly contentLength: number | null;
 
   public constructor(actualSize: number, contentLength: number | null) {
     this.actualSize = actualSize;
@@ -48,9 +48,4 @@ class AttackResponseGenerator implements ResponseGenerator {
 
     return response;
   }
-}
-
-// A factory function to create an attack response generator
-export function attackResponseGenerator(actualSize: number, contentLength: number | null): AttackResponseGenerator {
-  return new AttackResponseGenerator(actualSize, contentLength);
 }

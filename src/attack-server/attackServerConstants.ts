@@ -1,9 +1,10 @@
 /* eslint-disable ts/naming-convention */
-import { attackResponseGenerator } from '../reponse-generator/AttackResponseGenerator';
+import type { ResponseGenerator } from '../response-generator/ResponseGenerator';
+import { AttackResponseGenerator } from '../response-generator/AttackResponseGenerator';
 import {
   standardHttp2ResponseGenerator,
   standardHttpResponseGenerator,
-} from '../reponse-generator/StandardResponseGenerator';
+} from '../response-generator/StandardResponseGenerator';
 
 // Main attack server constants
 const INTERVAL_TIME = 1;
@@ -16,20 +17,20 @@ const STDHTTP2MSSG = 'Infinite server endpoint (HTTP/2.0)\n';
 // Attack server paths
 
 const HTTP_SERVER_PATHS = {
-  '/': standardHttpResponseGenerator(),
+  '/': (): ResponseGenerator => standardHttpResponseGenerator(),
 };
 
 const HTTP2_SERVER_PATHS = {
-  '/': standardHttp2ResponseGenerator(),
+  '/': (): ResponseGenerator => standardHttp2ResponseGenerator(),
 };
 
 const PATHS = {
-  '/no-difference': attackResponseGenerator(200, 200),
-  '/small-difference': attackResponseGenerator(200, 100),
-  '/large-difference': attackResponseGenerator(200, 10),
-  '/infinite-difference': attackResponseGenerator(Infinity, 200),
-  '/no-content-length-finite': attackResponseGenerator(200, null),
-  '/no-content-length-infinite': attackResponseGenerator(Infinity, null),
+  '/no-difference': (): ResponseGenerator => new AttackResponseGenerator(200, 200),
+  '/small-difference': (): ResponseGenerator => new AttackResponseGenerator(200, 100),
+  '/large-difference': (): ResponseGenerator => new AttackResponseGenerator(200, 10),
+  '/infinite-difference': (): ResponseGenerator => new AttackResponseGenerator(Infinity, 200),
+  '/no-content-length-finite': (): ResponseGenerator => new AttackResponseGenerator(200, null),
+  '/no-content-length-infinite': (): ResponseGenerator => new AttackResponseGenerator(Infinity, null),
 };
 
 export {

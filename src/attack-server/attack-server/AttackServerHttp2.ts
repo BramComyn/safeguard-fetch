@@ -12,7 +12,7 @@ import type {
   AttackServerHttp2UnsecureFactory,
 } from '../attack-server-factory/AttackServerHttp2UnsecureFactory';
 
-import type { ResponseGenerator } from '../../reponse-generator/ResponseGenerator';
+import type { ResponseGenerator } from '../../response-generator/ResponseGenerator';
 import { AttackServer } from './AttackServer';
 
 const paths = { ...HTTP2_SERVER_PATHS, ...PATHS };
@@ -33,7 +33,7 @@ export class AttackServerHttp2 extends AttackServer {
 
       // Check whether a valid path is requested
       if (path in paths) {
-        const generator: ResponseGenerator = paths[path as keyof typeof paths];
+        const generator: ResponseGenerator = paths[path as keyof typeof paths]();
         const response: { headers: OutgoingHttpHeaders; body: Readable } = generator.generateResponse();
         stream.respond({
           ':status': 200,

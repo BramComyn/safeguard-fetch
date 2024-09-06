@@ -7,14 +7,12 @@ import { STDHTTP1MSSG, STDHTTP2MSSG } from '../attack-server/attackServerConstan
 import type { ResponseGenerator } from './ResponseGenerator';
 
 // A generator class that will offer a standard, non-malformed response
-class StandardResponseGenerator implements ResponseGenerator {
-  public actualSize: number;
-  public contentLength: number;
-  public message: string;
+export class StandardResponseGenerator implements ResponseGenerator {
+  private readonly contentLength: number;
+  private readonly message: string;
 
   public constructor(message: string) {
     this.message = message;
-    this.actualSize = message.length;
     this.contentLength = message.length;
   }
 

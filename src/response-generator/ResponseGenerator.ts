@@ -10,6 +10,4 @@ export interface ResponseGenerator {
     headers: OutgoingHttpHeaders | OutgoingHttp2Headers;
     body: Readable;
   };
-  actualSize: number;
-  contentLength: number | null;
 }

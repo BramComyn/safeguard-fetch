@@ -3,7 +3,7 @@ import type { Readable } from 'node:stream';
 
 import { HTTP_SERVER_PATHS, PATHS } from '../attackServerConstants';
 import type { AttackServerHttpFactory } from '../attack-server-factory/AttackServerHttpFactory';
-import type { ResponseGenerator } from '../../reponse-generator/ResponseGenerator';
+import type { ResponseGenerator } from '../../response-generator/ResponseGenerator';
 import { AttackServer } from './AttackServer';
 
 const paths = { ...HTTP_SERVER_PATHS, ...PATHS };
@@ -20,7 +20,7 @@ export class AttackServerHttp extends AttackServer {
 
       // Check whether a valid path is requested
       if (path in paths) {
-        const generator: ResponseGenerator = paths[path as keyof typeof paths];
+        const generator: ResponseGenerator = paths[path as keyof typeof paths]();
         const response: { headers: OutgoingHttpHeaders; body: Readable } =
           generator.generateResponse();
         res.writeHead(200, response.headers);
