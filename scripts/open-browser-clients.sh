@@ -10,6 +10,9 @@ paths=(
     "/no-content-length-finite"
     "/no-content-length-infinite"
     "/no-difference"
+    "/small-difference-inverse"
+    "/large-difference-inverse"
+    "/no-content-length-finite-inverse"
 )
 
 for path in "${paths[@]}"; do

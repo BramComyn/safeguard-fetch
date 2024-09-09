@@ -18,6 +18,11 @@ the following cases:
 This is the same table as defined in the aforementioned issue.
 I will be using my ``AttackServer`` class to send the messages.
 
+To check what happens when the content length is shorter than advertised, I
+made the paths ``/small-difference-inverse``, ``/large-difference-inverse`` and
+``/no-content-length-finite-inverse`` which switches the actual size and the
+advertised size from their counterparts in the above table.
+
 ## Chrome
 
 I am testing Chrome for Ubuntu 24.04 (Noble Numbat).
@@ -58,6 +63,13 @@ off the remaining data. This is, however, specified behavior, according to
 - no content length infinite: infinite data, works like a charm
 - no difference: works like a charm.
 
+### Shorter messages for Chrome
+
+For both HTTP/1.1 and HTTP/2.0, the client keeps waiting for more data to
+arrive when requesting the small difference path. For the larger difference,
+Chrome returns the response string and finishes in HTTP/2.0, but doesn't do so
+for HTTP/1.1. The no content length paths don't throw any errors.
+
 ## Firefox
 
 I am testing Firefox for Ubuntu 24.04 (Noble Numbat).
@@ -82,6 +94,10 @@ further.
 - no content length finite: works like a charm
 - no content length infinite: infinite data, works like a charm
 - no difference: works like a charm.
+
+### Shorter messages for Firefox
+
+This behaves exactly the same as for Chrome, surprisingly enough (to me).
 
 ## cURL
 
@@ -108,6 +124,17 @@ Here fits, once again, the exact same answer as for Chrome over HTTP/1.1.
 - no content length finite: works like a charm
 - no content length infinite: infinite data, works like a charm
 - no difference: works like a charm.
+
+### Shorter messages
+
+For HTTP/1.1, cURL returns with an error code (18) for the large and no content
+length paths, specifying the amount of bytes remaining to read, but doesn't do
+so for the small difference path.
+
+For HTTP/2.0, the small difference path behaves the same. The large difference
+throws error 92 and specifies that the stream was not closed properly
+(``PROTOCOL_ERROR (err1)``). The path without content throws error 52
+``Empty reply from server``
 
 ## Node.js
 
@@ -161,3 +188,15 @@ This also happens when the headers are flushed before the first data arrives.
 - no content length finite: works like a charm
 - no content length infinite: infinite data, works like a charm
 - no difference: works like a charm.
+
+### Shorter messages for Node.js
+
+For HTTP/1.1, the small difference path keeps waiting, like before. The larger
+difference path returns the message, waits and then closes without error, like
+the browser did before. The path without content does the same. This means that
+for HTTP/1.1, Node.js behaves in the same way as browsers do for shorter
+messages than the content length header advertises.
+
+For HTTP/2.0, the small difference path keeps idle, like before.
+The large difference and zero content path closes the stream with a protocol
+error, like what happened in cURL.
