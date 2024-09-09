@@ -2,10 +2,10 @@ import type { Http2Server, IncomingHttpHeaders, OutgoingHttpHeaders, ServerHttp2
 import type { Readable } from 'node:stream';
 
 import type { ResponseGenerator } from '../../response-generator/ResponseGenerator';
-import { HTTP_SERVER_PATHS, PATHS } from '../attackServerConstants';
+import { HTTP2_SERVER_PATHS, PATHS } from '../attackServerConstants';
 import type { AttackServerInitialiser } from './AttackServerInitialiser';
 
-const paths = { ...HTTP_SERVER_PATHS, ...PATHS } as const;
+const paths = { ...HTTP2_SERVER_PATHS, ...PATHS } as const;
 
 export class AttackServerHttp2Initialiser implements AttackServerInitialiser<Http2Server> {
   public intialize(server: Http2Server): void {
