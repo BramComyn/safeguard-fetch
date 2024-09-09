@@ -1,3 +1,4 @@
+/* eslint-disable jest/prefer-spy-on */
 import type { Http2SecureServer, ServerHttp2Stream } from 'node:http2';
 import { EventEmitter } from 'node:events';
 import { PassThrough } from 'node:stream';
@@ -7,7 +8,7 @@ import {
 } from '../../../../src/attack-server/attack-server-initialiser/RedirectAttackServerHttp2Initialiser';
 
 import { AttackServer } from '../../../../src/attack-server/attack-server/AttackServer';
-import { MALICIOUS_REDIRECT_PATHS, HTTPS_PORT } from '../../../../src/attack-server/attackServerConstants';
+import { HTTPS_PORT, MALICIOUS_REDIRECT_PATHS } from '../../../../src/attack-server/attackServerConstants';
 
 import type {
   AttackServerHttp2SecureFactory,
@@ -43,7 +44,7 @@ describe('RedirectAttackServerHttp2Initialiser', (): any => {
     headers[':path'] = '/unknown-path';
 
     const attackServer = new AttackServer<Http2SecureServer>(port, factory, initialiser);
-    attackServer.startServer();
+    attackServer.start();
 
     server.emit('stream', stream, headers);
     expect(stream.respond).not.toHaveBeenCalled();
@@ -56,7 +57,7 @@ describe('RedirectAttackServerHttp2Initialiser', (): any => {
     const argument = paths[path as keyof typeof paths]();
 
     const attackServer = new AttackServer<Http2SecureServer>(port, factory, initialiser);
-    attackServer.startServer();
+    attackServer.start();
 
     server.emit('stream', stream, headers);
     expect(stream.respond).toHaveBeenCalledWith(argument);

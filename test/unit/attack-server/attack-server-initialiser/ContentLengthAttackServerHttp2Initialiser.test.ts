@@ -5,15 +5,20 @@ import { EventEmitter } from 'node:events';
 import { PassThrough } from 'node:stream';
 
 import {
+  CONTENT_LENGTH_PATHS,
+  HTTP2_SERVER_PATHS,
+  HTTPS_PORT,
+} from '../../../../src/attack-server/attackServerConstants';
+
+import {
   ContentLengthAttackServerHttp2Initialiser,
 } from '../../../../src/attack-server/attack-server-initialiser/ContentLengthAttackServerHttp2Initialiser';
-
-import { AttackServer } from '../../../../src/attack-server/attack-server/AttackServer';
-import { CONTENT_LENGTH_PATHS, HTTP2_SERVER_PATHS, HTTPS_PORT } from '../../../../src/attack-server/attackServerConstants';
 
 import type {
   AttackServerHttp2SecureFactory,
 } from '../../../../src/attack-server/attack-server-factory/AttackServerHttp2SecureFactory';
+
+import { AttackServer } from '../../../../src/attack-server/attack-server/AttackServer';
 
 const paths = { ...HTTP2_SERVER_PATHS, ...CONTENT_LENGTH_PATHS };
 const port = HTTPS_PORT;
@@ -49,7 +54,7 @@ describe('ContentLengthAttackServerInitialiser', (): any => {
     headers[':path'] = '/unknown-path';
 
     const attackServer = new AttackServer<Http2SecureServer>(port, factory, initialiser);
-    attackServer.startServer();
+    attackServer.start();
 
     server.emit('stream', stream, headers);
     expect(stream.respond).not.toHaveBeenCalled();
@@ -60,7 +65,7 @@ describe('ContentLengthAttackServerInitialiser', (): any => {
     headers[':path'] = path;
 
     const attackServer = new AttackServer<Http2SecureServer>(port, factory, initialiser);
-    attackServer.startServer();
+    attackServer.start();
 
     server.emit('stream', stream, headers);
 

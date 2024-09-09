@@ -16,10 +16,6 @@ class DummyAttackServer extends AttackServer<Server> {
   ) {
     super(port, attackServerFactory, attackServerInitialiser);
   }
-
-  public initiateServer(): void {
-    // Do nothing
-  }
 }
 
 describe('AttackServer', (): any => {
@@ -43,7 +39,7 @@ describe('AttackServer', (): any => {
 
   it('should create a server using the factory.', (): any => {
     const attackServer = new DummyAttackServer(8080, factory, initialiser);
-    attackServer.startServer();
+    attackServer.start();
 
     expect(factory.createServer).toHaveBeenCalledWith({});
     expect(factory.createServer).toHaveBeenCalledTimes(1);

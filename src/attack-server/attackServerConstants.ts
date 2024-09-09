@@ -1,4 +1,5 @@
 /* eslint-disable ts/naming-convention */
+import type { OutgoingHttpHeaders } from 'node:http2';
 import type { ResponseGenerator } from '../response-generator/ResponseGenerator';
 import { AttackResponseGenerator } from '../response-generator/AttackResponseGenerator';
 
@@ -8,13 +9,16 @@ import {
 } from '../response-generator/StandardResponseGenerator';
 
 // Main attack server constants
-export const INTERVAL_TIME = 1;
-export const CONTENT_LENGTH = 100;
 export const HTTP_PORT = 8080;
 export const HTTPS_PORT = 8443;
+
 export const STDHTTP1MSSG = 'Infinite server endpoint (HTTP/1.1)\n';
 export const STDHTTP2MSSG = 'Infinite server endpoint (HTTP/2.0)\n';
+
+export const STD_MALICIOUS_REDIRECT_PATH = '/malicious-redirect';
+export const NON_MALICIOUS_REDIRECT_PATH = '/non-malicious-redirect';
 export const MALICIOUS_REDIRECT_URL = 'https://malicious-redirect.org:666/';
+export const NON_MALICIOUS_REDIRECT_URL = 'https://non-malicious-redirect.org:666/';
 
 // Attack server paths
 
@@ -48,16 +52,9 @@ export const CONTENT_LENGTH_PATHS = {
 };
 
 /**
- * Return type for malicious redirect attack servers
- */
-interface MaliciousRedirectResponse {
-  status: number;
-  location: string;
-}
-
-/**
  * Different paths for malicious redirect attack servers to redirect to
  */
 export const MALICIOUS_REDIRECT_PATHS = {
-  '/malicious-redirect': (): MaliciousRedirectResponse => ({ status: 302, location: MALICIOUS_REDIRECT_URL }),
+  '/malicious-redirect': (): OutgoingHttpHeaders => ({ ':status': 302, location: MALICIOUS_REDIRECT_URL }),
+  '/non-malicious-redirect': (): OutgoingHttpHeaders => ({ ':status': 302, location: NON_MALICIOUS_REDIRECT_URL }),
 };

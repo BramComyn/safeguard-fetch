@@ -30,9 +30,19 @@ export class AttackServer<T extends Server> {
   /**
    * Starts the server and makes it listen to the defined port
    */
-  public startServer(): void {
+  public start(): void {
     if (!this.started) {
       this.server.listen(this.port);
+      this.started = !this.started;
+    }
+  }
+
+  /**
+   * Stops the server
+   */
+  public stop(): void {
+    if (this.started) {
+      this.server.close();
       this.started = !this.started;
     }
   }

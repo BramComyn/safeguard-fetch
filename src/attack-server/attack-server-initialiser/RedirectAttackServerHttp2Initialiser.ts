@@ -1,5 +1,4 @@
-/* eslint-disable ts/naming-convention */
-import type { Http2Server } from 'node:http2';
+import type { Http2Server, OutgoingHttpHeaders } from 'node:http2';
 
 import { MALICIOUS_REDIRECT_PATHS } from '../attackServerConstants';
 import type { AttackServerInitialiser } from './AttackServerInitialiser';
@@ -12,11 +11,12 @@ const paths = MALICIOUS_REDIRECT_PATHS;
 export class RedirectAttackServerHttp2Initialiser implements AttackServerInitialiser<Http2Server> {
   public intialize(server: Http2Server): void {
     server.on('stream', (stream, headers): void => {
-      const path = headers[':path'];
+      const path = headers[':path'] ?? '/';
 
-      if (path && path in paths) {
-        const { status, location } = paths[path as keyof typeof paths]();
-        stream.respond({ status, location });
+      if (path in paths) {
+        const response: OutgoingHttpHeaders = paths[path as keyof typeof paths]();
+        stream.respond(response);
+        stream.end();
       }
     });
   }
