@@ -16,7 +16,7 @@ export class RedirectAttackServerHttp2Initialiser implements AttackServerInitial
 
       if (path && path in paths) {
         const { status, location } = paths[path as keyof typeof paths]();
-        stream.respond({ ':status': status, location });
+        stream.respond({ status, location });
       }
     });
   }
