@@ -29,7 +29,7 @@ Browser version:
 
 ### Chrome-HTTP/1.1
 
-This poses not a single problem. Chrome protects the user from receiving any
+This doesn't pose a single problem. Chrome protects the user from receiving any
 extra bytes when the ``content-length`` header is set to *b* bytes, only *b*
 bytes will be found. The only problem I have found, is that Chrome doesn't treat
 an invalid ``content-length`` header as an unrecoverable error, but rather cuts
@@ -51,12 +51,12 @@ off the remaining data. This is, however, specified behavior, according to
 
 ### Chrome-HTTP/2.0
 
-Small difference: doesn't cut off
-Large difference: doesn't cut off
-infinite difference: doesn't cut off
-no content length finite: works like a charm
-no content length infinite: infinite data, works like a charm
-no difference: works like a charm.
+- small difference: doesn't cut off
+- large difference: doesn't cut off
+- infinite difference: doesn't cut off
+- no content length finite: works like a charm
+- no content length infinite: infinite data, works like a charm
+- no difference: works like a charm.
 
 ## Firefox
 
@@ -76,12 +76,12 @@ further.
 
 ### Firefox-HTTP/2.0
 
-Small difference: cuts off as it would for HTTP/1.1
-Large difference: cuts off message like it would for HTTP/1.1
-infinite difference: crashes
-no content length finite: works like a charm
-no content length infinite: infinite data, works like a charm
-no difference: works like a charm.
+- small difference: cuts off as it would for HTTP/1.1
+- large difference: cuts off message like it would for HTTP/1.1
+- infinite difference: crashes
+- no content length finite: works like a charm
+- no content length infinite: infinite data, works like a charm
+- no difference: works like a charm.
 
 ## cURL
 
@@ -102,12 +102,12 @@ Here fits, once again, the exact same answer as for Chrome over HTTP/1.1.
 
 ### cURL-HTTP/2.0
 
-Small difference: crashes
-Large difference: crashes
-infinite difference: crashes, and crashes my server too
-no content length finite: works like a charm
-no content length infinite: infinite data, works like a charm
-no difference: works like a charm.
+- small difference: crashes
+- large difference: crashes
+- infinite difference: crashes, and crashes my server too
+- no content length finite: works like a charm
+- no content length infinite: infinite data, works like a charm
+- no difference: works like a charm.
 
 ## Node.js
 
@@ -117,13 +117,21 @@ currently will not have any idea what cURL will do for the HTTP/1.1 version.
 
 ### Node.js-HTTP/1.1
 
-<!-- TODO -->
+- small difference: crashes
+- large difference: crashes
+- infinite difference: crashes
+- no content length finite: works like a charm
+- no content length infinite: infinite data, works like a charm
+- no difference: works like a charm
+
+The way the Node.js client crashes is peculiar, as it throws a parser error
+whenever something unexpected happened with a packet.
 
 ### Node.js-HTTP/2.0
 
-Small difference: crashes
-Large difference: crashes
-infinite difference: crashes
-no content length finite: works like a charm
-no content length infinite: infinite data, works like a charm
-no difference: works like a charm.
+- small difference: crashes
+- large difference: crashes
+- infinite difference: crashes
+- no content length finite: works like a charm
+- no content length infinite: infinite data, works like a charm
+- no difference: works like a charm.
