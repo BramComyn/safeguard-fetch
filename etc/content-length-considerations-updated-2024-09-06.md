@@ -29,7 +29,7 @@ Browser version:
 
 ### Chrome-HTTP/1.1
 
-This poses not a single problem. Chrome protects the user from receiving any
+This doesn't pose a single problem. Chrome protects the user from receiving any
 extra bytes when the ``content-length`` header is set to *b* bytes, only *b*
 bytes will be found. The only problem I have found, is that Chrome doesn't treat
 an invalid ``content-length`` header as an unrecoverable error, but rather cuts
@@ -51,12 +51,12 @@ off the remaining data. This is, however, specified behavior, according to
 
 ### Chrome-HTTP/2.0
 
-Small difference: doesn't cut off
-Large difference: doesn't cut off
-infinite difference: doesn't cut off
-no content length finite: works like a charm
-no content length infinite: infinite data, works like a charm
-no difference: works like a charm.
+- small difference: doesn't cut off
+- large difference: doesn't cut off
+- infinite difference: doesn't cut off
+- no content length finite: works like a charm
+- no content length infinite: infinite data, works like a charm
+- no difference: works like a charm.
 
 ## Firefox
 
@@ -76,12 +76,12 @@ further.
 
 ### Firefox-HTTP/2.0
 
-Small difference: cuts off as it would for HTTP/1.1
-Large difference: cuts off message like it would for HTTP/1.1
-infinite difference: crashes
-no content length finite: works like a charm
-no content length infinite: infinite data, works like a charm
-no difference: works like a charm.
+- small difference: cuts off as it would for HTTP/1.1
+- large difference: cuts off message like it would for HTTP/1.1
+- infinite difference: crashes
+- no content length finite: works like a charm
+- no content length infinite: infinite data, works like a charm
+- no difference: works like a charm.
 
 ## cURL
 
@@ -102,12 +102,12 @@ Here fits, once again, the exact same answer as for Chrome over HTTP/1.1.
 
 ### cURL-HTTP/2.0
 
-Small difference: crashes
-Large difference: crashes
-infinite difference: crashes, and crashes my server too
-no content length finite: works like a charm
-no content length infinite: infinite data, works like a charm
-no difference: works like a charm.
+- small difference: crashes
+- large difference: crashes
+- infinite difference: crashes, and crashes my server too
+- no content length finite: works like a charm
+- no content length infinite: infinite data, works like a charm
+- no difference: works like a charm.
 
 ## Node.js
 
@@ -117,13 +117,47 @@ currently will not have any idea what cURL will do for the HTTP/1.1 version.
 
 ### Node.js-HTTP/1.1
 
-<!-- TODO -->
+- small difference: crashes
+- large difference: crashes
+- infinite difference: crashes
+- no content length finite: works like a charm
+- no content length infinite: infinite data, works like a charm
+- no difference: works like a charm
+
+The way the Node.js client crashes is peculiar, as it throws a parser error
+whenever something unexpected happened with a packet. See below for an example.
+This also happens when the headers are flushed before the first data arrives.
+
+> Error: Parse Error: Expected HTTP/
+>     at Socket.socketOnData (node:_http_client:535:22)
+>     at Socket.emit (node:events:518:28)
+>     at Socket.emit (node:domain:488:12)
+>     at addChunk (node:internal/streams/readable:559:12)
+>     at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+>     at Socket.Readable.push (node:internal/streams/readable:390:5)
+>     at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
+>   bytesParsed: 250,
+>   code: 'HPE_INVALID_CONSTANT',
+>   reason: 'Expected HTTP/',
+>   rawPacket: Buffer(350) [Uint8Array] [
+>      72,  84,  84,  80,  47,  49,  46,  49,  32,  50,  48,  48,
+>      32,  79,  75,  13,  10,  99, 111, 110, 116, 101, 110, 116,
+>      45, 116, 121, 112, 101,  58,  32, 116, 101, 120, 116,  47,
+>     112, 108,  97, 105, 110,  13,  10,  99, 111, 110, 116, 101,
+>     110, 116,  45, 108, 101, 110, 103, 116, 104,  58,  32,  49,
+>      48,  48,  13,  10,  68,  97, 116, 101,  58,  32,  77, 111,
+>     110,  44,  32,  48,  57,  32,  83, 101, 112,  32,  50,  48,
+>      50,  52,  32,  48,  55,  58,  50,  52,  58,  48,  57,  32,
+>      71,  77,  84,  13,
+>     ... 250 more items
+>   ]
+> }
 
 ### Node.js-HTTP/2.0
 
-Small difference: crashes
-Large difference: crashes
-infinite difference: crashes
-no content length finite: works like a charm
-no content length infinite: infinite data, works like a charm
-no difference: works like a charm.
+- small difference: crashes
+- large difference: crashes
+- infinite difference: crashes
+- no content length finite: works like a charm
+- no content length infinite: infinite data, works like a charm
+- no difference: works like a charm.
