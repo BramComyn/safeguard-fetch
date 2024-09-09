@@ -55,5 +55,5 @@ export const CONTENT_LENGTH_PATHS = {
  */
 export const MALICIOUS_REDIRECT_PATHS = {
   '/malicious-redirect': (): OutgoingHttpHeaders => ({ ':status': 302, location: MALICIOUS_REDIRECT_URL }),
-  '/non-malicious-redirect': (): OutgoingHttpHeaders => ({ ':status': 302, location: NON_MALICIOUS_REDIRECT_URL }),
+  '/non-malicious-redirect': (): OutgoingHttpHeaders => ({ ':status': 200, location: NON_MALICIOUS_REDIRECT_URL }),
 };

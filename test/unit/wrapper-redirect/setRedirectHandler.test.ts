@@ -1,4 +1,4 @@
-import type { ClientHttp2Session, Http2SecureServer, OutgoingHttpHeaders } from 'node:http2';
+import type { ClientHttp2Session, ClientHttp2Stream, Http2SecureServer, OutgoingHttpHeaders } from 'node:http2';
 import { connect } from 'node:http2';
 
 import {
@@ -16,16 +16,17 @@ import {
 } from '../../../src/attack-server/attack-server-initialiser/RedirectAttackServerHttp2Initialiser';
 
 import { AttackServer } from '../../../src/attack-server/attack-server/AttackServer';
-import { wrapperRedirect } from '../../../src/wrapper-redirect/wrapperRedirect';
+import { setRedirectHandler } from '../../../src/wrapper-redirect/setRedirectHandler';
 import { secureServerOptions } from '../../../src/util';
 
 describe('wrapperRedirect', (): void => {
+  let redirectHandler: jest.Mock;
   let server: AttackServer<Http2SecureServer>;
   let port: number;
 
   let client: ClientHttp2Session;
   let headers: OutgoingHttpHeaders;
-  let banList: string[];
+  let request: ClientHttp2Stream;
 
   beforeAll((): void => {
     const factory = new AttackServerHttp2SecureFactory();
@@ -39,7 +40,7 @@ describe('wrapperRedirect', (): void => {
 
   beforeEach((): void => {
     client = connect(`https://localhost:${port}`, { ca: secureServerOptions.cert });
-    banList = [ 'malicious-redirect.org' ];
+    redirectHandler = jest.fn();
   });
 
   afterEach((): void => {
@@ -50,22 +51,19 @@ describe('wrapperRedirect', (): void => {
     server.stop();
   });
 
-  it('should throw an error when a redirect is detected to a hostname in the ban list.', async(): Promise<void> => {
+  it('should call redirectHandler upon redirect status code.', async(): Promise<void> => {
     headers = { ':path': STD_MALICIOUS_REDIRECT_PATH };
+    request = client.request(headers);
 
-    await expect(
-      wrapperRedirect(client, headers, {}, banList),
-    ).rejects.toThrow(`Redirecting to malicious-redirect.org is prohibited.`);
+    await setRedirectHandler(request, redirectHandler);
+    expect(redirectHandler).toHaveBeenCalledTimes(1);
   });
 
-  it(
-    'should not throw an error when a redirect is detected to a hostname not in the ban list.',
-    async(): Promise<void> => {
-      headers = { ':path': NON_MALICIOUS_REDIRECT_PATH };
+  it('should not call redirectHandler upon non-redirect status code.', async(): Promise<void> => {
+    headers = { ':path': NON_MALICIOUS_REDIRECT_PATH };
+    request = client.request(headers);
 
-      await expect(
-        wrapperRedirect(client, headers, {}, banList),
-      ).resolves.toBeTruthy();
-    },
-  );
+    await setRedirectHandler(request, redirectHandler);
+    expect(redirectHandler).not.toHaveBeenCalled();
+  });
 });
