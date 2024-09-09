@@ -37,8 +37,11 @@ export const HTTP2_SERVER_PATHS = {
 export const PATHS = {
   '/no-difference': (): ResponseGenerator => new AttackResponseGenerator(200, 200),
   '/small-difference': (): ResponseGenerator => new AttackResponseGenerator(200, 100),
+  '/small-differnce-inverse': (): ResponseGenerator => new AttackResponseGenerator(100, 200),
   '/large-difference': (): ResponseGenerator => new AttackResponseGenerator(200, 10),
+  '/large-difference-inverse': (): ResponseGenerator => new AttackResponseGenerator(10, 200),
   '/infinite-difference': (): ResponseGenerator => new AttackResponseGenerator(Infinity, 200),
   '/no-content-length-finite': (): ResponseGenerator => new AttackResponseGenerator(200, null),
+  '/no-content-length-finite-inverse': (): ResponseGenerator => new AttackResponseGenerator(0, 200),
   '/no-content-length-infinite': (): ResponseGenerator => new AttackResponseGenerator(Infinity, null),
 };
