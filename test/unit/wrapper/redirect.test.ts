@@ -16,10 +16,10 @@ import {
 } from '../../../src/attack-server/attack-server-initialiser/RedirectAttackServerHttp2Initialiser';
 
 import { AttackServer } from '../../../src/attack-server/attack-server/AttackServer';
-import { setRedirectHandler } from '../../../src/wrapper-redirect/setRedirectHandler';
+import { setRedirectHandler } from '../../../src/wrapper/redirect';
 import { secureServerOptions } from '../../../src/util';
 
-describe('wrapperRedirect', (): void => {
+describe('setRedirectHandler', (): void => {
   let redirectHandler: jest.Mock;
   let server: AttackServer<Http2SecureServer>;
   let port: number;

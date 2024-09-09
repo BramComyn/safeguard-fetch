@@ -11,7 +11,7 @@ import {
 
 import { AttackServer } from '../../src/attack-server/attack-server/AttackServer';
 import { secureServerOptions } from '../../src/util';
-import { setRedirectHandler } from '../../src/wrapper-redirect/setRedirectHandler';
+import { setRedirectHandler } from '../../src/wrapper/redirect';
 import { HTTPS_PORT } from '../../src/attack-server/attackServerConstants';
 
 const server = new AttackServer<Http2SecureServer>(
