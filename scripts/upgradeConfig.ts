@@ -99,7 +99,6 @@ async function upgradeConfig(): Promise<void> {
   }
   await replaceComponentVersion('package.json', regex, `${major}.0.0`);
 
-  // eslint-disable-next-line ts/naming-convention
   await simpleGit().commit(`chore(release): Update configs to v${major}.0.0`, configs, { '--no-verify': null });
 }
 

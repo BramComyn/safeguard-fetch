@@ -4,25 +4,25 @@ import { EventEmitter } from 'node:events';
 import { PassThrough } from 'node:stream';
 
 import {
-  AttackServerHttpInitialiser,
-} from '../../../../src/attack-server/attack-server-initialiser/AttackServerHttpInitialiser';
+  ContentLengthAttackServerHttpInitialiser,
+} from '../../../../src/attack-server/attack-server-initialiser/ContentLengthAttackServerHttpInitialiser';
 
-import { HTTP_SERVER_PATHS, PATHS } from '../../../../src/attack-server/attackServerConstants';
+import { CONTENT_LENGTH_PATHS, HTTP_SERVER_PATHS } from '../../../../src/attack-server/attackServerConstants';
 import { AttackServer } from '../../../../src/attack-server/attack-server/AttackServer';
 
 import type {
   AttackServerHttpFactory,
 } from '../../../../src/attack-server/attack-server-factory/AttackServerHttpFactory';
 
-const paths = { ...HTTP_SERVER_PATHS, ...PATHS };
+const paths = { ...HTTP_SERVER_PATHS, ...CONTENT_LENGTH_PATHS };
 const port = 8080;
 
 // Prevent `/infinite` from actually running
 jest.useFakeTimers();
 jest.spyOn(globalThis, 'setInterval');
 
-describe('AttackServerHttp', (): any => {
-  let initialiser: AttackServerHttpInitialiser;
+describe('ContentLengthAttackServerHttpInitialiser', (): any => {
+  let initialiser: ContentLengthAttackServerHttpInitialiser;
   let factory: jest.Mocked<AttackServerHttpFactory>;
   let server: jest.Mocked<Server>;
   let request: jest.Mocked<IncomingMessage>;
@@ -37,7 +37,7 @@ describe('AttackServerHttp', (): any => {
       createServer: jest.fn().mockReturnValue(server),
     };
 
-    initialiser = new AttackServerHttpInitialiser();
+    initialiser = new ContentLengthAttackServerHttpInitialiser();
 
     response = new PassThrough() as any;
     // No spyOn, as response doesn't have a writeHead property when initialised like this
@@ -48,19 +48,19 @@ describe('AttackServerHttp', (): any => {
     } as any;
   });
 
-  it('should not respond to unknown paths.', (): any => {
+  it('should make the server not respond to unknown paths.', (): any => {
     // Set URL path to unknown path
     request.url = '/unknown-path';
 
     const attackServer = new AttackServer<Server>(port, factory, initialiser);
-    attackServer.startServer();
+    attackServer.start();
 
     server.emit('request', request, response);
 
     expect(response.writeHead).not.toHaveBeenCalled();
   });
 
-  it.each(Object.keys(paths))('should respond to %s path.', (path: string): any => {
+  it.each(Object.keys(paths))('should make the server respond to %s path.', (path: string): any => {
     // Renew response
     response = new PassThrough() as any;
     // No spyOn, as response doesn't have a writeHead property when initialised like this
@@ -70,7 +70,7 @@ describe('AttackServerHttp', (): any => {
     request.url = path;
 
     const attackServer = new AttackServer<Server>(port, factory, initialiser);
-    attackServer.startServer();
+    attackServer.start();
 
     server.emit('request', request, response);
 

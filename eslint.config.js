@@ -10,5 +10,6 @@ module.exports = opinionated({
 }).append({
   rules: {
     'no-console': 'off',
+    'ts/naming-convention': 'off',
   },
 });

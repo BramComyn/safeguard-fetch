@@ -1,4 +1,3 @@
-/* eslint-disable ts/naming-convention */
 import * as readline from 'node:readline/promises';
 import { connect } from 'node:http2';
 import { readFileSync } from 'node:fs';

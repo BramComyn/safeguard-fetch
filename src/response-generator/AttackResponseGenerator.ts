@@ -1,4 +1,3 @@
-/* eslint-disable ts/naming-convention */
 import type { OutgoingHttpHeaders } from 'node:http';
 import { Readable } from 'node:stream';
 
