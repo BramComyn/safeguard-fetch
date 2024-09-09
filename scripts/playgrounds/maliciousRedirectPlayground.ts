@@ -1,3 +1,4 @@
+import type { ClientHttp2Stream, Http2SecureServer, IncomingHttpHeaders } from 'node:http2';
 import { connect } from 'node:http2';
 
 import {
@@ -10,10 +11,10 @@ import {
 
 import { AttackServer } from '../../src/attack-server/attack-server/AttackServer';
 import { secureServerOptions } from '../../src/util';
-import { wrapperRedirect } from '../../src/wrapper-redirect/wrapperRedirect';
+import { setRedirectHandler } from '../../src/wrapper-redirect/setRedirectHandler';
 import { HTTPS_PORT } from '../../src/attack-server/attackServerConstants';
 
-const server = new AttackServer(
+const server = new AttackServer<Http2SecureServer>(
   HTTPS_PORT,
   new AttackServerHttp2SecureFactory(),
   new RedirectAttackServerHttp2Initialiser(),
@@ -23,4 +24,12 @@ const server = new AttackServer(
 server.start();
 
 const client = connect(`https://localhost:${HTTPS_PORT}`, { ca: secureServerOptions.cert });
-wrapperRedirect(client, { ':path': '/malicious-redirect' }, {}, [ 'malicious-redirect.org' ]).catch(console.error);
+const request = client.request({ ':path': '/malicious-redirect' });
+
+function redirectHandler(request: ClientHttp2Stream, headers: IncomingHttpHeaders): void {
+  console.log('Redirected to:', headers.location);
+  client.close();
+  server.stop();
+}
+
+setRedirectHandler(request, redirectHandler).catch(console.error);
