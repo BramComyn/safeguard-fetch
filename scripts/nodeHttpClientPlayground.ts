@@ -4,7 +4,7 @@ const hostname = 'localhost';
 const port = 8080;
 
 // Change path when needed
-const path = '/no-content-length-infinite';
+const path = '/small-difference';
 
 const options = {
   hostname,

@@ -125,7 +125,33 @@ currently will not have any idea what cURL will do for the HTTP/1.1 version.
 - no difference: works like a charm
 
 The way the Node.js client crashes is peculiar, as it throws a parser error
-whenever something unexpected happened with a packet.
+whenever something unexpected happened with a packet. See below for an example.
+This also happens when the headers are flushed before the first data arrives.
+
+> Error: Parse Error: Expected HTTP/
+>     at Socket.socketOnData (node:_http_client:535:22)
+>     at Socket.emit (node:events:518:28)
+>     at Socket.emit (node:domain:488:12)
+>     at addChunk (node:internal/streams/readable:559:12)
+>     at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+>     at Socket.Readable.push (node:internal/streams/readable:390:5)
+>     at TCP.onStreamRead (node:internal/stream_base_commons:190:23) {
+>   bytesParsed: 250,
+>   code: 'HPE_INVALID_CONSTANT',
+>   reason: 'Expected HTTP/',
+>   rawPacket: Buffer(350) [Uint8Array] [
+>      72,  84,  84,  80,  47,  49,  46,  49,  32,  50,  48,  48,
+>      32,  79,  75,  13,  10,  99, 111, 110, 116, 101, 110, 116,
+>      45, 116, 121, 112, 101,  58,  32, 116, 101, 120, 116,  47,
+>     112, 108,  97, 105, 110,  13,  10,  99, 111, 110, 116, 101,
+>     110, 116,  45, 108, 101, 110, 103, 116, 104,  58,  32,  49,
+>      48,  48,  13,  10,  68,  97, 116, 101,  58,  32,  77, 111,
+>     110,  44,  32,  48,  57,  32,  83, 101, 112,  32,  50,  48,
+>      50,  52,  32,  48,  55,  58,  50,  52,  58,  48,  57,  32,
+>      71,  77,  84,  13,
+>     ... 250 more items
+>   ]
+> }
 
 ### Node.js-HTTP/2.0
 
