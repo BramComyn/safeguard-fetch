@@ -24,7 +24,7 @@ const httpserver = new AttackServer<Server>(
   new ContentLengthAttackServerHttpInitialiser(),
 );
 
-httpserver.startServer();
+httpserver.start();
 
 const http2secureServer =
   new AttackServer<Http2SecureServer>(
@@ -33,4 +33,4 @@ const http2secureServer =
     new ContentLengthAttackServerHttp2Initialiser(),
     secureServerOptions,
   );
-http2secureServer.startServer();
+http2secureServer.start();

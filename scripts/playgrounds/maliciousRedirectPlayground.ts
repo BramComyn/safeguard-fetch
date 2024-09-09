@@ -1,4 +1,3 @@
-/* eslint-disable ts/naming-convention */
 import { connect } from 'node:http2';
 
 import {
@@ -21,7 +20,7 @@ const server = new AttackServer(
   secureServerOptions,
 );
 
-server.startServer();
+server.start();
 
 const client = connect(`https://localhost:${HTTPS_PORT}`, { ca: secureServerOptions.cert });
-wrapperRedirect(client, { ':path': '/malicious-redirect' }, {}, [ 'malicious-redirect.org' ]);
+wrapperRedirect(client, { ':path': '/malicious-redirect' }, {}, [ 'malicious-redirect.org' ]).catch(console.error);

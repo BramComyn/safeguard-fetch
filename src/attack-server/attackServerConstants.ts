@@ -1,4 +1,3 @@
-/* eslint-disable ts/naming-convention */
 import type { OutgoingHttpHeaders } from 'node:http2';
 import type { ResponseGenerator } from '../response-generator/ResponseGenerator';
 import { AttackResponseGenerator } from '../response-generator/AttackResponseGenerator';
