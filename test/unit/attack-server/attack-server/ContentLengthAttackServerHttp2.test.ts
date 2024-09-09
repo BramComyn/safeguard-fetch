@@ -5,17 +5,17 @@ import { EventEmitter } from 'node:events';
 import { PassThrough } from 'node:stream';
 
 import {
-  AttackServerHttp2Initialiser,
-} from '../../../../src/attack-server/attack-server-initialiser/AttackServerHttp2Initialiser';
+  ContentLengthAttackServerHttp2Initialiser,
+} from '../../../../src/attack-server/attack-server-initialiser/ContentLengthAttackServerHttp2Initialiser';
 
 import { AttackServer } from '../../../../src/attack-server/attack-server/AttackServer';
-import { HTTP2_SERVER_PATHS, PATHS } from '../../../../src/attack-server/attackServerConstants';
+import { CONTENT_LENGTH_PATHS, HTTP2_SERVER_PATHS } from '../../../../src/attack-server/attackServerConstants';
 
 import type {
   AttackServerHttp2SecureFactory,
 } from '../../../../src/attack-server/attack-server-factory/AttackServerHttp2SecureFactory';
 
-const paths = { ...HTTP2_SERVER_PATHS, ...PATHS };
+const paths = { ...HTTP2_SERVER_PATHS, ...CONTENT_LENGTH_PATHS };
 const port = 8443;
 
 // Prevent `/infinite` from actually running
@@ -23,7 +23,7 @@ jest.useFakeTimers();
 jest.spyOn(globalThis, 'setInterval');
 
 describe('AttackServerHttp2', (): any => {
-  let initialiser: AttackServerHttp2Initialiser;
+  let initialiser: ContentLengthAttackServerHttp2Initialiser;
   let factory: jest.Mocked<AttackServerHttp2SecureFactory>;
   let server: jest.Mocked<Http2SecureServer>;
   let stream: jest.Mocked<ServerHttp2Stream>;
@@ -37,7 +37,7 @@ describe('AttackServerHttp2', (): any => {
       createServer: jest.fn().mockReturnValue(server),
     };
 
-    initialiser = new AttackServerHttp2Initialiser();
+    initialiser = new ContentLengthAttackServerHttp2Initialiser();
 
     stream = new PassThrough() as any;
     stream.respond = jest.fn();

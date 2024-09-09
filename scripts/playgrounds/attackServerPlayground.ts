@@ -9,23 +9,28 @@ import {
 } from '../../src/attack-server/attack-server-factory/AttackServerHttp2SecureFactory';
 
 import {
-  AttackServerHttpInitialiser,
-} from '../../src/attack-server/attack-server-initialiser/AttackServerHttpInitialiser';
+  ContentLengthAttackServerHttpInitialiser,
+} from '../../src/attack-server/attack-server-initialiser/ContentLengthAttackServerHttpInitialiser';
 
 import {
-  AttackServerHttp2Initialiser,
-} from '../../src/attack-server/attack-server-initialiser/AttackServerHttp2Initialiser';
+  ContentLengthAttackServerHttp2Initialiser,
+} from '../../src/attack-server/attack-server-initialiser/ContentLengthAttackServerHttp2Initialiser';
 
 import { AttackServer } from '../../src/attack-server/attack-server/AttackServer';
 
-const httpserver = new AttackServer<Server>(8080, new AttackServerHttpFactory(), new AttackServerHttpInitialiser());
+const httpserver = new AttackServer<Server>(
+  8080,
+  new AttackServerHttpFactory(),
+  new ContentLengthAttackServerHttpInitialiser(),
+);
+
 httpserver.startServer();
 
 const http2secureServer =
   new AttackServer<Http2SecureServer>(
     8443,
     new AttackServerHttp2SecureFactory(),
-    new AttackServerHttp2Initialiser(),
+    new ContentLengthAttackServerHttp2Initialiser(),
     secureServerOptions,
   );
 http2secureServer.startServer();

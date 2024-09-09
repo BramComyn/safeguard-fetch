@@ -4,17 +4,17 @@ import { EventEmitter } from 'node:events';
 import { PassThrough } from 'node:stream';
 
 import {
-  AttackServerHttpInitialiser,
-} from '../../../../src/attack-server/attack-server-initialiser/AttackServerHttpInitialiser';
+  ContentLengthAttackServerHttpInitialiser,
+} from '../../../../src/attack-server/attack-server-initialiser/ContentLengthAttackServerHttpInitialiser';
 
-import { HTTP_SERVER_PATHS, PATHS } from '../../../../src/attack-server/attackServerConstants';
+import { CONTENT_LENGTH_PATHS, HTTP_SERVER_PATHS } from '../../../../src/attack-server/attackServerConstants';
 import { AttackServer } from '../../../../src/attack-server/attack-server/AttackServer';
 
 import type {
   AttackServerHttpFactory,
 } from '../../../../src/attack-server/attack-server-factory/AttackServerHttpFactory';
 
-const paths = { ...HTTP_SERVER_PATHS, ...PATHS };
+const paths = { ...HTTP_SERVER_PATHS, ...CONTENT_LENGTH_PATHS };
 const port = 8080;
 
 // Prevent `/infinite` from actually running
@@ -22,7 +22,7 @@ jest.useFakeTimers();
 jest.spyOn(globalThis, 'setInterval');
 
 describe('AttackServerHttp', (): any => {
-  let initialiser: AttackServerHttpInitialiser;
+  let initialiser: ContentLengthAttackServerHttpInitialiser;
   let factory: jest.Mocked<AttackServerHttpFactory>;
   let server: jest.Mocked<Server>;
   let request: jest.Mocked<IncomingMessage>;
@@ -37,7 +37,7 @@ describe('AttackServerHttp', (): any => {
       createServer: jest.fn().mockReturnValue(server),
     };
 
-    initialiser = new AttackServerHttpInitialiser();
+    initialiser = new ContentLengthAttackServerHttpInitialiser();
 
     response = new PassThrough() as any;
     // No spyOn, as response doesn't have a writeHead property when initialised like this
