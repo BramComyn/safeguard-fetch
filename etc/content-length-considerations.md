@@ -4,9 +4,10 @@ As you may have noticed, the past days I have been focussing on the possible pro
 the server's response
 data size and what is specified in the ``Content-Length`` header.
 
-As for HTTP/1.1 I have found that [RFC 9112 §6.2](https://www.rfc-editor.org/rfc/rfc9112#section-6.2)
+As for HTTP/1.1 I have found that [RFC 9112 §6.3](https://www.rfc-editor.org/rfc/rfc9112#section-6.3)
 states the following:
 
+> ...
 > If a message is received without Transfer-Encoding and with an invalid Content-Length header field,
 > then the message framing is invalid and the recipient MUST treat it as an unrecoverable error, unless the field value
 > can be successfully parsed as a comma-separated list (Section 5.6.1 of [HTTP]), all values in the list are valid, and
@@ -17,6 +18,7 @@ states the following:
 > the server, discard the received response, and send a 502 (Bad Gateway) response to the client.
 > If it is in a response message received by a user agent, the user agent MUST close the connection to the server and
 > discard the received response.
+> ...
 
 I think this can explain the behaviour of both my Node.js client and Firefox, which both stop accepting data and
 close their streams with an error code.
