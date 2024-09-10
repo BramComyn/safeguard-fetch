@@ -3,6 +3,8 @@ import type { Readable } from 'node:stream';
 
 /**
  * A generator interface for server responses of different sizes
+ * 
+ * @method generateResponse: generates a response with the specified size
  */
 export interface ResponseGenerator {
   /**

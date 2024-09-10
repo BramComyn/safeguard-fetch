@@ -6,6 +6,12 @@ import { fromRoot } from '../util';
 
 /**
  * A command line interface for trying Node.js clients with HTTP/2.0 over TLS
+ * 
+ * @member host: the host to connect to
+ * @member port: the port to connect to
+ * @member path: the path to request
+ * @member cert: the certificate to use
+ * @member aborted: whether the client has been aborted the cycle
  */
 export class VictimClient {
   private aborted = false;

@@ -22,14 +22,14 @@ export const NON_MALICIOUS_REDIRECT_URL = 'https://non-malicious-redirect.org:66
 // Attack server paths
 
 /**
- * Specifies which response an HTTP/1.1 server should generate for the index
+ * Specifies which response an HTTP/1.1 content length attack server should generate for the index
  */
 export const HTTP_SERVER_PATHS = {
   '/': (): ResponseGenerator => standardHttpResponseGenerator(),
 };
 
 /**
- * Specifies which response an HTTP/2.0 server should generate for the index
+ * Specifies which response an HTTP/2.0 content length attack server should generate for the index
  */
 export const HTTP2_SERVER_PATHS = {
   '/': (): ResponseGenerator => standardHttp2ResponseGenerator(),
