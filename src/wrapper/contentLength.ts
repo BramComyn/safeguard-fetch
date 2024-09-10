@@ -12,6 +12,11 @@ export async function setContentLengthHandler(
   request: ClientHttp2Stream,
   contentLengthHandler: (request: ClientHttp2Stream, headers: IncomingHttpHeaders) => void,
 ): Promise<ClientHttp2Stream> {
+  /**
+   * We have to use this `await once(...)`,
+   * because otherwise it would be possible that the request is already closed
+   * by the time we try to read the headers and handle them.
+   */
   const responseHeaders: IncomingHttpHeaders = (await once(request, 'response'))[0] as IncomingHttpHeaders;
   const contentLengthString: string | undefined = responseHeaders['content-length'];
 
@@ -33,6 +38,11 @@ export async function setNoContentLengthHandler(
   request: ClientHttp2Stream,
   noContentLengthHandler: (request: ClientHttp2Stream, headers: IncomingHttpHeaders) => void,
 ): Promise<ClientHttp2Stream> {
+  /**
+   * We have to use this `await once(...)`,
+   * because otherwise it would be possible that the request is already closed
+   * by the time we try to read the headers and handle them.
+   */
   const responseHeaders: IncomingHttpHeaders = (await once(request, 'response'))[0] as IncomingHttpHeaders;
   const contentLengthString: string | undefined = responseHeaders['content-length'];
 
