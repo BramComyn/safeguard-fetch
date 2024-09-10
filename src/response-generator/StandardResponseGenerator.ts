@@ -34,10 +34,16 @@ export class StandardResponseGenerator implements ResponseGenerator {
 /**
  * @returns a standard response generator for HTTP/1.1
  */
+/**
+ * @returns a standard response generator for HTTP/1.1
+ */
 export function standardHttpResponseGenerator(): StandardResponseGenerator {
   return new StandardResponseGenerator(STDHTTP1MSSG);
 }
 
+/**
+ * @returns a standard response generator for HTTP/2.0
+ */
 /**
  * @returns a standard response generator for HTTP/2.0
  */
