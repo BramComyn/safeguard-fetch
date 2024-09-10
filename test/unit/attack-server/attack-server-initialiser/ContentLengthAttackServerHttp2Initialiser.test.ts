@@ -7,7 +7,6 @@ import { PassThrough } from 'node:stream';
 import {
   CONTENT_LENGTH_PATHS,
   HTTP2_SERVER_PATHS,
-  HTTPS_PORT,
 } from '../../../../src/attack-server/attackServerConstants';
 
 import {
@@ -19,9 +18,12 @@ import type {
 } from '../../../../src/attack-server/attack-server-factory/AttackServerHttp2SecureFactory';
 
 import { AttackServer } from '../../../../src/attack-server/attack-server/AttackServer';
+import { getPort } from '../../../../src/util';
 
 const paths = { ...HTTP2_SERVER_PATHS, ...CONTENT_LENGTH_PATHS };
-const port = HTTPS_PORT;
+
+const TEST_NAME = 'ContentLengthAttackServerHttp2InitialiserUnit';
+const port = getPort(TEST_NAME);
 
 // Prevent `/infinite` from actually running
 jest.useFakeTimers();

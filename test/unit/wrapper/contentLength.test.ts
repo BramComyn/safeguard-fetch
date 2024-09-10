@@ -9,14 +9,15 @@ import {
 } from '../../../src/attack-server/attack-server-factory/AttackServerHttp2SecureFactory';
 
 import { AttackServer } from '../../../src/attack-server/attack-server/AttackServer';
-import { HTTPS_PORT } from '../../../src/attack-server/attackServerConstants';
-import { secureServerOptions } from '../../../src/util';
+import { getPort, secureServerOptions } from '../../../src/util';
 import { setContentLengthHandler, setNoContentLengthHandler } from '../../../src/wrapper/contentLength';
+
+const TEST_NAME = 'contentLengthUnit';
+const port = getPort(TEST_NAME);
 
 describe('contentLength', (): void => {
   let client: ClientHttp2Session;
   let server: AttackServer<Http2SecureServer>;
-  let port: number;
 
   let headers: OutgoingHttpHeaders;
   let request: ClientHttp2Stream;
@@ -24,8 +25,6 @@ describe('contentLength', (): void => {
   beforeAll((): void => {
     const factory = new AttackServerHttp2SecureFactory();
     const initialiser = new ContentLengthAttackServerHttp2Initialiser();
-
-    port = HTTPS_PORT;
 
     server = new AttackServer<Http2SecureServer>(port, factory, initialiser, secureServerOptions);
     server.start();
