@@ -5,6 +5,10 @@ import type { ResponseGenerator } from './ResponseGenerator';
 
 /**
  * A generator class that will generate malformed responses for attack servers
+ *
+ * @member actualSize - the actual size of the response
+ * @member contentLength - the content length advertised in the response
+ * @method generateResponse - generates a response with the specified size and content length
  */
 export class AttackResponseGenerator implements ResponseGenerator {
   private readonly actualSize: number;

@@ -2,6 +2,8 @@ import type { Server } from 'node:net';
 
 /**
  * Interface for server factories
+ *
+ * @method createServer - creates a server of the desired type
  */
 export interface AttackServerFactory<T extends Server> {
   /**

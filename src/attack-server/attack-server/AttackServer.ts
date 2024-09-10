@@ -7,15 +7,25 @@ import type { AttackServerInitialiser } from '../attack-server-initialiser/Attac
 
 /**
  * An attack server for testing purposes
- * port: the port the server will listen to
- * server: the attacking server
- * startServer: starts the server and makes it listen to the defined port
+ *
+ * @member port - the port the server will listen to
+ * @member server - the attacking server
+ * @member started - whether the server has been started
+ * @method startServer - starts the server and makes it listen to the defined port
  */
 export class AttackServer<T extends Server> {
   private readonly port: number;
   protected readonly server: T;
   protected started = false;
 
+  /**
+   * Creates a new instance of the attack server
+   *
+   * @param port - the desired port to start the server on
+   * @param attackServerFactory - the factory to create the server
+   * @param attackServerInitialiser - the initialiser to initialise the server
+   * @param options - options to pass to the server factory
+   */
   public constructor(
     port: number,
     attackServerFactory: AttackServerFactory<T>,

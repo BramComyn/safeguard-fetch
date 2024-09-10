@@ -2,6 +2,8 @@ import type { Server } from 'node:net';
 
 /**
  * Interface for initialising the attack server.
+ *
+ * @method intialize - initialises the server with the necessary event listeners
  */
 export interface AttackServerInitialiser<T extends Server> {
   /**

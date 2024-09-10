@@ -8,7 +8,7 @@ import type { AttackServerInitialiser } from './AttackServerInitialiser';
 const paths = { ...HTTP_SERVER_PATHS, ...CONTENT_LENGTH_PATHS } as const;
 
 /**
- * A class for initialising an HTTP/1.1 attack server.
+ * Initialises the attack server with the necessary event listeners for the `content-length` attack over HTTP/1.1
  */
 export class ContentLengthAttackServerHttpInitialiser implements AttackServerInitialiser<Server> {
   public intialize(server: Server): void {
