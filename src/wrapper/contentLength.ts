@@ -11,7 +11,7 @@ import { once } from 'node:events';
 export async function setContentLengthHandler(
   request: ClientHttp2Stream,
   contentLengthHandler: (request: ClientHttp2Stream, headers: IncomingHttpHeaders) => void,
-): Promise<ClientHttp2Stream> {
+): Promise<void> {
   /**
    * We have to use this `await once(...)`,
    * because otherwise it would be possible that the request is already closed
@@ -23,8 +23,6 @@ export async function setContentLengthHandler(
   if (contentLengthString !== undefined) {
     contentLengthHandler(request, responseHeaders);
   }
-
-  return request;
 }
 
 /**
@@ -37,7 +35,7 @@ export async function setContentLengthHandler(
 export async function setNoContentLengthHandler(
   request: ClientHttp2Stream,
   noContentLengthHandler: (request: ClientHttp2Stream, headers: IncomingHttpHeaders) => void,
-): Promise<ClientHttp2Stream> {
+): Promise<void> {
   /**
    * We have to use this `await once(...)`,
    * because otherwise it would be possible that the request is already closed
@@ -49,6 +47,4 @@ export async function setNoContentLengthHandler(
   if (contentLengthString === undefined) {
     noContentLengthHandler(request, responseHeaders);
   }
-
-  return request;
 }

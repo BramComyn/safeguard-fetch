@@ -13,7 +13,7 @@ import { once } from 'node:events';
 export async function setRedirectHandler(
   request: ClientHttp2Stream,
   redirectHandler: (request: ClientHttp2Stream, headers: IncomingHttpHeaders) => void,
-): Promise<ClientHttp2Stream> {
+): Promise<void> {
   /**
    * We have to use this `await once(...)`,
    * because otherwise it would be possible that the request is already closed
@@ -25,6 +25,4 @@ export async function setRedirectHandler(
   if (status !== 0 && status >= 300 && status < 400) {
     redirectHandler(request, responseHeaders);
   }
-
-  return request;
 }
