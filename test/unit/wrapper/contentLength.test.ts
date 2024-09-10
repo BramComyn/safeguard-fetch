@@ -36,6 +36,7 @@ describe('contentLength', (): void => {
   });
 
   afterEach((): void => {
+    request.close();
     client.close();
   });
 
