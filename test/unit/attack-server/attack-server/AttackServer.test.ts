@@ -7,6 +7,11 @@ import type {
   AttackServerInitialiser,
 } from '../../../../src/attack-server/attack-server-initialiser/AttackServerInitialiser';
 
+import { getPort } from '../../../../src/util';
+
+const TEST_NAME = 'AttackServerUnit';
+const port = getPort(TEST_NAME);
+
 // An attack server for testing purposes
 class DummyAttackServer extends AttackServer<Server> {
   public constructor(
@@ -38,11 +43,11 @@ describe('AttackServer', (): any => {
   });
 
   it('should create a server using the factory.', (): any => {
-    const attackServer = new DummyAttackServer(8080, factory, initialiser);
+    const attackServer = new DummyAttackServer(port, factory, initialiser);
     attackServer.start();
 
     expect(factory.createServer).toHaveBeenCalledWith({});
     expect(factory.createServer).toHaveBeenCalledTimes(1);
-    expect(server.listen).toHaveBeenCalledWith(8080);
+    expect(server.listen).toHaveBeenCalledWith(port);
   });
 });

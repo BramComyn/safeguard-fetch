@@ -6,7 +6,6 @@ import {
 } from '../../../src/attack-server/attack-server-factory/AttackServerHttp2SecureFactory';
 
 import {
-  HTTPS_PORT,
   NON_MALICIOUS_REDIRECT_PATH,
   STD_MALICIOUS_REDIRECT_PATH,
 } from '../../../src/attack-server/attackServerConstants';
@@ -17,12 +16,14 @@ import {
 
 import { AttackServer } from '../../../src/attack-server/attack-server/AttackServer';
 import { setRedirectHandler } from '../../../src/wrapper/redirect';
-import { secureServerOptions } from '../../../src/util';
+import { getPort, secureServerOptions } from '../../../src/util';
+
+const TEST_NAME = 'redirectUnit';
+const port = getPort(TEST_NAME);
 
 describe('setRedirectHandler', (): void => {
   let redirectHandler: jest.Mock;
   let server: AttackServer<Http2SecureServer>;
-  let port: number;
 
   let client: ClientHttp2Session;
   let headers: OutgoingHttpHeaders;
@@ -31,8 +32,6 @@ describe('setRedirectHandler', (): void => {
   beforeAll((): void => {
     const factory = new AttackServerHttp2SecureFactory();
     const initialiser = new RedirectAttackServerHttp2Initialiser();
-
-    port = HTTPS_PORT;
 
     server = new AttackServer<Http2SecureServer>(port, factory, initialiser, secureServerOptions);
     server.start();

@@ -8,14 +8,17 @@ import {
 } from '../../../../src/attack-server/attack-server-initialiser/RedirectAttackServerHttp2Initialiser';
 
 import { AttackServer } from '../../../../src/attack-server/attack-server/AttackServer';
-import { HTTPS_PORT, MALICIOUS_REDIRECT_PATHS } from '../../../../src/attack-server/attackServerConstants';
+import { MALICIOUS_REDIRECT_PATHS } from '../../../../src/attack-server/attackServerConstants';
 
 import type {
   AttackServerHttp2SecureFactory,
 } from '../../../../src/attack-server/attack-server-factory/AttackServerHttp2SecureFactory';
+import { getPort } from '../../../../src/util';
 
 const paths = MALICIOUS_REDIRECT_PATHS;
-const port = HTTPS_PORT;
+
+const TEST_NAME = 'RedirectAttackServerHttp2InitialiserUnit';
+const port = getPort(TEST_NAME);
 
 describe('RedirectAttackServerHttp2Initialiser', (): any => {
   let initialiser: RedirectAttackServerHttp2Initialiser;

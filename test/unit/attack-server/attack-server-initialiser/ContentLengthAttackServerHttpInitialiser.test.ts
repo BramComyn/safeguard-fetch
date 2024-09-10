@@ -9,13 +9,16 @@ import {
 
 import { CONTENT_LENGTH_PATHS, HTTP_SERVER_PATHS } from '../../../../src/attack-server/attackServerConstants';
 import { AttackServer } from '../../../../src/attack-server/attack-server/AttackServer';
+import { getPort } from '../../../../src/util';
 
 import type {
   AttackServerHttpFactory,
 } from '../../../../src/attack-server/attack-server-factory/AttackServerHttpFactory';
 
 const paths = { ...HTTP_SERVER_PATHS, ...CONTENT_LENGTH_PATHS };
-const port = 8080;
+
+const TEST_NAME = 'ContentLengthAttackServerHttpInitialiserUnit';
+const port = getPort(TEST_NAME);
 
 // Prevent `/infinite` from actually running
 jest.useFakeTimers();
