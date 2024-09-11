@@ -7,7 +7,7 @@ import type { CustomResponseEventHandler } from './CustomResponseEventHandler';
 export class AllowedRedirectDetector implements CustomResponseEventHandler {
   public constructor(private readonly allowed: string[]) {}
 
-  public async handle(request: ClientHttp2Stream, headers: IncomingHttpHeaders): void {
+  public handle(request: ClientHttp2Stream, headers: IncomingHttpHeaders): void {
     const status = Number.parseInt(headers[':status'] as string | undefined ?? '0', 10);
     if (status !== 0 && status >= 300 && status < 400) {
       const location = headers.location;

@@ -12,7 +12,7 @@ import type { Socket } from 'node:net';
 import type { TLSSocket } from 'node:tls';
 
 import type { CustomRequestEventHandler } from '../handler/CustomRequestEventHandler';
-import type { Http2RequestEventKeys, Http2RequestEventTypes } from '../attack-server/attackServerConstants';
+import type { Http2RequestEventArgumentTypes, Http2RequestEvents } from '../attack-server/attackServerConstants';
 import { HTTP2_REQUEST_EVENTS } from '../attack-server/attackServerConstants';
 
 /**
@@ -30,7 +30,9 @@ export class SafeguardRequester {
   public constructor(
     // TODO [2024-09-11]: add type
     // private clientEventHandlers: any[] = [],
-    private readonly requestEventHandlers: Partial<Record<Http2RequestEventKeys, CustomRequestEventHandler[]>> = {},
+    private readonly requestEventHandlers:
+    Partial<Record<Http2RequestEvents, CustomRequestEventHandler<Http2RequestEvents>[]>>
+    = {},
   ) {}
 
   /**
@@ -88,7 +90,7 @@ export class SafeguardRequester {
     // For all possible events
     for (const event of HTTP2_REQUEST_EVENTS) {
       // Set all the handlers for that event, specifying the event type instead of using any
-      request.on(event, (...args: Http2RequestEventTypes[typeof event]): void => {
+      request.on(event, (...args: Http2RequestEventArgumentTypes[typeof event]): void => {
         for (const handler of this.requestEventHandlers[event] ?? []) {
           handler.handle(request, ...args);
         }

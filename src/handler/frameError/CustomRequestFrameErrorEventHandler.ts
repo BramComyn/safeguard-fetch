@@ -4,7 +4,7 @@ import type { CustomRequestEventHandler } from '../CustomRequestEventHandler';
 /**
  * Interface for custom event handlers that handle `frameError` events for request streams.
  */
-export interface CustomRequestFrameErrorEventHandler extends CustomRequestEventHandler {
+export interface CustomRequestFrameErrorEventHandler extends CustomRequestEventHandler<'frameError'> {
   /**
    * Handles the frame error event for a request stream.
    *

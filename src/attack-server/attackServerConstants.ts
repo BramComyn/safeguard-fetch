@@ -60,21 +60,28 @@ export type Http2RequestEventKeys = typeof HTTP2_REQUEST_EVENTS[number];
 /**
  * The types of the arguments provided when the given event is emitted.
  */
-export type Http2RequestEventTypes = {
+export type Http2RequestEventArgumentTypes = {
   close: [];
   error: [ Error ];
   frameError: [ number, number, number ];
   timeout: [];
   ready: [];
   aborted: [];
-  trailers: [ IncomingHttpHeaders ];
-  wantTrailers: [ IncomingHttpHeaders, number ];
+  trailers: [ IncomingHttpHeaders, number ];
+  wantTrailers: [];
   continue: [];
   headers: [ IncomingHttpHeaders, number ];
   push: [ IncomingHttpHeaders, number ];
   response: [ IncomingHttpHeaders, number ];
   data: [ Buffer ];
 };
+
+/**
+ * Possible events emitted to a request stream.
+ */
+export type Http2RequestEvents = keyof Http2RequestEventArgumentTypes;
+export type Http2RequestEventEmptyArgumentEvents =
+  'close' | 'timeout' | 'ready' | 'aborted' | 'wantTrailers' | 'continue';
 
 // Attack server paths
 

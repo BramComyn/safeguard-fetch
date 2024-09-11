@@ -4,7 +4,7 @@ import type { CustomRequestEventHandler } from '../CustomRequestEventHandler';
 /**
  * Interface for custom event handlers that handle `data` events.
  */
-export interface CustomDataEventHandler extends CustomRequestEventHandler {
+export interface CustomDataEventHandler extends CustomRequestEventHandler<'data'> {
   /**
    * Handles the `data` event.
    *

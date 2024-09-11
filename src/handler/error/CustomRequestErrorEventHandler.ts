@@ -4,7 +4,7 @@ import type { CustomRequestEventHandler } from '../CustomRequestEventHandler';
 /**
  * Interface for custom event handlers that handle `error` events for request streams.
  */
-export interface CustomRequestErrorEventHandler extends CustomRequestEventHandler {
+export interface CustomRequestErrorEventHandler extends CustomRequestEventHandler<'error'> {
   /**
    * Handles the error event for a request stream.
    *
