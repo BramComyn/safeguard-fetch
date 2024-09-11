@@ -1,5 +1,5 @@
 import type { ClientHttp2Stream } from 'node:http2';
-import type { Http2RequestEventArgumentTypes, Http2RequestEvents } from '../attack-server/attackServerConstants';
+import type { Http2RequestEventArgumentTypes, Http2RequestEvents } from './eventConstants';
 
 /**
  * Interface for any of the custom event handlers.

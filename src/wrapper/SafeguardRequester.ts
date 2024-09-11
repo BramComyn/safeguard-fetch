@@ -12,7 +12,7 @@ import type { Socket } from 'node:net';
 import type { TLSSocket } from 'node:tls';
 
 import type { RequestEventHandler } from '../handler/RequestEventHandler';
-import type { Http2RequestEvents } from '../attack-server/attackServerConstants';
+import type { Http2RequestEvents } from '../handler/eventConstants';
 
 type HandlerMap = {[K in Http2RequestEvents]?: RequestEventHandler<K>[] };
 
