@@ -19,8 +19,9 @@ export const NON_MALICIOUS_REDIRECT_PATH = '/non-malicious-redirect';
 export const MALICIOUS_REDIRECT_URL = 'https://malicious-redirect.org:666/';
 export const NON_MALICIOUS_REDIRECT_URL = 'https://non-malicious-redirect.org:666/';
 
-// Possible events
-
+/**
+ * Possible events emitted to a client session.
+ */
 export const HTTP2_CLIENT_EVENTS = [
   'connect',
   'close',
@@ -34,9 +35,11 @@ export const HTTP2_CLIENT_EVENTS = [
   'altsvc',
   'origin',
 ] as const;
-
 export type Http2ClientEventKeys = typeof HTTP2_CLIENT_EVENTS[number];
 
+/**
+ * Possible events emitted to a request stream.
+ */
 export const HTTP2_REQUEST_EVENTS = [
   'close',
   'error',
@@ -52,9 +55,11 @@ export const HTTP2_REQUEST_EVENTS = [
   'response',
   'data',
 ] as const;
-
 export type Http2RequestEventKeys = typeof HTTP2_REQUEST_EVENTS[number];
 
+/**
+ * The types of the arguments provided when the given event is emitted.
+ */
 export type Http2RequestEventTypes = {
   close: [];
   error: [ Error ];

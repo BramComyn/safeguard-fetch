@@ -14,6 +14,6 @@ export interface CustomRequestEventHandler {
    */
   handle: (
     request: ClientHttp2Stream,
-    ...args: Http2RequestEventTypes[Http2RequestEventKeys]
+    ...args: Http2RequestEventTypes[Http2RequestEventKeys][]
   ) => void;
 }
