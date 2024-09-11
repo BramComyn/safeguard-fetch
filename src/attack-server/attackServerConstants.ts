@@ -1,4 +1,4 @@
-import type { OutgoingHttpHeaders } from 'node:http2';
+import type { IncomingHttpHeaders, OutgoingHttpHeaders } from 'node:http2';
 import type { ResponseGenerator } from '../response-generator/ResponseGenerator';
 import { AttackResponseGenerator } from '../response-generator/AttackResponseGenerator';
 
@@ -18,6 +18,58 @@ export const STD_MALICIOUS_REDIRECT_PATH = '/malicious-redirect';
 export const NON_MALICIOUS_REDIRECT_PATH = '/non-malicious-redirect';
 export const MALICIOUS_REDIRECT_URL = 'https://malicious-redirect.org:666/';
 export const NON_MALICIOUS_REDIRECT_URL = 'https://non-malicious-redirect.org:666/';
+
+// Possible events
+
+export const HTTP2_CLIENT_EVENTS = [
+  'connect',
+  'close',
+  'error',
+  'frameError',
+  'timeout',
+  'goaway',
+  'localSettings',
+  'remoteSettings',
+  'ping',
+  'altsvc',
+  'origin',
+] as const;
+
+export type Http2ClientEventKeys = typeof HTTP2_CLIENT_EVENTS[number];
+
+export const HTTP2_REQUEST_EVENTS = [
+  'close',
+  'error',
+  'frameError',
+  'timeout',
+  'ready',
+  'aborted',
+  'trailers',
+  'wantTrailers',
+  'continue',
+  'headers',
+  'push',
+  'response',
+  'data',
+] as const;
+
+export type Http2RequestEventKeys = typeof HTTP2_REQUEST_EVENTS[number];
+
+export type Http2RequestEventTypes = {
+  close: [];
+  error: [ Error ];
+  frameError: [ number, number, number ];
+  timeout: [];
+  ready: [];
+  aborted: [];
+  trailers: [ IncomingHttpHeaders ];
+  wantTrailers: [ IncomingHttpHeaders, number ];
+  continue: [];
+  headers: [ IncomingHttpHeaders, number ];
+  push: [ IncomingHttpHeaders, number ];
+  response: [ IncomingHttpHeaders, number ];
+  data: [ Buffer ];
+};
 
 // Attack server paths
 
