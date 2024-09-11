@@ -11,9 +11,10 @@ import { connect } from 'node:http2';
 import type { Socket } from 'node:net';
 import type { TLSSocket } from 'node:tls';
 
-import type { CustomRequestEventHandler } from '../handler/CustomRequestEventHandler';
-import type { Http2RequestEventArgumentTypes, Http2RequestEvents } from '../attack-server/attackServerConstants';
-import { HTTP2_REQUEST_EVENTS } from '../attack-server/attackServerConstants';
+import type { RequestEventHandler } from '../handler/RequestEventHandler';
+import type { Http2RequestEvents } from '../attack-server/attackServerConstants';
+
+type HandlerMap = {[K in Http2RequestEvents]?: RequestEventHandler<K>[] };
 
 /**
  * A class that wraps around the `http2` module to provide a custom request function
@@ -28,37 +29,36 @@ import { HTTP2_REQUEST_EVENTS } from '../attack-server/attackServerConstants';
  */
 export class SafeguardRequester {
   public constructor(
-    // TODO [2024-09-11]: add type
-    // private clientEventHandlers: any[] = [],
-    private readonly requestEventHandlers:
-    Partial<Record<Http2RequestEvents, CustomRequestEventHandler<Http2RequestEvents>[]>>
-    = {},
+    // TODO [2024-09-11]: add type and implementations
+    // protected clientEventHandlers: any[] = [],
+    protected readonly requestEventHandlers: HandlerMap = {},
   ) {}
 
   /**
    * Custom request function that connects to the authority and returns the request stream,
    * while attaching the necessary handlers up front.
    *
-   * @param authority - authority to connect to
-   * @param sessionOptions - options for the session
-   * @param listener - one-time listener on the `connect` event
-   * @param requestHeaders - headers to send with the request
-   * @param requestOptions - options for the request
+   * @param configuration - configuration for the request
+   * @param configuration.authority - authority to connect to
+   * @param configuration.sessionOptions - options for the session
+   * @param configuration.listener - one-time listener on the `connect` event
+   * @param configuration.requestHeaders - headers to send with the request
+   * @param configuration.requestOptions - options for the request
    *
    * @returns - a new `ClientHttp2Session`
    */
-  public async requestOnNew(
-    authority: string | URL,
-    sessionOptions?: ClientSessionOptions | SecureClientSessionOptions,
-    listener?: (session: ClientHttp2Session, socket: Socket | TLSSocket) => void,
-    requestHeaders?: OutgoingHttpHeaders,
-    requestOptions?: ClientSessionRequestOptions,
-  ): Promise<ClientHttp2Stream> {
-    const client = connect(authority, sessionOptions, listener);
+  public async requestNew(configuration: {
+    authority: string | URL;
+    sessionOptions?: ClientSessionOptions | SecureClientSessionOptions;
+    listener?: (session: ClientHttp2Session, socket: Socket | TLSSocket) => void;
+    requestHeaders?: OutgoingHttpHeaders;
+    requestOptions?: ClientSessionRequestOptions;
+  }): Promise<ClientHttp2Stream> {
+    const client = connect(configuration.authority, configuration.sessionOptions, configuration.listener);
 
     // TODO [2024-09-13]: Add session handlers
 
-    return this.requestOnExisting(client, requestHeaders, requestOptions);
+    return this.request(client, configuration.requestHeaders, configuration.requestOptions);
   }
 
   /**
@@ -69,7 +69,7 @@ export class SafeguardRequester {
    *
    * @returns - a new `ClientHttp2Stream`
    */
-  public async requestOnExisting(
+  public async request(
     session: ClientHttp2Session,
     requestHeaders?: OutgoingHttpHeaders,
     requestOptions?: ClientSessionRequestOptions,
@@ -87,14 +87,15 @@ export class SafeguardRequester {
    * @param request - the request stream to add the handlers to
    */
   private async setRequestEventHandlers(request: ClientHttp2Stream): Promise<void> {
-    // For all possible events
-    for (const event of HTTP2_REQUEST_EVENTS) {
-      // Set all the handlers for that event, specifying the event type instead of using any
-      request.on(event, (...args: Http2RequestEventArgumentTypes[typeof event]): void => {
-        for (const handler of this.requestEventHandlers[event] ?? []) {
-          handler.handle(request, ...args);
+    for (const [ event, handlers ] of Object.entries(this.requestEventHandlers)) {
+      if (handlers) {
+        for (const handler of handlers) {
+          request.on(event, (...args): void => {
+            // eslint-disable-next-line ts/no-unsafe-argument
+            handler.handle(request, ...args);
+          });
         }
-      });
+      }
     }
   }
 }

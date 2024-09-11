@@ -1,10 +1,10 @@
 import type { ClientHttp2Stream } from 'node:http2';
-import type { CustomRequestEventHandler } from '../CustomRequestEventHandler';
+import type { RequestEventHandler } from '../RequestEventHandler';
 
 /**
  * Interface for custom event handlers that handle `data` events.
  */
-export interface CustomDataEventHandler extends CustomRequestEventHandler<'data'> {
+export interface DataEventHandler extends RequestEventHandler<'data'> {
   /**
    * Handles the `data` event.
    *

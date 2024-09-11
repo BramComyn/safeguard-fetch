@@ -1,12 +1,12 @@
 import type { ClientHttp2Stream } from 'node:http2';
-import type { CustomRequestEventHandler } from '../CustomRequestEventHandler';
+import type { RequestEventHandler } from '../RequestEventHandler';
 import type { Http2RequestEventArgumentTypes } from '../../attack-server/attackServerConstants';
 
 /**
  * Interface for custom event handlers that handle `response` events.
  */
-export interface CustomHeadersEventHandler<K extends 'headers' | 'trailers' | 'push' | 'response'>
-  extends CustomRequestEventHandler<'headers' | 'trailers' | 'push' | 'response'> {
+export interface HeadersEventHandler<K extends 'headers' | 'trailers' | 'push' | 'response'>
+  extends RequestEventHandler<'headers' | 'trailers' | 'push' | 'response'> {
   /**
    * Handles the `response` event for the request stream.
    *

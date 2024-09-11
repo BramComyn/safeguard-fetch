@@ -1,4 +1,4 @@
-import type { CustomHeadersEventHandler } from '../headers/CustomHeadersEventHandler';
+import type { HeadersEventHandler } from '../headers/HeadersEventHandler';
 
 /**
  * Interface for custom event handlers that handle push events.
@@ -6,4 +6,4 @@ import type { CustomHeadersEventHandler } from '../headers/CustomHeadersEventHan
  * This is entirely the same as the `CustomHeadersEventHandler` interface, but
  * it's here for the sake of consistency and to make it easier to understand
  */
-export interface CustomPushEventHandler extends CustomHeadersEventHandler<'push'> {}
+export interface PushEventHandler extends HeadersEventHandler<'push'> {}

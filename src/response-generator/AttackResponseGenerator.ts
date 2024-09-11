@@ -11,8 +11,8 @@ import type { ResponseGenerator } from './ResponseGenerator';
  * @method generateResponse - generates a response with the specified size and content length
  */
 export class AttackResponseGenerator implements ResponseGenerator {
-  private readonly actualSize: number;
-  private readonly contentLength: number | null;
+  protected readonly actualSize: number;
+  protected readonly contentLength: number | null;
 
   public constructor(actualSize: number, contentLength: number | null) {
     this.actualSize = actualSize;

@@ -1,9 +1,9 @@
 import type { ClientHttp2Stream } from 'node:http2';
-import type { CustomRequestEventHandler } from '../CustomRequestEventHandler';
+import type { RequestEventHandler } from '../RequestEventHandler';
 
 /**
  * Interface for custom event handlers that handle the `close` event.
  */
-export interface CustomRequestCloseEventHandler extends CustomRequestEventHandler<'close'> {
+export interface RequestCloseEventHandler extends RequestEventHandler<'close'> {
   handle: (request: ClientHttp2Stream) => void;
 }

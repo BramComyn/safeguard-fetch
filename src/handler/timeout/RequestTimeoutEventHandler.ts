@@ -1,9 +1,9 @@
 import type { ClientHttp2Stream } from 'node:http2';
-import type { CustomRequestEventHandler } from '../CustomRequestEventHandler';
+import type { RequestEventHandler } from '../RequestEventHandler';
 
 /**
  * Interface for custom event handlers that handle the `timeout` event.
  */
-export interface CustomRequestTimeoutEventHandler extends CustomRequestEventHandler<'timeout'> {
+export interface RequestTimeoutEventHandler extends RequestEventHandler<'timeout'> {
   handle: (request: ClientHttp2Stream) => void;
 }

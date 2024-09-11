@@ -1,10 +1,11 @@
 import type { ClientHttp2Stream } from 'node:http2';
-import type { CustomRequestEventHandler } from '../CustomRequestEventHandler';
+import type { RequestEventHandler } from '../RequestEventHandler';
 
 /**
  * Interface for custom event handlers that handle `frameError` events for request streams.
  */
-export interface CustomRequestFrameErrorEventHandler extends CustomRequestEventHandler<'frameError'> {
+export interface RequestFrameErrorHandler
+  extends RequestEventHandler<'frameError'> {
   /**
    * Handles the frame error event for a request stream.
    *

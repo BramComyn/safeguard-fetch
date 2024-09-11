@@ -1,4 +1,4 @@
-import type { CustomHeadersEventHandler } from '../headers/CustomHeadersEventHandler';
+import type { HeadersEventHandler } from '../headers/HeadersEventHandler';
 
 /**
  * Interface for the custom event handlers that handle trailers.
@@ -6,4 +6,4 @@ import type { CustomHeadersEventHandler } from '../headers/CustomHeadersEventHan
  * This is entirely the same as the `CustomHeadersEventHandler` interface, but
  * it's here for the sake of consistency and to make it easier to understand
  */
-export interface CustomTrailersEventHandler extends CustomHeadersEventHandler<'trailers'> {}
+export interface TrailersEventHandler extends HeadersEventHandler<'trailers'> {}

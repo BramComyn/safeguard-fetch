@@ -5,7 +5,7 @@ import type { Http2RequestEventArgumentTypes, Http2RequestEvents } from '../atta
  * Interface for any of the custom event handlers.
  * Most generic interface.
  */
-export interface CustomRequestEventHandler<K extends Http2RequestEvents> {
+export interface RequestEventHandler<K extends Http2RequestEvents> {
   /**
    * Handles the request stream and the headers that were responded.
    *

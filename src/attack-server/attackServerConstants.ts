@@ -22,6 +22,7 @@ export const NON_MALICIOUS_REDIRECT_URL = 'https://non-malicious-redirect.org:66
 /**
  * Possible events emitted to a client session.
  */
+// TODO [2024-09-11]: add type
 export const HTTP2_CLIENT_EVENTS = [
   'connect',
   'close',
@@ -35,12 +36,17 @@ export const HTTP2_CLIENT_EVENTS = [
   'altsvc',
   'origin',
 ] as const;
-export type Http2ClientEventKeys = typeof HTTP2_CLIENT_EVENTS[number];
+export type Http2ClientEventKey = typeof HTTP2_CLIENT_EVENTS[number];
+
+/**
+ * The types of the arguments provided when the given event is emitted.
+ */
+// TODO [2024-09-11]
 
 /**
  * Possible events emitted to a request stream.
  */
-export const HTTP2_REQUEST_EVENTS = [
+export const HTTP2_REQUEST_EVENTS: Http2RequestEventKey[] = [
   'close',
   'error',
   'frameError',
@@ -55,7 +61,7 @@ export const HTTP2_REQUEST_EVENTS = [
   'response',
   'data',
 ] as const;
-export type Http2RequestEventKeys = typeof HTTP2_REQUEST_EVENTS[number];
+export type Http2RequestEventKey = keyof Http2RequestEventArgumentTypes;
 
 /**
  * The types of the arguments provided when the given event is emitted.
