@@ -1,12 +1,10 @@
 import { AttackResponseGenerator } from '../../../src/response-generator/AttackResponseGenerator';
 
-jest.useFakeTimers();
-jest.spyOn(globalThis, 'setInterval');
-
 const actualSizesAndContentLengths = {
   0: 0,
   1: 0,
   10: 1,
+  50: null,
   100: 10,
   1000: 100,
   10000: 1000,
@@ -25,17 +23,15 @@ describe('AttackResponseGenerator', (): any => {
 
   it.each(Object.entries(actualSizesAndContentLengths))(
     'should generate a response with an actual size of %i and a content length of %i.',
-    (actualSizeString, contentLength): void => {
+    async(actualSizeString, contentLength): Promise<void> => {
       const actualSize = Number.parseInt(actualSizeString, 10);
       responseGenerator = new AttackResponseGenerator(actualSize, contentLength);
 
       const response = responseGenerator.generateResponse();
 
-      expect(setInterval).toHaveBeenCalledTimes(actualSize === Infinity ? 1 : 0);
       expect(response).toHaveProperty('headers');
-
       expect(response.headers).toHaveProperty('content-type', 'text/plain');
-      expect(response.headers['content-length']).toBe(contentLength);
+      expect(response.headers['content-length']).toBe(contentLength ?? undefined);
 
       expect(response).toHaveProperty('body');
       expect(response.body).toBeDefined();
@@ -46,6 +42,10 @@ describe('AttackResponseGenerator', (): any => {
 
         // eslint-disable-next-line jest/no-conditional-expect
         expect(bodyString).toHaveLength(actualSize);
+      } else {
+        // Quick hack, because `await once(...)`` keeps the test active indefinitely
+        // eslint-disable-next-line jest/no-conditional-expect
+        expect(response.body.read()).toEqual(Buffer.from('a'));
       }
     },
   );

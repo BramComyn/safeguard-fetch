@@ -15,8 +15,8 @@ import type { ClientEventHandler } from '../handler/ClientEventHandler';
 import type { RequestEventHandler } from '../handler/RequestEventHandler';
 import type { Http2ClientEvent, Http2RequestEvent } from '../handler/eventConstants';
 
-type ClientEventHandlerMap = {[K in Http2ClientEvent]?: ClientEventHandler<K>[] };
-type RequestEventHandlerMap = {[K in Http2RequestEvent]?: RequestEventHandler<K>[] };
+export type ClientEventHandlerMap = {[K in Http2ClientEvent]?: ClientEventHandler<K>[] };
+export type RequestEventHandlerMap = {[K in Http2RequestEvent]?: RequestEventHandler<K>[] };
 
 /**
  * A class that wraps around the `http2` module to provide a custom request function
@@ -25,9 +25,12 @@ type RequestEventHandlerMap = {[K in Http2RequestEvent]?: RequestEventHandler<K>
  * @member redirectHandlers - handlers for redirect responses
  * @member contentLengthHandlers - handlers for responses with content length
  * @member noContentLengthHandlers - handlers for responses without content length header
- * @method requestOnNew - custom request function that connects to the authority and returns the request stream
- * @method requestOnExisting - custom request function that initiates a new request stream on an existing session
- * @method addHandler - adds a handler to the list of handlers that will be attached to the request stream
+ * @method connect - connects to the authority and returns a new `ClientHttp2Session`
+ * @method connectAndRequest - connects to the authority, initiates a new request on the given path
+ *  and returns a new `ClientHttp2Stream`
+ * @method request - initiates a new request stream on an existing session and returns a new `ClientHttp2Stream`.
+ * @method setClientEventHandlers - sets the necessary event handlers on the client session
+ * @method setRequestEventHandlers - sets the necessary event handlers on the request stream
  */
 export class SafeguardRequester {
   public constructor(
@@ -84,6 +87,8 @@ export class SafeguardRequester {
    * while attaching the necessary handlers up front.
    *
    * @param session - the session to initiate the request on
+   * @param requestHeaders - headers to send with the request
+   * @param requestOptions - options for the request
    *
    * @returns - a new `ClientHttp2Stream`
    */
@@ -99,8 +104,6 @@ export class SafeguardRequester {
 
   /**
    * Sets all the necessary event handlers on the client session.
-   *
-   * TODO [2024-09-13]: Test this
    *
    * @param client - the client session to add the handlers to
    */
@@ -121,8 +124,6 @@ export class SafeguardRequester {
   /**
    * Sets all the necessary event handlers on the request stream.
    *
-   * TODO [2024-09-13]: Test this
-   *
    * @param request - the request stream to add the handlers to
    */
   private setRequestEventHandlers(request: ClientHttp2Stream): void {
@@ -136,5 +137,37 @@ export class SafeguardRequester {
         }
       }
     }
+  }
+
+  /**
+   * Adds a new client event handler to the map.
+   *
+   * @param event - the event to add the handler to
+   * @param handler - the handler to add
+   *
+   * TODO [2024-09-13]: Test this
+   */
+  public addClientEventHandler<K extends Http2ClientEvent>(event: K, handler: ClientEventHandler<K>): void {
+    if (!this.clientEventHandlers[event]) {
+      this.clientEventHandlers[event] = [];
+    }
+
+    this.clientEventHandlers[event]?.push(handler);
+  }
+
+  /**
+   * Adds a new request event handler to the map.
+   *
+   * @param event - the event to add the handler to
+   * @param handler - the handler to add
+   *
+   * TODO [2024-09-13]: Test this
+   */
+  public addRequestEventHandler<K extends Http2RequestEvent>(event: K, handler: RequestEventHandler<K>): void {
+    if (!this.requestEventHandlers[event]) {
+      this.requestEventHandlers[event] = [];
+    }
+
+    this.requestEventHandlers[event]?.push(handler);
   }
 }
