@@ -1,30 +1,37 @@
-import type { IncomingHttpHeaders } from 'node:http2';
+import type { ClientHttp2Session, IncomingHttpHeaders, OutgoingHttpHeaders, Settings } from 'node:http2';
+import type { Socket } from 'node:net';
+import type { TLSSocket } from 'node:tls';
+
+/**
+ * The types of the arguments provided when the given event is emitted
+ * on a client session.
+ */
+export type Http2ClientEventArgumentTypes = {
+  connect: [ ClientHttp2Session, Socket | TLSSocket ];
+  close: [];
+  error: [ Error ];
+  frameError: [ number, number, number ];
+  timeout: [];
+  goaway: [ number, number, Buffer ];
+  localSettings: [ Settings ];
+  remoteSettings: [ Settings ];
+  ping: [ Buffer ];
+  altsvc: [ string, string, number ];
+  origin: [ string[] ];
+  stream: [ ClientHttp2Session, OutgoingHttpHeaders, number, (string | Buffer)[] ];
+};
+export type Http2ClientEventKey = keyof Http2ClientEventArgumentTypes;
+
 /**
  * Possible events emitted to a client session.
  */
-// TODO [2024-09-11]: add type
-export const HTTP2_CLIENT_EVENTS = [
-  'connect',
-  'close',
-  'error',
-  'frameError',
-  'timeout',
-  'goaway',
-  'localSettings',
-  'remoteSettings',
-  'ping',
-  'altsvc',
-  'origin',
-] as const;
-export type Http2ClientEventKey = typeof HTTP2_CLIENT_EVENTS[number];
+export type Http2ClientEvents = keyof Http2ClientEventArgumentTypes;
+export type Http2ClientEventEmptyArgumentEvents =
+  'close' | 'timeout';
 
 /**
- * The types of the arguments provided when the given event is emitted.
- */
-// TODO [2024-09-11]
-
-/**
- * The types of the arguments provided when the given event is emitted.
+ * The types of the arguments provided when the given event is emitted
+ * on a request stream.
  */
 export type Http2RequestEventArgumentTypes = {
   close: [];

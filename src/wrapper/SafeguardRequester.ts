@@ -11,10 +11,12 @@ import { connect } from 'node:http2';
 import type { Socket } from 'node:net';
 import type { TLSSocket } from 'node:tls';
 
+import type { ClientEventHandler } from '../handler/ClientEventHandler';
 import type { RequestEventHandler } from '../handler/RequestEventHandler';
-import type { Http2RequestEvents } from '../handler/eventConstants';
+import type { Http2ClientEvents, Http2RequestEvents } from '../handler/eventConstants';
 
-type HandlerMap = {[K in Http2RequestEvents]?: RequestEventHandler<K>[] };
+type ClientEventHandlerMap = {[K in Http2ClientEvents]?: ClientEventHandler<K>[] };
+type RequestEventHandlerMap = {[K in Http2RequestEvents]?: RequestEventHandler<K>[] };
 
 /**
  * A class that wraps around the `http2` module to provide a custom request function
@@ -29,10 +31,29 @@ type HandlerMap = {[K in Http2RequestEvents]?: RequestEventHandler<K>[] };
  */
 export class SafeguardRequester {
   public constructor(
-    // TODO [2024-09-11]: add type and implementations
-    // protected clientEventHandlers: any[] = [],
-    protected readonly requestEventHandlers: HandlerMap = {},
+    protected clientEventHandlers: ClientEventHandlerMap = {},
+    protected requestEventHandlers: RequestEventHandlerMap = {},
   ) {}
+
+  /**
+   * Connects to the authority and returns a new `ClientHttp2Session`.
+   * Attaches the necessary handlers up front.
+   *
+   * @param authority - the authority server to connect to
+   * @param sessionOptions - necessary HTTP2 session options
+   * @param listener - one-time listener on the `connect` event
+   *
+   * @returns - a new `ClientHttp2Session`
+   */
+  public connect(
+    authority: string | URL,
+    sessionOptions?: ClientSessionOptions | SecureClientSessionOptions,
+    listener?: (session: ClientHttp2Session, socket: Socket | TLSSocket) => void,
+  ): ClientHttp2Session {
+    const client = connect(authority, sessionOptions, listener);
+    this.setClientEventHandlers(client);
+    return client;
+  }
 
   /**
    * Custom request function that connects to the authority and returns the request stream,
@@ -47,17 +68,14 @@ export class SafeguardRequester {
    *
    * @returns - a new `ClientHttp2Session`
    */
-  public async requestNew(configuration: {
+  public connectAndRequest(configuration: {
     authority: string | URL;
     sessionOptions?: ClientSessionOptions | SecureClientSessionOptions;
     listener?: (session: ClientHttp2Session, socket: Socket | TLSSocket) => void;
     requestHeaders?: OutgoingHttpHeaders;
     requestOptions?: ClientSessionRequestOptions;
-  }): Promise<ClientHttp2Stream> {
-    const client = connect(configuration.authority, configuration.sessionOptions, configuration.listener);
-
-    // TODO [2024-09-13]: Add session handlers
-
+  }): ClientHttp2Stream {
+    const client = this.connect(configuration.authority, configuration.sessionOptions, configuration.listener);
     return this.request(client, configuration.requestHeaders, configuration.requestOptions);
   }
 
@@ -69,24 +87,45 @@ export class SafeguardRequester {
    *
    * @returns - a new `ClientHttp2Stream`
    */
-  public async request(
+  public request(
     session: ClientHttp2Session,
     requestHeaders?: OutgoingHttpHeaders,
     requestOptions?: ClientSessionRequestOptions,
-  ): Promise<ClientHttp2Stream> {
+  ): ClientHttp2Stream {
     const request = session.request(requestHeaders, requestOptions);
-    await this.setRequestEventHandlers(request);
+    this.setRequestEventHandlers(request);
     return request;
+  }
+
+  /**
+   * Sets all the necessary event handlers on the client session.
+   *
+   * TODO [2024-09-13]: Test this
+   *
+   * @param client - the client session to add the handlers to
+   */
+  private setClientEventHandlers(client: ClientHttp2Session): void {
+    for (const [ event, handlers ] of Object.entries(this.clientEventHandlers)) {
+      if (handlers) {
+        for (const handler of handlers) {
+          client.on(event, (...args): void => {
+            // Prevent the linter from burning me at the stake
+            // eslint-disable-next-line ts/no-unsafe-call, ts/no-explicit-any, ts/no-unsafe-member-access
+            (handler as any).handle(client, ...args);
+          });
+        }
+      }
+    }
   }
 
   /**
    * Sets all the necessary event handlers on the request stream.
    *
-   * TODO [2024-09-11]: Test this
+   * TODO [2024-09-13]: Test this
    *
    * @param request - the request stream to add the handlers to
    */
-  private async setRequestEventHandlers(request: ClientHttp2Stream): Promise<void> {
+  private setRequestEventHandlers(request: ClientHttp2Stream): void {
     for (const [ event, handlers ] of Object.entries(this.requestEventHandlers)) {
       if (handlers) {
         for (const handler of handlers) {

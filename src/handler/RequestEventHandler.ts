@@ -2,7 +2,7 @@ import type { ClientHttp2Stream } from 'node:http2';
 import type { Http2RequestEventArgumentTypes, Http2RequestEvents } from './eventConstants';
 
 /**
- * Interface for any of the custom event handlers.
+ * Interface for any of the custom request event handlers.
  * Most generic interface.
  */
 export interface RequestEventHandler<K extends Http2RequestEvents> {
