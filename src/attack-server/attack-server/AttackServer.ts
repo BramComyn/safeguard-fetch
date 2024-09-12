@@ -16,7 +16,7 @@ import type { AttackServerInitialiser } from '../attack-server-initialiser/Attac
 export class AttackServer<T extends Server> {
   protected readonly port: number;
   protected readonly server: T;
-  protected started = false;
+  protected _started = false;
 
   /**
    * Creates a new instance of the attack server
@@ -41,9 +41,9 @@ export class AttackServer<T extends Server> {
    * Starts the server and makes it listen to the defined port
    */
   public start(): void {
-    if (!this.started) {
+    if (!this._started) {
       this.server.listen(this.port);
-      this.started = !this.started;
+      this._started = !this._started;
     }
   }
 
@@ -51,9 +51,9 @@ export class AttackServer<T extends Server> {
    * Stops the server
    */
   public stop(): void {
-    if (this.started) {
+    if (this._started) {
       this.server.close();
-      this.started = !this.started;
+      this._started = !this._started;
     }
   }
 }

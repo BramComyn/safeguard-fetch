@@ -13,10 +13,10 @@ const paths = { ...HTTP_SERVER_PATHS, ...CONTENT_LENGTH_PATHS } as const;
 export class ContentLengthAttackServerHttpInitialiser implements AttackServerInitialiser<Server> {
   public intialize(server: Server): void {
     server.on('request', (req: IncomingMessage, res: ServerResponse): void => {
-      const path = req.url?.toString() ?? '/';
+      const path = req.url?.toString();
 
       // Check whether a valid path is requested
-      if (path in paths) {
+      if (path && path in paths) {
         const generator: ResponseGenerator = paths[path as keyof typeof paths]();
         const response: { headers: OutgoingHttpHeaders; body: Readable } =
           generator.generateResponse();

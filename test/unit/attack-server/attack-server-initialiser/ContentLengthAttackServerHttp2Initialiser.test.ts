@@ -70,7 +70,6 @@ describe('ContentLengthAttackServerInitialiser', (): any => {
     attackServer.start();
 
     server.emit('stream', stream, headers);
-
     expect(stream.respond).toHaveBeenCalled();
   });
 });

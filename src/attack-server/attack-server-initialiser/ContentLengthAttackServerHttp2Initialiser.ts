@@ -13,11 +13,10 @@ const paths = { ...HTTP2_SERVER_PATHS, ...CONTENT_LENGTH_PATHS } as const;
 export class ContentLengthAttackServerHttp2Initialiser implements AttackServerInitialiser<Http2Server> {
   public intialize(server: Http2Server): void {
     server.on('stream', (stream: ServerHttp2Stream, headers: IncomingHttpHeaders): void => {
-      // If headers or headers[':path'] is undefined, set path to '/'
-      const path = headers[':path']?.toString() ?? '/';
+      const path = headers[':path']?.toString();
 
       // Check whether a valid path is requested
-      if (path in paths) {
+      if (path && path in paths) {
         const generator: ResponseGenerator = paths[path as keyof typeof paths]();
         const response: { headers: OutgoingHttpHeaders; body: Readable } =
           generator.generateResponse();
