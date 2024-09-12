@@ -137,4 +137,36 @@ export class SafeguardRequester {
       }
     }
   }
+
+  /**
+   * Adds a new client event handler to the map.
+   *
+   * @param event - the event to add the handler to
+   * @param handler - the handler to add
+   *
+   * TODO [2024-09-13]: Test this
+   */
+  public addClientEventHandler<K extends Http2ClientEvent>(event: K, handler: ClientEventHandler<K>): void {
+    if (!this.clientEventHandlers[event]) {
+      this.clientEventHandlers[event] = [];
+    }
+
+    this.clientEventHandlers[event]?.push(handler);
+  }
+
+  /**
+   * Adds a new request event handler to the map.
+   *
+   * @param event - the event to add the handler to
+   * @param handler - the handler to add
+   *
+   * TODO [2024-09-13]: Test this
+   */
+  public addRequestEventHandler<K extends Http2RequestEvent>(event: K, handler: RequestEventHandler<K>): void {
+    if (!this.requestEventHandlers[event]) {
+      this.requestEventHandlers[event] = [];
+    }
+
+    this.requestEventHandlers[event]?.push(handler);
+  }
 }
