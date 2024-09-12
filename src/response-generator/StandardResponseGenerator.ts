@@ -11,7 +11,7 @@ import type { ResponseGenerator } from './ResponseGenerator';
  * @method generateResponse - generates a response with the specified message
  */
 export class StandardResponseGenerator implements ResponseGenerator {
-  private readonly message: string;
+  protected readonly message: string;
 
   public constructor(message: string) {
     this.message = message;

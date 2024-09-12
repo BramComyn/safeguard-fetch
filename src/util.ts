@@ -32,6 +32,8 @@ const TEST_NAME = [
   'StandardResponseGeneratorUnit',
   'contentLengthUnit',
   'redirectUnit',
+  'redirectHandlersUnit',
+  'wrappersIntegration',
 ] as const;
 
 /**

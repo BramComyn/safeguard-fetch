@@ -14,7 +14,7 @@ import type { AttackServerInitialiser } from '../attack-server-initialiser/Attac
  * @method startServer - starts the server and makes it listen to the defined port
  */
 export class AttackServer<T extends Server> {
-  private readonly port: number;
+  protected readonly port: number;
   protected readonly server: T;
   protected started = false;
 
