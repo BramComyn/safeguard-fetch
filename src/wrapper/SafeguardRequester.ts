@@ -13,10 +13,10 @@ import type { TLSSocket } from 'node:tls';
 
 import type { ClientEventHandler } from '../handler/ClientEventHandler';
 import type { RequestEventHandler } from '../handler/RequestEventHandler';
-import type { Http2ClientEvents, Http2RequestEvents } from '../handler/eventConstants';
+import type { Http2ClientEvent, Http2RequestEvent } from '../handler/eventConstants';
 
-type ClientEventHandlerMap = {[K in Http2ClientEvents]?: ClientEventHandler<K>[] };
-type RequestEventHandlerMap = {[K in Http2RequestEvents]?: RequestEventHandler<K>[] };
+type ClientEventHandlerMap = {[K in Http2ClientEvent]?: ClientEventHandler<K>[] };
+type RequestEventHandlerMap = {[K in Http2RequestEvent]?: RequestEventHandler<K>[] };
 
 /**
  * A class that wraps around the `http2` module to provide a custom request function

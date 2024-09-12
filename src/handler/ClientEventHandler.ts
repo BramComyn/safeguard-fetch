@@ -1,11 +1,11 @@
 import type { ClientHttp2Session } from 'node:http2';
-import type { Http2ClientEventArgumentTypes, Http2ClientEventKey } from './eventConstants';
+import type { Http2ClientEvent, Http2ClientEventArgumentTypes } from './eventConstants';
 
 /**
  * Interface for any of the custom client event handlers
  * Most generic interface.
  */
-export interface ClientEventHandler<K extends Http2ClientEventKey> {
+export interface ClientEventHandler<K extends Http2ClientEvent> {
   /**
    * Handles the client session and the headers that were responded.
    *
