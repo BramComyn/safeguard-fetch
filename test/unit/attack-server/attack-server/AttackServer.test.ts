@@ -21,16 +21,22 @@ class DummyAttackServer extends AttackServer<Server> {
   ) {
     super(port, attackServerFactory, attackServerInitialiser);
   }
+
+  public get started(): boolean {
+    return this._started;
+  }
 }
 
 describe('AttackServer', (): any => {
   let initialiser: jest.Mocked<AttackServerInitialiser<Server>>;
   let factory: jest.Mocked<AttackServerFactory<Server>>;
   let server: jest.Mocked<Server>;
+  let attackServer: DummyAttackServer;
 
   beforeEach((): any => {
     server = {
       listen: jest.fn(),
+      close: jest.fn(),
     } as any;
 
     factory = {
@@ -40,14 +46,36 @@ describe('AttackServer', (): any => {
     initialiser = {
       intialize: jest.fn(),
     };
+
+    attackServer = new DummyAttackServer(port, factory, initialiser);
   });
 
   it('should create a server using the factory.', (): any => {
-    const attackServer = new DummyAttackServer(port, factory, initialiser);
-    attackServer.start();
-
     expect(factory.createServer).toHaveBeenCalledWith({});
     expect(factory.createServer).toHaveBeenCalledTimes(1);
+
+    expect(initialiser.intialize).toHaveBeenCalledWith(server);
+    expect(initialiser.intialize).toHaveBeenCalledTimes(1);
+  });
+
+  it('should start the server.', (): any => {
+    expect(attackServer.started).toBe(false);
+
+    attackServer.start();
+
+    expect(attackServer.started).toBe(true);
     expect(server.listen).toHaveBeenCalledWith(port);
+    expect(server.listen).toHaveBeenCalledTimes(1);
+  });
+
+  it ('should stop the server.', (): any => {
+    expect(attackServer.started).toBe(false);
+    attackServer.start();
+    expect(attackServer.started).toBe(true);
+    attackServer.stop();
+    expect(attackServer.started).toBe(false);
+
+    expect(server.close).toHaveBeenCalledWith();
+    expect(server.close).toHaveBeenCalledTimes(1);
   });
 });
