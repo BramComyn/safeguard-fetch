@@ -36,10 +36,7 @@ describe('SafeguardRequester', (): void => {
       handle: jest.fn(),
     } as any;
 
-    requester = new SafeguardRequester(
-      { connect: [ dummyConnectEventHandler ]},
-      { response: [ dummyResponseEventHandler ]},
-    );
+    requester = new SafeguardRequester();
 
     clientSession = new EventEmitter() as any;
     requestStream = new EventEmitter() as any;
@@ -49,12 +46,21 @@ describe('SafeguardRequester', (): void => {
     connect = jest.mocked(http2.connect).mockReturnValue(clientSession);
   });
 
-  it('also works with empty constructor.', (): void => {
-    requester = new SafeguardRequester();
+  it('also works with non-empty constructor.', (): void => {
+    requester = new SafeguardRequester(
+      { connect: [ dummyConnectEventHandler ]},
+      { response: [ dummyResponseEventHandler ]},
+    );
+
     expect(requester).toBeDefined();
   });
 
   it('should set the necessary event handlers on the client session.', (): void => {
+    requester = new SafeguardRequester(
+      { connect: [ dummyConnectEventHandler ]},
+      {},
+    );
+
     const client = requester.connect(authority, sessionOptions);
     expect(client).toBeDefined();
 
@@ -65,6 +71,11 @@ describe('SafeguardRequester', (): void => {
   });
 
   it('should set the necessary event handlers on the request stream.', (): void => {
+    requester = new SafeguardRequester(
+      {},
+      { response: [ dummyResponseEventHandler ]},
+    );
+
     const request = requester.request(clientSession);
     expect(request).toBeDefined();
 
@@ -101,4 +112,48 @@ describe('SafeguardRequester', (): void => {
       expect(request).toBeDefined();
     },
   );
+
+  it('should add new wrappers to the client session\'s event handlers.', (): void => {
+    let client = requester.connect(authority, sessionOptions);
+    client.emit('connect');
+    expect(dummyConnectEventHandler.handle).not.toHaveBeenCalled();
+
+    requester.addClientEventHandler('connect', dummyConnectEventHandler);
+
+    // We need to create a new client session, because the event handlers are set on creation.
+    client = requester.connect(authority, sessionOptions);
+    client.emit('connect');
+    expect(dummyConnectEventHandler.handle).toHaveBeenCalledTimes(1);
+  });
+
+  it('should add new wrappers to the request stream\'s event handlers.', (): void => {
+    let request = requester.request(clientSession);
+    request.emit('response');
+    expect(dummyResponseEventHandler.handle).not.toHaveBeenCalled();
+
+    requester.addRequestEventHandler('response', dummyResponseEventHandler);
+
+    // We need to create a new request stream, because the event handlers are set on creation.
+    request = requester.request(clientSession);
+    request.emit('response');
+    expect(dummyResponseEventHandler.handle).toHaveBeenCalledTimes(1);
+  });
+
+  it('should remove wrappers from the client session\'s event handlers.', (): void => {
+    requester.addClientEventHandler('connect', dummyConnectEventHandler);
+    requester.clearClientEventHandlers();
+
+    const client = requester.connect(authority, sessionOptions);
+    client.emit('connect');
+    expect(dummyConnectEventHandler.handle).not.toHaveBeenCalled();
+  });
+
+  it('should remove wrappers from the request stream\'s event handlers.', (): void => {
+    requester.addRequestEventHandler('response', dummyResponseEventHandler);
+    requester.clearRequestEventHandlers();
+
+    const request = requester.request(clientSession);
+    request.emit('response');
+    expect(dummyResponseEventHandler.handle).not.toHaveBeenCalled();
+  });
 });

@@ -22,9 +22,8 @@ export type RequestEventHandlerMap = {[K in Http2RequestEvent]?: RequestEventHan
  * A class that wraps around the `http2` module to provide a custom request function
  * that connects to the authority and returns the request stream, while attaching the necessary handlers up front.
  *
- * @member redirectHandlers - handlers for redirect responses
- * @member contentLengthHandlers - handlers for responses with content length
- * @member noContentLengthHandlers - handlers for responses without content length header
+ * @member clientEventHandlers - a map of event handlers for the client session
+ * @member requestEventHandlers - a map of event handlers for the request stream
  * @method connect - connects to the authority and returns a new `ClientHttp2Session`
  * @method connectAndRequest - connects to the authority, initiates a new request on the given path
  *  and returns a new `ClientHttp2Stream`
@@ -140,12 +139,11 @@ export class SafeguardRequester {
   }
 
   /**
-   * Adds a new client event handler to the map.
+   * Adds a new client event handler to the map
+   * important: this does not add the handler to any previously created client sessions
    *
    * @param event - the event to add the handler to
    * @param handler - the handler to add
-   *
-   * TODO [2024-09-13]: Test this
    */
   public addClientEventHandler<K extends Http2ClientEvent>(event: K, handler: ClientEventHandler<K>): void {
     if (!this.clientEventHandlers[event]) {
@@ -156,12 +154,11 @@ export class SafeguardRequester {
   }
 
   /**
-   * Adds a new request event handler to the map.
+   * Adds a new request event handler to the map
+   * important: this does not set the listener on any previously created request streams.
    *
    * @param event - the event to add the handler to
    * @param handler - the handler to add
-   *
-   * TODO [2024-09-13]: Test this
    */
   public addRequestEventHandler<K extends Http2RequestEvent>(event: K, handler: RequestEventHandler<K>): void {
     if (!this.requestEventHandlers[event]) {
@@ -169,5 +166,21 @@ export class SafeguardRequester {
     }
 
     this.requestEventHandlers[event]?.push(handler);
+  }
+
+  /**
+   * Clears all client event handlers from the map
+   * important: this does not remove the handler from any previously created client sessions
+   */
+  public clearClientEventHandlers(): void {
+    this.clientEventHandlers = {};
+  }
+
+  /**
+   * Clears all request event handlers from the map
+   * important: this does not remove the handler from any previously created request streams
+   */
+  public clearRequestEventHandlers(): void {
+    this.requestEventHandlers = {};
   }
 }
