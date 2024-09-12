@@ -1,4 +1,4 @@
-import type { ClientHttp2Session, IncomingHttpHeaders, OutgoingHttpHeaders, Settings } from 'node:http2';
+import type { ClientHttp2Session, Http2Stream, IncomingHttpHeaders, OutgoingHttpHeaders, Settings } from 'node:http2';
 import type { Socket } from 'node:net';
 import type { TLSSocket } from 'node:tls';
 
@@ -18,7 +18,7 @@ export type Http2ClientEventArgumentTypes = {
   ping: [ Buffer ];
   altsvc: [ string, string, number ];
   origin: [ string[] ];
-  stream: [ ClientHttp2Session, OutgoingHttpHeaders, number, (string | Buffer)[] ];
+  stream: [ Http2Stream, OutgoingHttpHeaders, number, (string | Buffer)[] ];
 };
 export type Http2ClientEventKey = keyof Http2ClientEventArgumentTypes;
 
