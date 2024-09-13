@@ -17,6 +17,7 @@ describe('createRefuseContentLengthLongerThanHandler', (): void => {
     } as any;
 
     headers = {
+      ':status': '200',
       'content-length': '200',
     } as any;
   });
@@ -50,7 +51,9 @@ describe('createRefuseContentLengthLongerThanHandler', (): void => {
 
   it('should close the request if the content length is not provided.', (): void => {
     handler = createRefuseContentLongerThanHandler(100);
-    headers = {};
+    headers = {
+      ':status': '200',
+    };
 
     handler(request, headers);
     expect(request.close).toHaveBeenCalledTimes(1);

@@ -21,21 +21,23 @@ describe('createRefuseNoContentLengthHandler', (): void => {
   it(
     'should close the request if the content length is not provided.',
     (): void => {
-      headers = {};
+      headers = {
+        ':status': '200',
+      };
+
       handler(request, headers);
       expect(request.close).toHaveBeenCalledTimes(1);
     },
   );
 
   it(
-    'should not close the request if the content length is provided.',
+    'should throw an error if the content length is provided.',
     (): void => {
       headers = {
         'content-length': '200',
       };
 
-      handler(request, headers);
-      expect(request.close).not.toHaveBeenCalled();
+      expect((): void => handler(request, headers)).toThrow(Error);
     },
   );
 });

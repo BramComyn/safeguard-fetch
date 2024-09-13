@@ -40,9 +40,8 @@ describe('createAllowedRedirectDetector', (): void => {
     },
   );
 
-  it('should close the request if the status code is unknown.', (): void => {
+  it('should throw an error if the status code is unknown.', (): void => {
     headers = MALICIOUS_REDIRECT_PATHS['/no-status-code-redirect']() as IncomingHttpHeaders;
-    handler(request, headers);
-    expect(request.close).toHaveBeenCalledTimes(1);
+    expect((): void => handler(request, headers)).toThrow(Error);
   });
 });
