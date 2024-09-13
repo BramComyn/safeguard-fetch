@@ -48,7 +48,7 @@ export type Http2RequestEventArgumentTypes = {
   continue: [];
   headers: [ IncomingHttpHeaders, number ];
   push: [ IncomingHttpHeaders, number ];
-  response: [ IncomingHttpHeaders, number ];
+  response: [ IncomingHttpHeaders ];
   data: [ Buffer ];
 } & Http2EventArgumentTypes;
 export type Http2RequestEvent = keyof Http2RequestEventArgumentTypes;
