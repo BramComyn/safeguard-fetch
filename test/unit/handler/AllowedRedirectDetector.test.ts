@@ -8,7 +8,7 @@ import {
 
 const whitelist = [ NON_MALICIOUS_REDIRECT_URL ];
 
-describe('AllowedRedirectHandler', (): void => {
+describe('AllowedRedirectDetector', (): void => {
   let handler: AllowedRedirectDetector;
   let request: jest.Mocked<ClientHttp2Stream>;
   let headers: jest.Mocked<IncomingHttpHeaders>;

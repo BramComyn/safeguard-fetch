@@ -14,6 +14,8 @@ export class BannedRedirectDetector {
       if (location && this.banned.includes(location)) {
         request.close();
       }
+    } else if (status === 0) {
+      request.close();
     }
   };
 }
