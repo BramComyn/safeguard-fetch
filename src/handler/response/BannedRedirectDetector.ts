@@ -1,13 +1,13 @@
 import type { ClientHttp2Stream, IncomingHttpHeaders } from 'node:http2';
-import type { ResponseEventHandler } from './ResponseEventHandler';
+import type { ResponseEventHandler } from '../RequestEventHandler';
 
 /**
  * Creates a redirect handler that will close the request if it is redirected to a banned URL.
  */
-export class BannedRedirectDetector implements ResponseEventHandler {
+export class BannedRedirectDetector {
   public constructor(protected readonly banned: string[]) {}
 
-  public handle(request: ClientHttp2Stream, headers: IncomingHttpHeaders): void {
+  public handle: ResponseEventHandler = (request: ClientHttp2Stream, headers: IncomingHttpHeaders): void => {
     const status = Number.parseInt(headers[':status'] as string | undefined ?? '0', 10);
     if (status !== 0 && status >= 300 && status < 400) {
       const location = headers.location;
@@ -15,5 +15,5 @@ export class BannedRedirectDetector implements ResponseEventHandler {
         request.close();
       }
     }
-  }
+  };
 }

@@ -112,8 +112,8 @@ export class SafeguardRequester {
         for (const handler of handlers) {
           client.on(event, (...args): void => {
             // Prevent the linter from burning me at the stake
-            // eslint-disable-next-line ts/no-unsafe-call, ts/no-explicit-any, ts/no-unsafe-member-access
-            (handler as any).handle(client, ...args);
+            // eslint-disable-next-line ts/no-unsafe-call, ts/no-explicit-any
+            (handler as any)(client, ...args);
           });
         }
       }
@@ -131,7 +131,7 @@ export class SafeguardRequester {
         for (const handler of handlers) {
           request.on(event, (...args): void => {
             // eslint-disable-next-line ts/no-unsafe-argument
-            handler.handle(request, ...args);
+            handler(request, ...args);
           });
         }
       }
