@@ -17,10 +17,16 @@ import {
 
 import { AttackServer } from '../../src/attack-server/attack-server/AttackServer';
 import { getPort, secureServerOptions } from '../../src/util';
+import { SafeguardRequester } from '../../src/wrapper/SafeguardRequester';
+import { createRefuseContentLongerThanHandler } from '../../src/handler/response/RefuseContentLengthLongerThanHandler';
+import { createAllowedRedirectDetector } from '../../src/handler/response/AllowedRedirectDetector';
+import { MALICIOUS_REDIRECT_URL, NON_MALICIOUS_REDIRECT_URL } from '../../src/attack-server/attackServerConstants';
+import { createBannedRedirectDetector } from '../../src/handler/response/BannedRedirectDetector';
+import { createRefuseNoContentLengthHandler } from '../../src/handler/response/RefuseNoContentLengthHandler';
 
 const port = getPort('WrapperIntegration');
 
-describe('The Wrapper', (): void => {
+describe('The whole codebase', (): void => {
   // Server setup
   let server: AttackServer<Http2SecureServer>;
   let factory: AttackServerHttp2SecureFactory;
@@ -28,6 +34,8 @@ describe('The Wrapper', (): void => {
   let redirectInitialiser: RedirectAttackServerHttp2Initialiser;
 
   let client: ClientHttp2Session;
+
+  let requester: SafeguardRequester;
 
   beforeAll((): void => {
     factory = new AttackServerHttp2SecureFactory();
@@ -37,6 +45,7 @@ describe('The Wrapper', (): void => {
 
     server.start();
     client = connect(`https://localhost:${port}`, { ca: secureServerOptions.cert });
+    requester = new SafeguardRequester();
   });
 
   beforeEach((): void => {});
@@ -66,4 +75,46 @@ describe('The Wrapper', (): void => {
       redirectRequest.close();
     },
   );
+
+  describe('should protect from the following attacks:', (): void => {
+    beforeAll((): void => {
+      const contentLengthHandler = createRefuseContentLongerThanHandler(100);
+      const noContentLengthHandler = createRefuseNoContentLengthHandler();
+      const allowedRedirectHandler = createAllowedRedirectDetector([ NON_MALICIOUS_REDIRECT_URL ]);
+      const bannedRedirectHandler = createBannedRedirectDetector([ MALICIOUS_REDIRECT_URL ]);
+      const handlers = [ contentLengthHandler, noContentLengthHandler, allowedRedirectHandler, bannedRedirectHandler ];
+
+      for (const handler of handlers) {
+        requester.addRequestEventHandler('response', handler);
+      }
+    });
+
+    it('content length too long.', async(): Promise<void> => {
+      const noContentLengthRequest = requester.request(client, { ':path': '/no-difference' });
+      await expect(
+        once(noContentLengthRequest, 'response'),
+      ).resolves.toBeDefined();
+    });
+
+    it('content length not specified.', async(): Promise<void> => {
+      const contentLengthTooLongRequest = requester.request(client, { ':path': '/no-content-length-finite' });
+      await expect(
+        once(contentLengthTooLongRequest, 'response'),
+      ).resolves.toBeDefined();
+    });
+
+    it('redirect to a banned URL.', async(): Promise<void> => {
+      const bannedRedirectRequest = requester.request(client, { ':path': '/malicious-redirect' });
+      await expect(
+        once(bannedRedirectRequest, 'response'),
+      ).resolves.toBeDefined();
+    });
+
+    it('redirect to an allowed URL.', async(): Promise<void> => {
+      const allowedRedirectRequest = requester.request(client, { ':path': '/non-malicious-redirect' });
+      await expect(
+        once(allowedRedirectRequest, 'response'),
+      ).resolves.toBeDefined();
+    });
+  });
 });
