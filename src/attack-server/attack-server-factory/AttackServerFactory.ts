@@ -1,7 +1,7 @@
 import type { Server } from 'node:net';
 
 /**
- * Type for server factories
+ * Interface for server factories
  *
  * @method createServer - creates a server of the desired type
  */

@@ -2,14 +2,16 @@ import type { ClientHttp2Stream, IncomingHttpHeaders } from 'node:http2';
 import type { ResponseEventHandler } from '../RequestEventHandler';
 
 /**
- * A handler that refuses the request if the content length is longer than the maximum length.
+ * Creates a handler that refuses the request if the content length is longer than the maximum length.
+ *
+ * @param maxLength - The maximum length of the content.
+ *
+ * @returns - The response event handler.
  */
-export class RefuseContentLongerThanHandler {
-  public constructor(private readonly maxLength: number) {}
-
-  public handle: ResponseEventHandler = (request: ClientHttp2Stream, headers: IncomingHttpHeaders): void => {
+export function createRefuseContentLongerThanHandler(maxLength: number): ResponseEventHandler {
+  return (request: ClientHttp2Stream, headers: IncomingHttpHeaders): void => {
     const contentLength = headers['content-length'];
-    if (contentLength && Number.parseInt(contentLength, 10) > this.maxLength) {
+    if (contentLength && Number.parseInt(contentLength, 10) > maxLength) {
       request.close();
     }
   };
