@@ -1,11 +1,13 @@
 import type { ClientHttp2Stream, IncomingHttpHeaders } from 'node:http2';
 
+import type { ResponseEventHandler } from '../../../src/handler/RequestEventHandler';
+
 import {
-  RefuseContentLengthLongerThanHandler,
+  createRefuseContentLongerThanHandler,
 } from '../../../src/handler/response/RefuseContentLengthLongerThanHandler';
 
-describe('RefuseContentLengthLongerThanHandler', (): void => {
-  let handler: RefuseContentLengthLongerThanHandler;
+describe('createRefuseContentLengthLongerThanHandler', (): void => {
+  let handler: ResponseEventHandler;
   let request: jest.Mocked<ClientHttp2Stream>;
   let headers: jest.Mocked<IncomingHttpHeaders>;
 
@@ -22,8 +24,8 @@ describe('RefuseContentLengthLongerThanHandler', (): void => {
   it(
     'should close the request if the content length is longer than the maximum allowed content length.',
     (): void => {
-      handler = new RefuseContentLengthLongerThanHandler(100);
-      handler.handle(request, headers);
+      handler = createRefuseContentLongerThanHandler(100);
+      handler(request, headers);
       expect(request.close).toHaveBeenCalledTimes(1);
     },
   );
@@ -31,8 +33,8 @@ describe('RefuseContentLengthLongerThanHandler', (): void => {
   it(
     'should not close the request if the content length is shorter than the maximum allowed content length.',
     (): void => {
-      handler = new RefuseContentLengthLongerThanHandler(300);
-      handler.handle(request, headers);
+      handler = createRefuseContentLongerThanHandler(300);
+      handler(request, headers);
       expect(request.close).not.toHaveBeenCalled();
     },
   );
@@ -40,17 +42,17 @@ describe('RefuseContentLengthLongerThanHandler', (): void => {
   it(
     'should not close the request if the content length is equal to the maximum allowed content length.',
     (): void => {
-      handler = new RefuseContentLengthLongerThanHandler(200);
-      handler.handle(request, headers);
+      handler = createRefuseContentLongerThanHandler(200);
+      handler(request, headers);
       expect(request.close).not.toHaveBeenCalled();
     },
   );
 
   it('should close the request if the content length is not provided.', (): void => {
-    handler = new RefuseContentLengthLongerThanHandler(100);
+    handler = createRefuseContentLongerThanHandler(100);
     headers = {};
 
-    handler.handle(request, headers);
+    handler(request, headers);
     expect(request.close).toHaveBeenCalledTimes(1);
   });
 });

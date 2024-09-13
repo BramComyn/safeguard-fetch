@@ -1,16 +1,18 @@
 import type { ClientHttp2Stream, IncomingHttpHeaders } from 'node:http2';
 
+import type { ResponseEventHandler } from '../../../src/handler/RequestEventHandler';
+
 import {
-  RefuseNoContentLengthHandler,
+  createRefuseNoContentLengthHandler,
 } from '../../../src/handler/response/RefuseNoContentLengthHandler';
 
-describe('RefuseNoContentLengthHandler', (): void => {
-  let handler: RefuseNoContentLengthHandler;
+describe('createRefuseNoContentLengthHandler', (): void => {
+  let handler: ResponseEventHandler;
   let request: jest.Mocked<ClientHttp2Stream>;
   let headers: jest.Mocked<IncomingHttpHeaders>;
 
   beforeEach((): void => {
-    handler = new RefuseNoContentLengthHandler();
+    handler = createRefuseNoContentLengthHandler();
     request = {
       close: jest.fn(),
     } as any;
@@ -20,7 +22,7 @@ describe('RefuseNoContentLengthHandler', (): void => {
     'should close the request if the content length is not provided.',
     (): void => {
       headers = {};
-      handler.handle(request, headers);
+      handler(request, headers);
       expect(request.close).toHaveBeenCalledTimes(1);
     },
   );
@@ -32,7 +34,7 @@ describe('RefuseNoContentLengthHandler', (): void => {
         'content-length': '200',
       };
 
-      handler.handle(request, headers);
+      handler(request, headers);
       expect(request.close).not.toHaveBeenCalled();
     },
   );
