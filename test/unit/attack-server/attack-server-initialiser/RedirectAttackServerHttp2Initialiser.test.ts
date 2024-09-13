@@ -46,7 +46,7 @@ describe('RedirectAttackServerHttp2Initialiser', (): any => {
     // Set path to unknown path
     headers[':path'] = '/unknown-path';
 
-    const attackServer = new AttackServer<Http2SecureServer>(port, factory, initialiser);
+    const attackServer = new AttackServer<Http2SecureServer>(port, factory, [ initialiser ]);
     attackServer.start();
 
     server.emit('stream', stream, headers);
@@ -59,7 +59,7 @@ describe('RedirectAttackServerHttp2Initialiser', (): any => {
 
     const argument = paths[path as keyof typeof paths]();
 
-    const attackServer = new AttackServer<Http2SecureServer>(port, factory, initialiser);
+    const attackServer = new AttackServer<Http2SecureServer>(port, factory, [ initialiser ]);
     attackServer.start();
 
     server.emit('stream', stream, headers);

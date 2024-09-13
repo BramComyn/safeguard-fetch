@@ -55,7 +55,7 @@ describe('ContentLengthAttackServerHttpInitialiser', (): any => {
     // Set URL path to unknown path
     request.url = '/unknown-path';
 
-    const attackServer = new AttackServer<Server>(port, factory, initialiser);
+    const attackServer = new AttackServer<Server>(port, factory, [ initialiser ]);
     attackServer.start();
 
     server.emit('request', request, response);
@@ -72,7 +72,7 @@ describe('ContentLengthAttackServerHttpInitialiser', (): any => {
     // Set URL path to known path
     request.url = path;
 
-    const attackServer = new AttackServer<Server>(port, factory, initialiser);
+    const attackServer = new AttackServer<Server>(port, factory, [ initialiser ]);
     attackServer.start();
 
     server.emit('request', request, response);

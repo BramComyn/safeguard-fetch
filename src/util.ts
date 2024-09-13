@@ -30,7 +30,7 @@ const TEST_NAME = [
   'RedirectAttackServerHttp2InitialiserUnit',
   'AttackResponseGeneratorUnit',
   'StandardResponseGeneratorUnit',
-  'SafeguardRequesterUnit',
+  'WrapperIntegration',
 ] as const;
 
 /**

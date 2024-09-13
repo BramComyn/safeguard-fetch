@@ -23,18 +23,21 @@ export class AttackServer<T extends Server> {
    *
    * @param port - the desired port to start the server on
    * @param attackServerFactory - the factory to create the server
-   * @param attackServerInitialiser - the initialiser to initialise the server
+   * @param attackServerInitialisers - the initialisers to initialise the server
    * @param options - options to pass to the server factory
    */
   public constructor(
     port: number,
     attackServerFactory: AttackServerFactory<T>,
-    attackServerInitialiser: AttackServerInitialiser<T>,
+    attackServerInitialisers: AttackServerInitialiser<T>[],
     options?: object,
   ) {
     this.port = port;
     this.server = attackServerFactory.createServer(options ?? {});
-    attackServerInitialiser.intialize(this.server);
+
+    for (const initialiser of attackServerInitialisers) {
+      initialiser.intialize(this.server);
+    }
   }
 
   /**

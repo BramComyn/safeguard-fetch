@@ -17,9 +17,9 @@ class DummyAttackServer extends AttackServer<Server> {
   public constructor(
     port: number,
     attackServerFactory: AttackServerFactory<Server>,
-    attackServerInitialiser: AttackServerInitialiser<Server>,
+    attackServerInitialisers: AttackServerInitialiser<Server>[],
   ) {
-    super(port, attackServerFactory, attackServerInitialiser);
+    super(port, attackServerFactory, attackServerInitialisers);
   }
 
   public get started(): boolean {
@@ -47,7 +47,7 @@ describe('AttackServer', (): any => {
       intialize: jest.fn(),
     };
 
-    attackServer = new DummyAttackServer(port, factory, initialiser);
+    attackServer = new DummyAttackServer(port, factory, [ initialiser ]);
   });
 
   it('should create a server using the factory.', (): any => {

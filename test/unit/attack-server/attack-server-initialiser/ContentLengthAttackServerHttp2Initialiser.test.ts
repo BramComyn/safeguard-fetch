@@ -55,7 +55,7 @@ describe('ContentLengthAttackServerInitialiser', (): any => {
     // Set path to unknown path
     headers[':path'] = '/unknown-path';
 
-    const attackServer = new AttackServer<Http2SecureServer>(port, factory, initialiser);
+    const attackServer = new AttackServer<Http2SecureServer>(port, factory, [ initialiser ]);
     attackServer.start();
 
     server.emit('stream', stream, headers);
@@ -66,7 +66,7 @@ describe('ContentLengthAttackServerInitialiser', (): any => {
     // Set path to known path
     headers[':path'] = path;
 
-    const attackServer = new AttackServer<Http2SecureServer>(port, factory, initialiser);
+    const attackServer = new AttackServer<Http2SecureServer>(port, factory, [ initialiser ]);
     attackServer.start();
 
     server.emit('stream', stream, headers);

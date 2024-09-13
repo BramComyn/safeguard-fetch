@@ -23,7 +23,7 @@ describe('AttackResponseGenerator', (): any => {
 
   it.each(Object.entries(actualSizesAndContentLengths))(
     'should generate a response with an actual size of %i and a content length of %i.',
-    async(actualSizeString, contentLength): Promise<void> => {
+    (actualSizeString, contentLength): void => {
       const actualSize = Number.parseInt(actualSizeString, 10);
       responseGenerator = new AttackResponseGenerator(actualSize, contentLength);
 
