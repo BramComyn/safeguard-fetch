@@ -4,7 +4,7 @@ import type { ResponseEventHandler } from '../../../src/handler/RequestEventHand
 
 import {
   createRefuseContentLongerThanHandler,
-} from '../../../src/handler/response/RefuseContentLengthLongerThanHandler';
+} from '../../../src/handler/examples/RefuseContentLengthLongerThanHandler';
 
 describe('createRefuseContentLengthLongerThanHandler', (): void => {
   let handler: ResponseEventHandler;

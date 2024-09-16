@@ -18,11 +18,11 @@ import {
 import { AttackServer } from '../../src/attack-server/attack-server/AttackServer';
 import { getPort, secureServerOptions } from '../../src/util';
 import { SafeguardRequester } from '../../src/wrapper/SafeguardRequester';
-import { createRefuseContentLongerThanHandler } from '../../src/handler/response/RefuseContentLengthLongerThanHandler';
-import { createAllowedRedirectDetector } from '../../src/handler/response/AllowedRedirectDetector';
+import { createRefuseContentLongerThanHandler } from '../../src/handler/examples/RefuseContentLengthLongerThanHandler';
+import { createAllowedRedirectDetector } from '../../src/handler/examples/AllowedRedirectDetector';
 import { MALICIOUS_REDIRECT_URL, NON_MALICIOUS_REDIRECT_URL } from '../../src/attack-server/attackServerConstants';
-import { createBannedRedirectDetector } from '../../src/handler/response/BannedRedirectDetector';
-import { createRefuseNoContentLengthHandler } from '../../src/handler/response/RefuseNoContentLengthHandler';
+import { createBannedRedirectDetector } from '../../src/handler/examples/BannedRedirectDetector';
+import { createRefuseNoContentLengthHandler } from '../../src/handler/examples/RefuseNoContentLengthHandler';
 
 const port = getPort('WrapperIntegration');
 
