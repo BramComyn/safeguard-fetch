@@ -14,7 +14,7 @@ export function createBannedRedirectDetector(banned: string[]): ResponseEventHan
     const status = getStatusCode(headers);
     if (isRedirection(status)) {
       const location = headers.location;
-      if (location && banned.includes(location)) {
+      if (location && banned.includes(location) && !request.closed) {
         request.close();
       }
     }
