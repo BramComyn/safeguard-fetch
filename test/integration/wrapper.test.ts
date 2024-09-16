@@ -108,8 +108,7 @@ describe('The whole codebase', (): void => {
         once(contentLengthTooLongRequest, 'response'),
       ).resolves.toBeDefined();
 
-      // Both content length event handlers should close the request.
-      expect(contentLengthTooLongRequest.close).toHaveBeenCalledTimes(2);
+      expect(contentLengthTooLongRequest.close).toHaveBeenCalledTimes(1);
     });
 
     it('redirect to a banned URL.', async(): Promise<void> => {
@@ -120,8 +119,7 @@ describe('The whole codebase', (): void => {
         once(bannedRedirectRequest, 'response'),
       ).resolves.toBeDefined();
 
-      // Will be banned because it's in the blacklist and because it's not in the whitelist.
-      expect(bannedRedirectRequest.close).toHaveBeenCalledTimes(2);
+      expect(bannedRedirectRequest.close).toHaveBeenCalledTimes(1);
     });
 
     it('redirect to an allowed URL.', async(): Promise<void> => {

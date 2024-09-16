@@ -14,7 +14,7 @@ export function createAllowedRedirectDetector(allowed: string[]): ResponseEventH
     const status = getStatusCode(headers);
     if (isRedirection(status)) {
       const location = headers.location;
-      if (location && !allowed.includes(location)) {
+      if (location && !allowed.includes(location) && !request.closed) {
         request.close();
       }
     }

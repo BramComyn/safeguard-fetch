@@ -15,7 +15,8 @@ export function createRefuseContentLongerThanHandler(maxLength: number): Respons
     const status = getStatusCode(headers);
     if (
       isSuccessful(status) &&
-      (!contentLength || Number.parseInt(contentLength, 10) > maxLength)
+      (!contentLength || Number.parseInt(contentLength, 10) > maxLength) &&
+      !request.closed
     ) {
       request.close();
     }
