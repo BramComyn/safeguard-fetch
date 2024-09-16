@@ -10,7 +10,7 @@ import { getStatusCode, isSuccessful } from '../../util';
 export function createRefuseNoContentLengthHandler(): ResponseEventHandler {
   return (request: ClientHttp2Stream, headers: IncomingHttpHeaders): void => {
     const status = getStatusCode(headers);
-    if (isSuccessful(status) && !headers['content-length']) {
+    if (isSuccessful(status) && !headers['content-length'] && !request.closed) {
       request.close();
     }
   };
