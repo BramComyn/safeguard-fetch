@@ -26,11 +26,6 @@ const TEST_NAME = [
   'AttackServerUnit',
   'AttackServerHttp2SecureFactoryUnit',
   'AttackServerHttpFactoryUnit',
-  'ContentLengthAttackServerHttp2InitialiserUnit',
-  'ContentLengthAttackServerHttpInitialiserUnit',
-  'RedirectAttackServerHttp2InitialiserUnit',
-  'AttackResponseGeneratorUnit',
-  'StandardResponseGeneratorUnit',
   'WrapperIntegration',
 ] as const;
 

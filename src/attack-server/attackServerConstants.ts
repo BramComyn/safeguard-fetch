@@ -6,6 +6,7 @@ import {
   standardHttp2ResponseGenerator,
   standardHttpResponseGenerator,
 } from '../response-generator/StandardResponseGenerator';
+import { JsonLdResponseGenerator } from '../response-generator/JsonLdResponseGenerator';
 
 // Main attack server constants
 export const HTTP_PORT = 8080;
@@ -48,6 +49,10 @@ export const CONTENT_LENGTH_PATHS = {
   '/no-content-length-finite': (): ResponseGenerator => new AttackResponseGenerator(200, null),
   '/no-content-length-finite-inverse': (): ResponseGenerator => new AttackResponseGenerator(0, 200),
   '/no-content-length-infinite': (): ResponseGenerator => new AttackResponseGenerator(Infinity, null),
+} as const;
+
+export const JSONLD_PATHS = {
+  '/json-ld': (): ResponseGenerator => new JsonLdResponseGenerator(),
 } as const;
 
 /**

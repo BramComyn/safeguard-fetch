@@ -1,5 +1,5 @@
 import type { ClientHttp2Stream, IncomingHttpHeaders } from 'node:http2';
-import { createAllowedRedirectDetector } from '../../../src/handler/response/AllowedRedirectDetector';
+import { createAllowedRedirectDetector } from '../../../src/handler/examples/AllowedRedirectDetector';
 
 import {
   MALICIOUS_REDIRECT_PATHS,

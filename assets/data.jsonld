@@ -1,0 +1,18 @@
+{
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "William Shakespeare",
+    "birthDate": "1564-04-23",
+    "birthPlace": {
+      "@type": "Place",
+      "name": "Stratford-upon-Avon"
+    },
+    "worksFor": {
+      "@type": "Organization",
+      "name": "The Lord Chamberlain's Men"
+    },
+    "sameAs": [
+      "https://en.wikipedia.org/wiki/William_Shakespeare",
+      "https://www.britannica.com/biography/William-Shakespeare"
+    ]
+}
