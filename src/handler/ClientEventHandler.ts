@@ -1,13 +1,15 @@
-import type { ClientHttp2Session } from 'node:http2';
-import type { Http2ClientEvent, Http2ClientEventArgumentTypes } from './eventConstants';
+import type TypedEmitter from 'typed-emitter';
+import type { Http2ClientEvent } from './eventConstants';
+
+/**
+ * Generic type for a custom client session event emitter
+ */
+export type ClientEventEmitter = TypedEmitter<Http2ClientEvent>;
 
 /**
  * Generic type for a custom client session event handler.
  */
-export type ClientEventHandler<K extends Http2ClientEvent> = (
-  session: ClientHttp2Session,
-  ...args: Http2ClientEventArgumentTypes[K]
-) => void;
+export type ClientEventHandler<K extends keyof Http2ClientEvent> = Http2ClientEvent[K];
 
 // All possible types of client event handlers
 
