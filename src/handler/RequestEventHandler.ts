@@ -1,13 +1,15 @@
-import type { ClientHttp2Stream } from 'node:http2';
-import type { Http2RequestEvent, Http2RequestEventArgumentTypes } from './eventConstants';
+import type TypedEmitter from 'typed-emitter';
+import type { Http2RequestEvent } from './eventConstants';
+
+/**
+ * Generic type for a custom request stream event emitter.
+ */
+export type RequestEventEmitter = TypedEmitter<Http2RequestEvent>;
 
 /**
  * Generic type for a custom request stream event handler.
  */
-export type RequestEventHandler<K extends Http2RequestEvent> = (
-  request: ClientHttp2Stream,
-  ...args: Http2RequestEventArgumentTypes[K]
-) => void;
+export type RequestEventHandler<K extends keyof Http2RequestEvent> = Http2RequestEvent[K];
 
 // All possible types of request event handlers
 
