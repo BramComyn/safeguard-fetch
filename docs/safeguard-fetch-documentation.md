@@ -13,7 +13,7 @@ The goal of this repository is to provide developers of automatic querying
 engines for linked data with a safer way of interacting with the ``http2``-
 module of Node.js.
 It was necessary to provide certain hooks to this library,
-so that developpers could write handler-functions for certain events/
+so that developers could write handler-functions for certain events/
 event combinations.
 
 ## Wrapper
@@ -117,7 +117,7 @@ const request: ClientHttp2Stream = requester.connectAndRequest({
   sessionOptions: undefined,
   listener: undefined,
   requestHeaders: {
-    ':path': '/unexisting-path', // Would trigger 404
+    ':path': '/non-existing-path', // Would trigger 404
   },
   requestOptions: undefined,
 });
@@ -144,7 +144,7 @@ rather than only the ``on(event, ...)`` per session or stream.
 
 ## Attack Server
 
-This repository also contains a way to quickly initialise HTTP/1.1- and HTTP/2.0-servers for certain
+This repository also contains a way to quickly initialize HTTP/1.1- and HTTP/2.0-servers for certain
 malicious configurations.
 The code is structured so that it is possible to expand upon this.
 It is all based around the ``AttackServer`` class.
@@ -155,19 +155,19 @@ specific arguments to be given in the constructor, or the type between angle bra
 import type { Server } from 'node:http';
 import type { Http2SecureServer } from 'node:http2'
  
-const httpport = 8080;
-const http2secureport = 8443;
+const httpPort = 8080;
+const http2SecurePort = 8443;
 
-// Initialise an unsecured HTTP/1.1-server
-const httpserver = new AttackServer<Server>(
-  httpport,
+// Initialize an unsecured HTTP/1.1-server
+const httpServer = new AttackServer<Server>(
+  httpPort,
   new AttackServerHttpFactory(),
   [], // the initializers
 );
 
-// initialise a secured HTTP/2.0-server
-const http2server = new AttackServer<Http2SecureServer>(
-  http2secureport,
+// Initialize a secured HTTP/2.0-server
+const http2Server = new AttackServer<Http2SecureServer>(
+  http2SecurePort,
   new AttackServerHttp2SecureFactory(),
   [], // the initializers
 );
