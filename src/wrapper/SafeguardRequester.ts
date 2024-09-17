@@ -15,8 +15,8 @@ import type { ClientEventHandler } from '../handler/ClientEventHandler';
 import type { RequestEventHandler } from '../handler/RequestEventHandler';
 import type { Http2ClientEvent, Http2RequestEvent } from '../handler/eventConstants';
 
-export type ClientEventHandlerMap = {[K in Http2ClientEvent]?: ClientEventHandler<K>[] };
-export type RequestEventHandlerMap = {[K in Http2RequestEvent]?: RequestEventHandler<K>[] };
+export type ClientEventHandlerMap = {[K in keyof Http2ClientEvent]?: ClientEventHandler<K>[] };
+export type RequestEventHandlerMap = {[K in keyof Http2RequestEvent]?: RequestEventHandler<K>[] };
 
 /**
  * A class that wraps around the `http2` module to provide a custom request function
@@ -130,8 +130,9 @@ export class SafeguardRequester {
       if (handlers) {
         for (const handler of handlers) {
           request.on(event, (...args): void => {
-            // eslint-disable-next-line ts/no-unsafe-argument
-            handler(request, ...args);
+            // Prevent the linter from burning me at the stake
+            // eslint-disable-next-line ts/no-unsafe-call, ts/no-explicit-any
+            (handler as any)(request, ...args);
           });
         }
       }
@@ -145,7 +146,7 @@ export class SafeguardRequester {
    * @param event - the event to add the handler to
    * @param handler - the handler to add
    */
-  public addClientEventHandler<K extends Http2ClientEvent>(event: K, handler: ClientEventHandler<K>): void {
+  public addClientEventHandler<K extends keyof Http2ClientEvent>(event: K, handler: ClientEventHandler<K>): void {
     if (!this.clientEventHandlers[event]) {
       this.clientEventHandlers[event] = [];
     }
@@ -160,7 +161,7 @@ export class SafeguardRequester {
    * @param event - the event to add the handler to
    * @param handler - the handler to add
    */
-  public addRequestEventHandler<K extends Http2RequestEvent>(event: K, handler: RequestEventHandler<K>): void {
+  public addRequestEventHandler<K extends keyof Http2RequestEvent>(event: K, handler: RequestEventHandler<K>): void {
     if (!this.requestEventHandlers[event]) {
       this.requestEventHandlers[event] = [];
     }
