@@ -23,6 +23,7 @@ export class StandardResponseGenerator implements ResponseGenerator {
   } {
     return {
       headers: {
+        ':status': 200,
         'content-type': 'text/plain',
         'content-length': this.message.length,
       },

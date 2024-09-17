@@ -35,6 +35,7 @@ export class AttackResponseGenerator implements ResponseGenerator {
 
     const response: { headers: OutgoingHttpHeaders; body: Readable } = {
       headers: {
+        ':status': '200',
         'content-type': 'text/plain',
       },
       body: stream,

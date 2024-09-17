@@ -1,4 +1,3 @@
-/* eslint-disable jest/prefer-called-with */
 /* eslint-disable jest/prefer-spy-on */
 import type { Http2SecureServer, ServerHttp2Stream } from 'node:http2';
 import { EventEmitter } from 'node:events';
@@ -10,54 +9,35 @@ import {
 } from '../../../../src/attack-server/attackServerConstants';
 
 import {
-  ContentLengthAttackServerHttp2Initialiser,
-} from '../../../../src/attack-server/attack-server-initialiser/ContentLengthAttackServerHttp2Initialiser';
-
-import type {
-  AttackServerHttp2SecureFactory,
-} from '../../../../src/attack-server/attack-server-factory/AttackServerHttp2SecureFactory';
-
-import { AttackServer } from '../../../../src/attack-server/attack-server/AttackServer';
-import { getPort } from '../../../../src/util';
+  ContentLengthAttackServerHttp2Initializer,
+} from '../../../../src/attack-server/attack-server-initializer/ContentLengthAttackServerHttp2Initializer';
 
 const paths = { ...HTTP2_SERVER_PATHS, ...CONTENT_LENGTH_PATHS };
-
-const TEST_NAME = 'ContentLengthAttackServerHttp2InitialiserUnit';
-const port = getPort(TEST_NAME);
 
 // Prevent `/infinite` from actually running
 jest.useFakeTimers();
 jest.spyOn(globalThis, 'setInterval');
 
-describe('ContentLengthAttackServerInitialiser', (): any => {
-  let initialiser: ContentLengthAttackServerHttp2Initialiser;
-  let factory: jest.Mocked<AttackServerHttp2SecureFactory>;
+describe('ContentLengthAttackServerInitializer', (): any => {
+  let initializer: ContentLengthAttackServerHttp2Initializer;
   let server: jest.Mocked<Http2SecureServer>;
   let stream: jest.Mocked<ServerHttp2Stream>;
   let headers: { ':path': string };
 
   beforeEach((): any => {
     server = new EventEmitter() as any;
-    server.listen = jest.fn();
-
-    factory = {
-      createServer: jest.fn().mockReturnValue(server),
-    };
-
-    initialiser = new ContentLengthAttackServerHttp2Initialiser();
 
     stream = new PassThrough() as any;
     stream.respond = jest.fn();
     headers = { ':path': '/' };
+
+    initializer = new ContentLengthAttackServerHttp2Initializer();
+    initializer.intialize(server);
   });
 
   it('should make the server not respond to unknown paths.', (): any => {
     // Set path to unknown path
     headers[':path'] = '/unknown-path';
-
-    const attackServer = new AttackServer<Http2SecureServer>(port, factory, initialiser);
-    attackServer.start();
-
     server.emit('stream', stream, headers);
     expect(stream.respond).not.toHaveBeenCalled();
   });
@@ -65,11 +45,7 @@ describe('ContentLengthAttackServerInitialiser', (): any => {
   it.each(Object.keys(paths))('should make the server respond to %s path.', (path: string): any => {
     // Set path to known path
     headers[':path'] = path;
-
-    const attackServer = new AttackServer<Http2SecureServer>(port, factory, initialiser);
-    attackServer.start();
-
     server.emit('stream', stream, headers);
-    expect(stream.respond).toHaveBeenCalled();
+    expect(stream.respond).toHaveBeenCalledTimes(1);
   });
 });
