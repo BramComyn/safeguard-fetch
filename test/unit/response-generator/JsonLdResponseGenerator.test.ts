@@ -16,5 +16,6 @@ describe('JsonLdResponseGenerator', (): void => {
 
     expect(response).toHaveProperty('body');
     expect(response.body).toBeDefined();
+    expect(response.body.read().toString()).toBeDefined();
   });
 });

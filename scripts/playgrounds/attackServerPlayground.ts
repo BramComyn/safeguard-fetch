@@ -22,6 +22,10 @@ import {
 
 import { AttackServer } from '../../src/attack-server/attack-server/AttackServer';
 
+import {
+  JsonLdAttackServerHttp2Initializer,
+} from '../../src/attack-server/attack-server-initializer/JsonLdAttackServerHttp2Initializer';
+
 const httpserver = new AttackServer<Server>(
   8080,
   new AttackServerHttpFactory(),
@@ -34,7 +38,11 @@ const http2secureServer =
   new AttackServer<Http2SecureServer>(
     8443,
     new AttackServerHttp2SecureFactory(),
-    [ new ContentLengthAttackServerHttp2Initializer(), new RedirectAttackServerHttp2Initializer() ],
+    [
+      new ContentLengthAttackServerHttp2Initializer(),
+      new RedirectAttackServerHttp2Initializer(),
+      new JsonLdAttackServerHttp2Initializer(),
+    ],
     secureServerOptions,
   );
 http2secureServer.start();
