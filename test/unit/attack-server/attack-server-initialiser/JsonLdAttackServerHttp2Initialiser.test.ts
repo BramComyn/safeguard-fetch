@@ -4,15 +4,15 @@ import { PassThrough } from 'node:stream';
 import type { Http2SecureServer, ServerHttp2Stream } from 'node:http2';
 
 import {
-  JsonLdAttackServerHttp2Initialiser,
-} from '../../../../src/attack-server/attack-server-initialiser/JsonLdAttackServerHttp2Initialiser';
+  JsonLdAttackServerHttp2Initializer,
+} from '../../../../src/attack-server/attack-server-initializer/JsonLdAttackServerHttp2Initializer';
 
 import { HTTP2_SERVER_PATHS, JSONLD_PATHS } from '../../../../src/attack-server/attackServerConstants';
 
 const paths = { ...HTTP2_SERVER_PATHS, ...JSONLD_PATHS } as const;
 
-describe('JsonLdAttackServerHttp2Initialiser', (): void => {
-  let initialiser: JsonLdAttackServerHttp2Initialiser;
+describe('JsonLdAttackServerHttp2Initializer', (): void => {
+  let initializer: JsonLdAttackServerHttp2Initializer;
   let server: jest.Mocked<Http2SecureServer>;
   let stream: jest.Mocked<ServerHttp2Stream>;
   let headers: { ':path': string };
@@ -24,8 +24,8 @@ describe('JsonLdAttackServerHttp2Initialiser', (): void => {
     stream.respond = jest.fn();
     headers = { ':path': '/' };
 
-    initialiser = new JsonLdAttackServerHttp2Initialiser();
-    initialiser.intialize(server);
+    initializer = new JsonLdAttackServerHttp2Initializer();
+    initializer.intialize(server);
   });
 
   it('should make the server not respond to unknown paths.', (): void => {

@@ -4,8 +4,8 @@ import { EventEmitter } from 'node:events';
 import { PassThrough } from 'node:stream';
 
 import {
-  ContentLengthAttackServerHttpInitialiser,
-} from '../../../../src/attack-server/attack-server-initialiser/ContentLengthAttackServerHttpInitialiser';
+  ContentLengthAttackServerHttpInitializer,
+} from '../../../../src/attack-server/attack-server-initializer/ContentLengthAttackServerHttpInitializer';
 
 import { CONTENT_LENGTH_PATHS, HTTP_SERVER_PATHS } from '../../../../src/attack-server/attackServerConstants';
 
@@ -15,8 +15,8 @@ const paths = { ...HTTP_SERVER_PATHS, ...CONTENT_LENGTH_PATHS };
 jest.useFakeTimers();
 jest.spyOn(globalThis, 'setInterval');
 
-describe('ContentLengthAttackServerHttpInitialiser', (): any => {
-  let initialiser: ContentLengthAttackServerHttpInitialiser;
+describe('ContentLengthAttackServerHttpInitializer', (): any => {
+  let initializer: ContentLengthAttackServerHttpInitializer;
   let server: jest.Mocked<Server>;
   let request: jest.Mocked<IncomingMessage>;
   let response: jest.Mocked<ServerResponse>;
@@ -32,8 +32,8 @@ describe('ContentLengthAttackServerHttpInitialiser', (): any => {
       url: '/',
     } as any;
 
-    initialiser = new ContentLengthAttackServerHttpInitialiser();
-    initialiser.intialize(server);
+    initializer = new ContentLengthAttackServerHttpInitializer();
+    initializer.intialize(server);
   });
 
   it('should make the server not respond to unknown paths.', (): any => {

@@ -3,14 +3,14 @@ import type { Readable } from 'node:stream';
 
 import type { ResponseGenerator } from '../../response-generator/ResponseGenerator';
 import { CONTENT_LENGTH_PATHS, HTTP_SERVER_PATHS } from '../attackServerConstants';
-import type { AttackServerInitialiser } from './AttackServerInitialiser';
+import type { AttackServerInitializer } from './AttackServerInitializer';
 
 const paths = { ...HTTP_SERVER_PATHS, ...CONTENT_LENGTH_PATHS } as const;
 
 /**
  * Initialises the attack server with the necessary event listeners for the `content-length` attack over HTTP/1.1
  */
-export class ContentLengthAttackServerHttpInitialiser implements AttackServerInitialiser<Server> {
+export class ContentLengthAttackServerHttpInitializer implements AttackServerInitializer<Server> {
   public intialize(server: Server): void {
     server.on('request', (req: IncomingMessage, res: ServerResponse): void => {
       const path = req.url?.toString();

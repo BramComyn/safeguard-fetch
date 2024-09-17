@@ -4,8 +4,8 @@ import type { AttackServerFactory } from '../../../../src/attack-server/attack-s
 import { AttackServer } from '../../../../src/attack-server/attack-server/AttackServer';
 
 import type {
-  AttackServerInitialiser,
-} from '../../../../src/attack-server/attack-server-initialiser/AttackServerInitialiser';
+  AttackServerInitializer,
+} from '../../../../src/attack-server/attack-server-initializer/AttackServerInitializer';
 
 import { getPort } from '../../../../src/util';
 
@@ -17,9 +17,9 @@ class DummyAttackServer extends AttackServer<Server> {
   public constructor(
     port: number,
     attackServerFactory: AttackServerFactory<Server>,
-    attackServerInitialisers: AttackServerInitialiser<Server>[],
+    attackServerInitializers: AttackServerInitializer<Server>[],
   ) {
-    super(port, attackServerFactory, attackServerInitialisers);
+    super(port, attackServerFactory, attackServerInitializers);
   }
 
   public get started(): boolean {
@@ -28,7 +28,7 @@ class DummyAttackServer extends AttackServer<Server> {
 }
 
 describe('AttackServer', (): any => {
-  let initialiser: jest.Mocked<AttackServerInitialiser<Server>>;
+  let initializer: jest.Mocked<AttackServerInitializer<Server>>;
   let factory: jest.Mocked<AttackServerFactory<Server>>;
   let server: jest.Mocked<Server>;
   let attackServer: DummyAttackServer;
@@ -43,19 +43,19 @@ describe('AttackServer', (): any => {
       createServer: jest.fn().mockReturnValue(server),
     };
 
-    initialiser = {
+    initializer = {
       intialize: jest.fn(),
     };
 
-    attackServer = new DummyAttackServer(port, factory, [ initialiser ]);
+    attackServer = new DummyAttackServer(port, factory, [ initializer ]);
   });
 
   it('should create a server using the factory.', (): any => {
     expect(factory.createServer).toHaveBeenCalledWith({});
     expect(factory.createServer).toHaveBeenCalledTimes(1);
 
-    expect(initialiser.intialize).toHaveBeenCalledWith(server);
-    expect(initialiser.intialize).toHaveBeenCalledTimes(1);
+    expect(initializer.intialize).toHaveBeenCalledWith(server);
+    expect(initializer.intialize).toHaveBeenCalledTimes(1);
   });
 
   it('should start the server.', (): any => {

@@ -1,4 +1,3 @@
-import type { ClientHttp2Session, Http2SecureServer } from 'node:http2';
 import { connect } from 'node:http2';
 
 import { once } from 'node:events';
@@ -8,12 +7,12 @@ import {
 } from '../../src/attack-server/attack-server-factory/AttackServerHttp2SecureFactory';
 
 import {
-  ContentLengthAttackServerHttp2Initialiser,
-} from '../../src/attack-server/attack-server-initialiser/ContentLengthAttackServerHttp2Initialiser';
+  ContentLengthAttackServerHttp2Initializer,
+} from '../../src/attack-server/attack-server-initializer/ContentLengthAttackServerHttp2Initializer';
 
 import {
-  RedirectAttackServerHttp2Initialiser,
-} from '../../src/attack-server/attack-server-initialiser/RedirectAttackServerHttp2Initialiser';
+  RedirectAttackServerHttp2Initializer,
+} from '../../src/attack-server/attack-server-initializer/RedirectAttackServerHttp2Initializer';
 
 import { AttackServer } from '../../src/attack-server/attack-server/AttackServer';
 import { getPort, secureServerOptions } from '../../src/util';
@@ -27,30 +26,20 @@ import { createRefuseNoContentLengthHandler } from '../../src/handler/examples/R
 const port = getPort('WrapperIntegration');
 
 describe('The whole codebase', (): void => {
-  // Server setup
-  let server: AttackServer<Http2SecureServer>;
-  let factory: AttackServerHttp2SecureFactory;
-  let contentLengthInitialiser: ContentLengthAttackServerHttp2Initialiser;
-  let redirectInitialiser: RedirectAttackServerHttp2Initialiser;
+  const factory = new AttackServerHttp2SecureFactory();
+  const contentLengthInitializer = new ContentLengthAttackServerHttp2Initializer();
+  const redirectInitializer = new RedirectAttackServerHttp2Initializer();
 
-  let client: ClientHttp2Session;
+  const server = new AttackServer(
+    port,
+    factory,
+    [ contentLengthInitializer, redirectInitializer ],
+    secureServerOptions,
+  );
 
-  let requester: SafeguardRequester;
-
-  beforeAll((): void => {
-    factory = new AttackServerHttp2SecureFactory();
-    contentLengthInitialiser = new ContentLengthAttackServerHttp2Initialiser();
-    redirectInitialiser = new RedirectAttackServerHttp2Initialiser();
-    server = new AttackServer(port, factory, [ contentLengthInitialiser, redirectInitialiser ], secureServerOptions);
-
-    server.start();
-    client = connect(`https://localhost:${port}`, { ca: secureServerOptions.cert });
-    requester = new SafeguardRequester();
-  });
-
-  beforeEach((): void => {});
-
-  afterEach((): void => {});
+  server.start();
+  const client = connect(`https://localhost:${port}`, { ca: secureServerOptions.cert });
+  const requester = new SafeguardRequester();
 
   afterAll((): void => {
     client.close();

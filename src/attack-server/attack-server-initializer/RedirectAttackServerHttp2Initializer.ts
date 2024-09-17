@@ -1,14 +1,14 @@
 import type { Http2Server, OutgoingHttpHeaders } from 'node:http2';
 
 import { MALICIOUS_REDIRECT_PATHS } from '../attackServerConstants';
-import type { AttackServerInitialiser } from './AttackServerInitialiser';
+import type { AttackServerInitializer } from './AttackServerInitializer';
 
 const paths = MALICIOUS_REDIRECT_PATHS;
 
 /**
  * Initialises an HTTP/2 server to redirect to a malicious URL.
  */
-export class RedirectAttackServerHttp2Initialiser implements AttackServerInitialiser<Http2Server> {
+export class RedirectAttackServerHttp2Initializer implements AttackServerInitializer<Http2Server> {
   public intialize(server: Http2Server): void {
     server.on('stream', (stream, headers): void => {
       const path = headers[':path']?.toString();

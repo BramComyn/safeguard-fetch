@@ -8,7 +8,7 @@ import {
 
 import type { ResponseEventHandler } from '../../../src/handler/RequestEventHandler';
 
-const whitelist = [ NON_MALICIOUS_REDIRECT_URL ];
+const allowlist = [ NON_MALICIOUS_REDIRECT_URL ];
 
 describe('createAllowedRedirectDetector', (): void => {
   let handler: ResponseEventHandler;
@@ -16,7 +16,7 @@ describe('createAllowedRedirectDetector', (): void => {
   let headers: jest.Mocked<IncomingHttpHeaders>;
 
   beforeEach((): void => {
-    handler = createAllowedRedirectDetector(whitelist);
+    handler = createAllowedRedirectDetector(allowlist);
     request = {
       close: jest.fn(),
     } as any;

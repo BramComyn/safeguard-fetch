@@ -4,15 +4,15 @@ import { EventEmitter } from 'node:events';
 import { PassThrough } from 'node:stream';
 
 import {
-  RedirectAttackServerHttp2Initialiser,
-} from '../../../../src/attack-server/attack-server-initialiser/RedirectAttackServerHttp2Initialiser';
+  RedirectAttackServerHttp2Initializer,
+} from '../../../../src/attack-server/attack-server-initializer/RedirectAttackServerHttp2Initializer';
 
 import { MALICIOUS_REDIRECT_PATHS } from '../../../../src/attack-server/attackServerConstants';
 
 const paths = MALICIOUS_REDIRECT_PATHS;
 
-describe('RedirectAttackServerHttp2Initialiser', (): any => {
-  let initialiser: RedirectAttackServerHttp2Initialiser;
+describe('RedirectAttackServerHttp2Initializer', (): any => {
+  let initializer: RedirectAttackServerHttp2Initializer;
   let server: jest.Mocked<Http2SecureServer>;
   let stream: jest.Mocked<ServerHttp2Stream>;
   let headers: { ':path': string };
@@ -24,8 +24,8 @@ describe('RedirectAttackServerHttp2Initialiser', (): any => {
     stream.respond = jest.fn();
     headers = { ':path': '/' };
 
-    initialiser = new RedirectAttackServerHttp2Initialiser();
-    initialiser.intialize(server);
+    initializer = new RedirectAttackServerHttp2Initializer();
+    initializer.intialize(server);
   });
 
   it('should make the server not respond to unknown paths.', (): any => {

@@ -2,7 +2,7 @@ import type { ClientHttp2Session } from 'node:http2';
 import type { Http2ClientEvent, Http2ClientEventArgumentTypes } from './eventConstants';
 
 /**
- * Genric type for a custom client session event handler.
+ * Generic type for a custom client session event handler.
  */
 export type ClientEventHandler<K extends Http2ClientEvent> = (
   session: ClientHttp2Session,

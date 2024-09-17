@@ -5,13 +5,13 @@ import {
   AttackServerHttp2SecureFactory,
 } from '../../src/attack-server/attack-server-factory/AttackServerHttp2SecureFactory';
 import {
-  JsonLdAttackServerHttp2Initialiser,
-} from '../../src/attack-server/attack-server-initialiser/JsonLdAttackServerHttp2Initialiser';
+  JsonLdAttackServerHttp2Initializer,
+} from '../../src/attack-server/attack-server-initializer/JsonLdAttackServerHttp2Initializer';
 
 const attackServer = new AttackServer(
   8443,
   new AttackServerHttp2SecureFactory(),
-  [ new JsonLdAttackServerHttp2Initialiser() ],
+  [ new JsonLdAttackServerHttp2Initializer() ],
   secureServerOptions,
 );
 

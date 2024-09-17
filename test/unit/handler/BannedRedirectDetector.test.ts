@@ -7,7 +7,7 @@ import {
 } from '../../../src/attack-server/attackServerConstants';
 import type { ResponseEventHandler } from '../../../src/handler/RequestEventHandler';
 
-const blacklist = [ MALICIOUS_REDIRECT_URL ];
+const banlist = [ MALICIOUS_REDIRECT_URL ];
 
 describe('createBannedRedirectDetector', (): void => {
   let handler: ResponseEventHandler;
@@ -15,7 +15,7 @@ describe('createBannedRedirectDetector', (): void => {
   let headers: jest.Mocked<IncomingHttpHeaders>;
 
   beforeEach((): void => {
-    handler = createBannedRedirectDetector(blacklist);
+    handler = createBannedRedirectDetector(banlist);
     request = {
       close: jest.fn(),
     } as any;
