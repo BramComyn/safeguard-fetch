@@ -98,7 +98,7 @@ multiple client sessions or request streams.
 ```ts
 function closeOn404(
   request: ClientHttp2Stream,
-  IncomingHttp2Headers,
+  headers: IncomingHttp2Headers,
   flags: number,
 ): void {
   if (headers[':status'] === '404') {
