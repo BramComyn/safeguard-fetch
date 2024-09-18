@@ -99,7 +99,7 @@ describe('TurtleDownloader', (): void => {
     expect(downloader.maxDownloadSize).toBe(200);
   });
 
-  it.skip('should correctly download the given turtle file.', async(): Promise<void> => {
+  it.only('should correctly download the given turtle file.', async(): Promise<void> => {
     const url = new URL('http://example.com');
     const data = Buffer.alloc(10);
     data.fill('a');
@@ -114,6 +114,7 @@ describe('TurtleDownloader', (): void => {
     await expect(
       downloader.download(url),
     ).resolves.toEqual(Uint8Array.from(data));
+    request.emit('close');
   });
 
   it.skip('should throw an error if the download fails.', async(): Promise<void> => {
