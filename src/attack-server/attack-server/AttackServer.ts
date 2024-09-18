@@ -36,7 +36,7 @@ export class AttackServer<T extends Server> {
     this.server = attackServerFactory.createServer(options ?? {});
 
     for (const initializer of attackServerInitializers) {
-      initializer.intialize(this.server);
+      initializer.initialize(this.server);
     }
   }
 

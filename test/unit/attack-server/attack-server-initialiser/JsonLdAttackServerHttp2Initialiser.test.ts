@@ -25,7 +25,7 @@ describe('JsonLdAttackServerHttp2Initializer', (): void => {
     headers = { ':path': '/' };
 
     initializer = new JsonLdAttackServerHttp2Initializer();
-    initializer.intialize(server);
+    initializer.initialize(server);
   });
 
   it('should make the server not respond to unknown paths.', (): void => {

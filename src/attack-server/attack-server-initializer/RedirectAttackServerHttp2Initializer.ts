@@ -6,10 +6,10 @@ import type { AttackServerInitializer } from './AttackServerInitializer';
 const paths = MALICIOUS_REDIRECT_PATHS;
 
 /**
- * Initialises an HTTP/2 server to redirect to a malicious URL.
+ * Initializes an HTTP/2 server to redirect to a malicious URL.
  */
 export class RedirectAttackServerHttp2Initializer implements AttackServerInitializer<Http2Server> {
-  public intialize(server: Http2Server): void {
+  public initialize(server: Http2Server): void {
     server.on('stream', (stream, headers): void => {
       const path = headers[':path']?.toString();
 

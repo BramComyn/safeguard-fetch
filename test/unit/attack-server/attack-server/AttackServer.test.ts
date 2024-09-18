@@ -44,7 +44,7 @@ describe('AttackServer', (): any => {
     };
 
     initializer = {
-      intialize: jest.fn(),
+      initialize: jest.fn(),
     };
 
     attackServer = new DummyAttackServer(port, factory, [ initializer ]);
@@ -54,8 +54,8 @@ describe('AttackServer', (): any => {
     expect(factory.createServer).toHaveBeenCalledWith({});
     expect(factory.createServer).toHaveBeenCalledTimes(1);
 
-    expect(initializer.intialize).toHaveBeenCalledWith(server);
-    expect(initializer.intialize).toHaveBeenCalledTimes(1);
+    expect(initializer.initialize).toHaveBeenCalledWith(server);
+    expect(initializer.initialize).toHaveBeenCalledTimes(1);
   });
 
   it('should start the server.', (): any => {

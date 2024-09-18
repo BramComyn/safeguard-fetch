@@ -33,7 +33,7 @@ describe('ContentLengthAttackServerHttpInitializer', (): any => {
     } as any;
 
     initializer = new ContentLengthAttackServerHttpInitializer();
-    initializer.intialize(server);
+    initializer.initialize(server);
   });
 
   it('should make the server not respond to unknown paths.', (): any => {

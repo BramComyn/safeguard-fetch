@@ -8,10 +8,10 @@ import type { AttackServerInitializer } from './AttackServerInitializer';
 const paths = { ...HTTP2_SERVER_PATHS, ...CONTENT_LENGTH_PATHS } as const;
 
 /**
- * Initialises the attack server with the necessary event listeners for the `content-length` attack over HTTP/2.0
+ * Initializes the attack server with the necessary event listeners for the `content-length` attack over HTTP/2.0
  */
 export class ContentLengthAttackServerHttp2Initializer implements AttackServerInitializer<Http2Server> {
-  public intialize(server: Http2Server): void {
+  public initialize(server: Http2Server): void {
     server.on('stream', (stream: ServerHttp2Stream, headers: IncomingHttpHeaders): void => {
       const path = headers[':path']?.toString();
 

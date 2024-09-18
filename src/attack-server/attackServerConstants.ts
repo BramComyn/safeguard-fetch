@@ -7,6 +7,7 @@ import {
   standardHttpResponseGenerator,
 } from '../response-generator/StandardResponseGenerator';
 import { JsonLdResponseGenerator } from '../response-generator/JsonLdResponseGenerator';
+import { TurtleResponseGenerator } from '../response-generator/TurtleResponseGenerator';
 
 // Main attack server constants
 export const HTTP_PORT = 8080;
@@ -53,6 +54,10 @@ export const CONTENT_LENGTH_PATHS = {
 
 export const JSONLD_PATHS = {
   '/json-ld': (): ResponseGenerator => new JsonLdResponseGenerator(),
+} as const;
+
+export const TURTLE_PATHS = {
+  '/turtle': (): ResponseGenerator => new TurtleResponseGenerator(),
 } as const;
 
 /**

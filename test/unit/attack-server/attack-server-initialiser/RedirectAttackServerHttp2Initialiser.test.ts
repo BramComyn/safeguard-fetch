@@ -25,7 +25,7 @@ describe('RedirectAttackServerHttp2Initializer', (): any => {
     headers = { ':path': '/' };
 
     initializer = new RedirectAttackServerHttp2Initializer();
-    initializer.intialize(server);
+    initializer.initialize(server);
   });
 
   it('should make the server not respond to unknown paths.', (): any => {

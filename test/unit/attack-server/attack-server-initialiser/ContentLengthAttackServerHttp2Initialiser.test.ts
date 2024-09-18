@@ -32,7 +32,7 @@ describe('ContentLengthAttackServerInitializer', (): any => {
     headers = { ':path': '/' };
 
     initializer = new ContentLengthAttackServerHttp2Initializer();
-    initializer.intialize(server);
+    initializer.initialize(server);
   });
 
   it('should make the server not respond to unknown paths.', (): any => {

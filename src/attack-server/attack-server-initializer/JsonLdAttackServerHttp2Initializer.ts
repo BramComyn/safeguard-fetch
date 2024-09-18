@@ -7,10 +7,10 @@ import type { AttackServerInitializer } from './AttackServerInitializer';
 const paths = { ...HTTP2_SERVER_PATHS, ...JSONLD_PATHS } as const;
 
 /**
- * Initialises the attack server to respond with the necessary JSON-LD data.
+ * Initializes the attack server to respond with the necessary JSON-LD data.
  */
 export class JsonLdAttackServerHttp2Initializer implements AttackServerInitializer<Http2SecureServer> {
-  public intialize(server: Http2SecureServer): void {
+  public initialize(server: Http2SecureServer): void {
     server.on('stream', (stream, headers): void => {
       const path = headers[':path'];
 

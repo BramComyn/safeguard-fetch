@@ -127,7 +127,7 @@ export class TurtleDownloader {
     // so that we can be sure the entire buffer is filled and returned.
     return new Promise<Uint8Array>((resolve, reject): void => {
       request.on('close', (): void => resolve(this._buffer.slice(0, this.downloadedSize)));
-      request.on('error', reject);
+      request.on('error', (): void => reject(new Error('Error during download.')));
     });
   }
 }

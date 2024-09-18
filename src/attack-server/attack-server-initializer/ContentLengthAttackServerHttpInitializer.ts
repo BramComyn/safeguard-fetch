@@ -8,10 +8,10 @@ import type { AttackServerInitializer } from './AttackServerInitializer';
 const paths = { ...HTTP_SERVER_PATHS, ...CONTENT_LENGTH_PATHS } as const;
 
 /**
- * Initialises the attack server with the necessary event listeners for the `content-length` attack over HTTP/1.1
+ * Initializes the attack server with the necessary event listeners for the `content-length` attack over HTTP/1.1
  */
 export class ContentLengthAttackServerHttpInitializer implements AttackServerInitializer<Server> {
-  public intialize(server: Server): void {
+  public initialize(server: Server): void {
     server.on('request', (req: IncomingMessage, res: ServerResponse): void => {
       const path = req.url?.toString();
 
