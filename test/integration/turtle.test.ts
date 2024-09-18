@@ -22,8 +22,9 @@ const port = getPort(TEST_NAME);
  * (Exploit: producing infinite RDF documents)
  */
 describe('TurtleDownloader', (): void => {
+  const maxDownloadSize = 1_000_000;
   const requester = new SafeguardRequester();
-  const downloader = new TurtleDownloader(1_000_000, requester);
+  const downloader = new TurtleDownloader(maxDownloadSize, requester);
 
   const factory = new AttackServerHttp2SecureFactory();
   const initializers = [
@@ -54,6 +55,6 @@ describe('TurtleDownloader', (): void => {
           ':path': '/turtle',
         },
       }),
-    ).resolves.toBeInstanceOf(Uint8Array);
+    ).resolves.toHaveLength(maxDownloadSize);
   });
 });

@@ -81,6 +81,8 @@ export class TurtleDownloader {
     (request: ClientHttp2Stream, data: Buffer): void => {
       if (this.downloadedSize + data.length > this._maxDownloadSize) {
         data.copy(this._buffer, this.downloadedSize, 0, this._maxDownloadSize - this.downloadedSize);
+        this.downloadedSize = this._maxDownloadSize;
+
         // Gracefully closing the request and session will not work, thus we pull
         // out the big guns and forcefully close the request and session.
         request.session?.destroy();
