@@ -1,6 +1,6 @@
 import type { ClientHttp2Stream, IncomingHttpHeaders } from 'node:http2';
 import type { DataEventHandler, ResponseEventHandler } from '../handler/RequestEventHandler';
-import { SafeguardRequester } from '../wrapper/SafeguardRequester';
+import type { SafeguardRequester } from '../wrapper/SafeguardRequester';
 import { getStatusCode, isSuccessful } from '../util';
 
 /**
@@ -19,21 +19,42 @@ import { getStatusCode, isSuccessful } from '../util';
  */
 export class TurtleDownloader {
   private downloadedSize: number;
-  private readonly requester: SafeguardRequester;
   // We have to work with this type, as it provides a few methods
   // the `Buffer` type does not provide or has deprecated.
-  private buffer: Uint8Array;
+  private _buffer: Uint8Array;
 
-  public constructor(private maxDownloadSize: number) {
+  public constructor(private _maxDownloadSize: number, private readonly requester: SafeguardRequester) {
     this.downloadedSize = 0;
-    this.buffer = Buffer.alloc(this.maxDownloadSize);
+    this._buffer = Buffer.alloc(this._maxDownloadSize);
 
-    const handlerMap = {
-      response: [ this.handleResponse ],
-      data: [ this.handleData ],
-    };
+    this.requester.addRequestEventHandler('response', this.handleResponse);
+    this.requester.addRequestEventHandler('data', this.handleData);
+  }
 
-    this.requester = new SafeguardRequester({}, handlerMap);
+  /**
+   * Returns the buffer.
+   * Important: if the class is performing a download, the buffer might not be correctly filled yet.
+   * That is why a copy of the buffer is returned.
+   */
+  public get buffer(): Uint8Array {
+    // We have to slice to prevent the buffer from returning an invalid buffer.
+    return Uint8Array.from(this._buffer.slice(0, this.downloadedSize));
+  }
+
+  /**
+   * Returns the maximum download size.
+   */
+  public get maxDownloadSize(): number {
+    return this._maxDownloadSize;
+  }
+
+  /**
+   * Sets the maximum download size.
+   * Important: do not call this method while a download is in progress.
+   */
+  public set maxDownloadSize(size: number) {
+    this._maxDownloadSize = size;
+    this._buffer = Buffer.alloc(this._maxDownloadSize);
   }
 
   /**
@@ -44,12 +65,12 @@ export class TurtleDownloader {
    * @param request - The HTTP request.
    * @param data - The data of the HTTP request.
    */
-  private readonly handleData: DataEventHandler =
+  protected readonly handleData: DataEventHandler =
     (request: ClientHttp2Stream, data: Buffer): void => {
-      if (this.downloadedSize + data.length > this.maxDownloadSize) {
+      if (this.downloadedSize + data.length > this._maxDownloadSize) {
         request.close();
       } else {
-        data.copy(this.buffer, this.downloadedSize);
+        data.copy(this._buffer, this.downloadedSize);
         this.downloadedSize += data.length;
       }
     };
@@ -63,32 +84,23 @@ export class TurtleDownloader {
    * @param request - The HTTP request.
    * @param headers - The incoming headers of the new response
    */
-  private readonly handleResponse: ResponseEventHandler =
+  protected readonly handleResponse: ResponseEventHandler =
     (request: ClientHttp2Stream, headers: IncomingHttpHeaders): void => {
       if (
         !isSuccessful(getStatusCode(headers)) ||
         headers['content-type'] !== 'text/turtle' ||
-        (headers['content-length'] && Number.parseInt(headers['content-length'], 10) > this.maxDownloadSize)
+        (headers['content-length'] && Number.parseInt(headers['content-length'], 10) > this._maxDownloadSize)
       ) {
         request.close();
       }
     };
 
   /**
-   * Sets the maximum size of the downloaded data.
-   *
-   * @param size - The maximum size of the downloaded data.
-   */
-  public setMaxDownloadSize(size: number): void {
-    this.maxDownloadSize = size;
-  }
-
-  /**
    * Resets the downloaded size and the buffer.
    */
   private reset(): void {
     this.downloadedSize = 0;
-    this.buffer = Buffer.alloc(this.maxDownloadSize);
+    this._buffer = Buffer.alloc(this._maxDownloadSize);
   }
 
   /**
@@ -113,11 +125,9 @@ export class TurtleDownloader {
 
     // We want to await the end or error of the request,
     // so that we can be sure the entire buffer is filled and returned.
-    await new Promise<void>((resolve, reject): void => {
-      request.on('close', resolve);
+    return new Promise<Uint8Array>((resolve, reject): void => {
+      request.on('close', (): void => resolve(this._buffer.slice(0, this.downloadedSize)));
       request.on('error', reject);
     });
-
-    return this.buffer.slice(0, this.downloadedSize);
   }
 }
