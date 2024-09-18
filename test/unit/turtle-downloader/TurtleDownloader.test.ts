@@ -114,7 +114,6 @@ describe('TurtleDownloader', (): void => {
     await expect(
       downloader.download(url),
     ).resolves.toEqual(Uint8Array.from(data));
-    request.emit('close');
   });
 
   it.skip('should throw an error if the download fails.', async(): Promise<void> => {
