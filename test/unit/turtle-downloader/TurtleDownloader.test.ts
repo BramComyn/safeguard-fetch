@@ -99,6 +99,12 @@ describe('TurtleDownloader', (): void => {
     expect(downloader.maxDownloadSize).toBe(200);
   });
 
+  it('should set the buffer.', (): void => {
+    const buffer = Uint8Array.from(Buffer.alloc(10));
+    downloader.buffer = buffer;
+    expect(downloader.buffer).toEqual(Uint8Array.from(buffer).slice(0, 0));
+  });
+
   it('should correctly download the given turtle file.', async(): Promise<void> => {
     const url = new URL('http://example.com');
     const data = Buffer.alloc(10);

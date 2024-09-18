@@ -54,6 +54,14 @@ export class TurtleDownloader {
   }
 
   /**
+   * Sets the buffer.
+   * Important: do not call this method while a download is in progress.
+   */
+  public set buffer(buffer: Uint8Array) {
+    this._buffer = buffer;
+  }
+
+  /**
    * Returns the maximum download size.
    */
   public get maxDownloadSize(): number {
@@ -66,7 +74,7 @@ export class TurtleDownloader {
    */
   public set maxDownloadSize(size: number) {
     this._maxDownloadSize = size;
-    this._buffer = Buffer.alloc(this._maxDownloadSize);
+    this.buffer = Buffer.alloc(this._maxDownloadSize);
   }
 
   /**
@@ -107,9 +115,10 @@ export class TurtleDownloader {
       if (
         !isSuccessful(getStatusCode(headers)) ||
         headers['content-type'] !== 'text/turtle' ||
-        (headers['content-length'] && Number.parseInt(headers['content-length'], 10) > this._maxDownloadSize)
+        (headers['content-length'] && Number.parseInt(headers['content-length'], 10) > this.maxDownloadSize)
       ) {
-        request.close(undefined, (): void => request.session?.close());
+        request.session?.destroy();
+        request.close();
       }
     };
 
@@ -118,7 +127,7 @@ export class TurtleDownloader {
    */
   private reset(): void {
     this.downloadedSize = 0;
-    this._buffer = Buffer.alloc(this._maxDownloadSize);
+    this.buffer = Buffer.alloc(this.maxDownloadSize);
   }
 
   /**
