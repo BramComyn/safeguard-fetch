@@ -1,4 +1,16 @@
-import type { ClientHttp2Stream, IncomingHttpHeaders } from 'node:http2';
+import type {
+  ClientHttp2Session,
+  ClientHttp2Stream,
+  ClientSessionOptions,
+  ClientSessionRequestOptions,
+  IncomingHttpHeaders,
+  OutgoingHttpHeaders,
+  SecureClientSessionOptions,
+} from 'node:http2';
+
+import type { Socket } from 'node:net';
+import type { TLSSocket } from 'node:tls';
+
 import type { DataEventHandler, ResponseEventHandler } from '../handler/RequestEventHandler';
 import type { SafeguardRequester } from '../wrapper/SafeguardRequester';
 import { getStatusCode, isSuccessful } from '../util';
@@ -68,6 +80,10 @@ export class TurtleDownloader {
   protected readonly handleData: DataEventHandler =
     (request: ClientHttp2Stream, data: Buffer): void => {
       if (this.downloadedSize + data.length > this._maxDownloadSize) {
+        data.copy(this._buffer, this.downloadedSize, 0, this._maxDownloadSize - this.downloadedSize);
+        // Gracefully closing the request and session will not work, thus we pull
+        // out the big guns and forcefully close the request and session.
+        request.session?.destroy();
         request.close();
       } else {
         data.copy(this._buffer, this.downloadedSize);
@@ -91,7 +107,7 @@ export class TurtleDownloader {
         headers['content-type'] !== 'text/turtle' ||
         (headers['content-length'] && Number.parseInt(headers['content-length'], 10) > this._maxDownloadSize)
       ) {
-        request.close();
+        request.close(undefined, (): void => request.session?.close());
       }
     };
 
@@ -106,27 +122,34 @@ export class TurtleDownloader {
   /**
    * Downloads the data from the given URL and returns the data as a Buffer.
    *
-   * @param url - The URL to download the data from.
+   * @param configuration - The configuration for the download.
+   * @param configuration.authority - The authority to download from.
+   * @param configuration.sessionOptions - The session options for the download.
+   * @param configuration.listener - The listener for the download.
+   * @param configuration.requestHeaders - The request headers for the download.
+   * @param configuration.requestOptions - The request options for the download.
    *
    * @returns The downloaded data as a Buffer.
    */
-  public async download(url: URL): Promise<Uint8Array> {
+  public async download(configuration: {
+    authority: string | URL;
+    sessionOptions?: ClientSessionOptions | SecureClientSessionOptions | undefined;
+    listener?: ((session: ClientHttp2Session, socket: Socket | TLSSocket) => void) | undefined;
+    requestHeaders: OutgoingHttpHeaders;
+    requestOptions?: ClientSessionRequestOptions | undefined;
+  }): Promise<Uint8Array> {
     this.reset();
 
-    const request = this.requester.connectAndRequest({
-      authority: url.host,
-      sessionOptions: {},
-      listener: undefined,
-      requestHeaders: {
-        ':path': url.pathname,
-      },
-      requestOptions: {},
-    });
+    const request = this.requester.connectAndRequest(configuration);
 
     // We want to await the end or error of the request,
     // so that we can be sure the entire buffer is filled and returned.
     return new Promise<Uint8Array>((resolve, reject): void => {
-      request.on('close', (): void => resolve(this._buffer.slice(0, this.downloadedSize)));
+      request.on('close', (): void => {
+        request.session?.close();
+        resolve(this.buffer);
+      });
+
       request.on('error', (): void => reject(new Error('Error during download.')));
     });
   }

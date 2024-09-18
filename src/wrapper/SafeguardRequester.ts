@@ -70,13 +70,15 @@ export class SafeguardRequester {
    *
    * @returns - a new `ClientHttp2Session`
    */
-  public connectAndRequest(configuration: {
-    authority: string | URL;
-    sessionOptions?: ClientSessionOptions | SecureClientSessionOptions;
-    listener?: (session: ClientHttp2Session, socket: Socket | TLSSocket) => void;
-    requestHeaders?: OutgoingHttpHeaders;
-    requestOptions?: ClientSessionRequestOptions;
-  }): ClientHttp2Stream {
+  public connectAndRequest(
+    configuration: {
+      authority: string | URL;
+      sessionOptions?: ClientSessionOptions | SecureClientSessionOptions;
+      listener?: (session: ClientHttp2Session, socket: Socket | TLSSocket) => void;
+      requestHeaders?: OutgoingHttpHeaders;
+      requestOptions?: ClientSessionRequestOptions;
+    },
+  ): ClientHttp2Stream {
     const client = this.connect(configuration.authority, configuration.sessionOptions, configuration.listener);
     return this.request(client, configuration.requestHeaders, configuration.requestOptions);
   }

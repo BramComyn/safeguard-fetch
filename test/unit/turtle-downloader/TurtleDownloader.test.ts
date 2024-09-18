@@ -118,7 +118,10 @@ describe('TurtleDownloader', (): void => {
     });
 
     await expect(
-      downloader.download(url),
+      downloader.download({
+        authority: url,
+        requestHeaders: {},
+      }),
     ).resolves.toBeDefined();
   });
 
@@ -132,7 +135,10 @@ describe('TurtleDownloader', (): void => {
     });
 
     await expect(
-      downloader.download(url),
+      downloader.download({
+        authority: url,
+        requestHeaders: {},
+      }),
     ).rejects.toThrow(Error);
   });
 });
