@@ -1,4 +1,4 @@
-import type { IncomingHttpHeaders } from 'node:http2';
+import type { IncomingHttpHeaders, OutgoingHttpHeaders } from 'node:http2';
 import * as path from 'node:path';
 import { readFileSync } from 'node:fs';
 
@@ -63,7 +63,7 @@ const HTTP_VERSION_NOT_SUPPORTED = 505;
  *
  * @returns - The status code as integer
  */
-export function getStatusCode(headers: IncomingHttpHeaders): number {
+export function getStatusCode(headers: IncomingHttpHeaders | OutgoingHttpHeaders): number {
   return sanitizeStatusCode(Number.parseInt(headers[':status'] as string | undefined ?? '0', 10));
 }
 

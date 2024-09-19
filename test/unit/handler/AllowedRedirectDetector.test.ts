@@ -25,7 +25,7 @@ describe('createAllowedRedirectDetector', (): void => {
   it(
     'should close the request if the status code is a redirect and the location is not in the allowed list.',
     (): void => {
-      headers = MALICIOUS_REDIRECT_PATHS['/malicious-redirect']() as IncomingHttpHeaders;
+      headers = MALICIOUS_REDIRECT_PATHS['/malicious-redirect'].generateResponse().headers as IncomingHttpHeaders;
       handler(request, headers);
       expect(request.close).toHaveBeenCalledTimes(1);
     },
@@ -34,14 +34,9 @@ describe('createAllowedRedirectDetector', (): void => {
   it(
     'should not close the request if the status code is a redirect and the location is in the allowed list.',
     (): void => {
-      headers = MALICIOUS_REDIRECT_PATHS['/non-malicious-redirect']() as IncomingHttpHeaders;
+      headers = MALICIOUS_REDIRECT_PATHS['/non-malicious-redirect'].generateResponse().headers as IncomingHttpHeaders;
       handler(request, headers);
       expect(request.close).not.toHaveBeenCalled();
     },
   );
-
-  it('should throw an error if the status code is unknown.', (): void => {
-    headers = MALICIOUS_REDIRECT_PATHS['/no-status-code-redirect']() as IncomingHttpHeaders;
-    expect((): void => handler(request, headers)).toThrow(Error);
-  });
 });

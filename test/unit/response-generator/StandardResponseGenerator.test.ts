@@ -4,14 +4,19 @@ import {
   StandardResponseGenerator,
 } from '../../../src/response-generator/StandardResponseGenerator';
 
-const funcs = [ standardHttpResponseGenerator, standardHttp2ResponseGenerator ];
-
 describe('StandardResponseGenerator', (): any => {
   let responseGenerator: StandardResponseGenerator;
+  let funcs: (() => StandardResponseGenerator)[];
 
-  it.each(funcs)('returns a response generator.', (func): void => {
-    responseGenerator = func();
-    expect(responseGenerator).toBeDefined();
+  beforeEach((): void => {
+    funcs = [ standardHttpResponseGenerator, standardHttp2ResponseGenerator ];
+  });
+
+  it('returns a response generator.', (): void => {
+    for (const func of funcs) {
+      responseGenerator = func();
+      expect(responseGenerator).toBeInstanceOf(StandardResponseGenerator);
+    }
   });
 
   it('should never create a response without a `content-length` header.', (): void => {
