@@ -1,5 +1,7 @@
 import type { Server } from 'node:net';
 
+import type { ResponseGenerator } from '../../response-generator/ResponseGenerator';
+
 /**
  * Interface for initializing the attack server.
  *
@@ -13,3 +15,8 @@ export interface AttackServerInitializer<T extends Server> {
    */
   initialize: (server: T) => void;
 }
+
+/**
+ * Map of response generators for a given path
+ */
+export type ResponseGeneratorMap = Record<string, ResponseGenerator>;

@@ -1,5 +1,7 @@
 import type { Http2SecureServer } from 'node:http2';
 
+import type { ResponseGeneratorMap } from '../../src/attack-server/attack-server-initializer/AttackServerInitializer';
+import { HTTP2_SERVER_PATHS, TURTLE_PATHS } from '../../src/attack-server/attackServerConstants';
 import { AttackServer } from '../../src/attack-server/attack-server/AttackServer';
 import { TurtleDownloader } from '../../src/turtle-downloader/TurtleDownloader';
 import { SafeguardRequester } from '../../src/wrapper/SafeguardRequester';
@@ -10,8 +12,10 @@ import {
 } from '../../src/attack-server/attack-server-factory/AttackServerHttp2SecureFactory';
 
 import {
-  TurtleAttackServerHttp2Initializer,
-} from '../../src/attack-server/attack-server-initializer/TurtleAttackServerHttp2Initializer';
+  AttackServerHttp2Initializer,
+} from '../../src/attack-server/attack-server-initializer/AttackServerHttp2Initializer';
+
+const paths: ResponseGeneratorMap = { ...HTTP2_SERVER_PATHS, ...TURTLE_PATHS };
 
 const TEST_NAME = 'TurtleIntegration';
 const port = getPort(TEST_NAME);
@@ -28,7 +32,7 @@ describe('TurtleDownloader', (): void => {
 
   const factory = new AttackServerHttp2SecureFactory();
   const initializers = [
-    new TurtleAttackServerHttp2Initializer(),
+    new AttackServerHttp2Initializer(paths),
   ];
 
   const server = new AttackServer<Http2SecureServer>(
