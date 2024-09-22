@@ -45,7 +45,7 @@ export class TurtleDownloader {
         headers['content-type'] !== 'text/turtle' ||
         (headers['content-length'] && Number.parseInt(headers['content-length'], 10) > maxDownloadSize)
       ) {
-        request.emit('error', new Error('Response is not as expected.'));
+        request.emit('error', new Error('Response is not as expected: ' + headers));
       }
     };
   }
@@ -105,7 +105,7 @@ export class TurtleDownloader {
         resolve(buffer.slice(0, downloadedSize));
       });
 
-      request.on('error', (): void => reject(new Error('Error during download.')));
+      request.on('error', (err): void => reject(err ?? new Error('Error during download.')));
     });
   }
 }

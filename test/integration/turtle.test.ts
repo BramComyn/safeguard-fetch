@@ -4,7 +4,6 @@ import type { ResponseGeneratorMap } from '../../src/attack-server/attack-server
 import { HTTP2_SERVER_PATHS, TURTLE_PATHS } from '../../src/attack-server/attackServerConstants';
 import { AttackServer } from '../../src/attack-server/attack-server/AttackServer';
 import { TurtleDownloader } from '../../src/turtle-downloader/TurtleDownloader';
-import { SafeguardRequester } from '../../src/wrapper/SafeguardRequester';
 import { getPort, secureServerOptions } from '../../src/util';
 
 import {
@@ -27,8 +26,7 @@ const port = getPort(TEST_NAME);
  */
 describe('TurtleDownloader', (): void => {
   const maxDownloadSize = 1_000_000;
-  const requester = new SafeguardRequester();
-  const downloader = new TurtleDownloader(maxDownloadSize, requester);
+  const downloader = new TurtleDownloader();
 
   const factory = new AttackServerHttp2SecureFactory();
   const initializers = [
@@ -52,13 +50,15 @@ describe('TurtleDownloader', (): void => {
     const url = new URL(`https://localhost:${port}`);
 
     await expect(
-      downloader.download({
-        authority: url,
-        sessionOptions: { ca: secureServerOptions.cert },
-        requestHeaders: {
-          ':path': '/turtle',
-        },
-      }),
+      downloader.download(
+        maxDownloadSize,
+        {
+          authority: url,
+          sessionOptions: { ca: secureServerOptions.cert },
+          requestHeaders: {
+            ':path': '/turtle',
+          },
+        }),
     ).resolves.toHaveLength(maxDownloadSize);
   });
 });
