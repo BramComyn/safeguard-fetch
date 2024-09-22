@@ -1,19 +1,19 @@
 import type { Http2Server, IncomingHttpHeaders, ServerHttp2Stream } from 'node:http2';
 
-import type { AttackServerInitializer, ResponseGeneratorMap } from './AttackServerInitializer';
+import type { AttackServerInitialiser, ResponseGeneratorMap } from './AttackServerInitialiser';
 
 /**
  * Class for initializing HTTP/2.0 attack servers.
  *
  * @member responseGenerators - A map of response generators for each path.
- * @method initialize - initializes the server with the necessary event listeners.
+ * @method initialise - initialises the server with the necessary event listeners.
  */
-export class AttackServerHttp2Initializer implements AttackServerInitializer<Http2Server> {
+export class AttackServerHttp2Initialiser implements AttackServerInitialiser<Http2Server> {
   public constructor(
     protected responseGenerators: ResponseGeneratorMap = {},
   ) {}
 
-  public initialize(server: Http2Server): void {
+  public initialise(server: Http2Server): void {
     server.on('stream', (stream: ServerHttp2Stream, inboundHeaders: IncomingHttpHeaders): void => {
       const path = inboundHeaders[':path'];
 

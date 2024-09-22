@@ -2,7 +2,7 @@ import { connect } from 'node:http2';
 import { once } from 'node:events';
 
 import { createRefuseContentLongerThanHandler } from '../../src/handler/examples/RefuseContentLengthLongerThanHandler';
-import type { ResponseGeneratorMap } from '../../src/attack-server/attack-server-initializer/AttackServerInitializer';
+import type { ResponseGeneratorMap } from '../../src/attack-server/attack-server-initialiser/AttackServerInitialiser';
 import { createRefuseNoContentLengthHandler } from '../../src/handler/examples/RefuseNoContentLengthHandler';
 import { createAllowedRedirectDetector } from '../../src/handler/examples/AllowedRedirectDetector';
 import { createBannedRedirectDetector } from '../../src/handler/examples/BannedRedirectDetector';
@@ -15,8 +15,8 @@ import {
 } from '../../src/attack-server/attack-server-factory/AttackServerHttp2SecureFactory';
 
 import {
-  AttackServerHttp2Initializer,
-} from '../../src/attack-server/attack-server-initializer/AttackServerHttp2Initializer';
+  AttackServerHttp2Initialiser,
+} from '../../src/attack-server/attack-server-initialiser/AttackServerHttp2Initialiser';
 
 import {
   CONTENT_LENGTH_PATHS,
@@ -39,7 +39,7 @@ describe('The whole codebase', (): void => {
   const server = new AttackServer(
     port,
     factory,
-    [ new AttackServerHttp2Initializer(generators) ],
+    [ new AttackServerHttp2Initialiser(generators) ],
     secureServerOptions,
   );
 

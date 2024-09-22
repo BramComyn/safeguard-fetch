@@ -1,20 +1,20 @@
 import type { Server } from 'node:http';
 
 import { getStatusCode } from '../../util';
-import type { AttackServerInitializer, ResponseGeneratorMap } from './AttackServerInitializer';
+import type { AttackServerInitialiser, ResponseGeneratorMap } from './AttackServerInitialiser';
 
 /**
  * Class for initializing HTTP/1.1 attack servers.
  *
  * @member responseGenerators - A map of response generators for each path.
- * @method initialize - initializes the server with the necessary event listeners.
+ * @method initialise - initialises the server with the necessary event listeners.
  */
-export class AttackServerHttpInitializer implements AttackServerInitializer<Server> {
+export class AttackServerHttpInitialiser implements AttackServerInitialiser<Server> {
   public constructor(
     protected responseGenerators: ResponseGeneratorMap = {},
   ) {}
 
-  public initialize(server: Server): void {
+  public initialise(server: Server): void {
     server.on('request', (req, res): void => {
       const path = req.url?.toString();
 

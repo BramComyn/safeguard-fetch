@@ -64,17 +64,17 @@ const HTTP_VERSION_NOT_SUPPORTED = 505;
  * @returns - The status code as integer
  */
 export function getStatusCode(headers: IncomingHttpHeaders | OutgoingHttpHeaders): number {
-  return sanitizeStatusCode(Number.parseInt(headers[':status'] as string | undefined ?? '0', 10));
+  return sanitiseStatusCode(Number.parseInt(headers[':status'] as string | undefined ?? '0', 10));
 }
 
 /**
  * Return the correct status code to act upon as [https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes] states
  *
- * @param statusCode - The status code to sanitize
+ * @param statusCode - The status code to sanitise
  *
- * @returns - The sanitized status code
+ * @returns - The sanitised status code
  */
-export function sanitizeStatusCode(statusCode: number): number {
+export function sanitiseStatusCode(statusCode: number): number {
   if (statusCode >= 100 && statusCode <= 199) {
     return statusCode === SWITCHING_PROTOCOLS ? statusCode : 100;
   }

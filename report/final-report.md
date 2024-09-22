@@ -40,3 +40,73 @@ of which most of [the playgrounds](../scripts/playgrounds/) are the final result
 During the first week, it was sometimes awkward getting stuck *not knowing* what to do or how to proceed.
 When I noticed this, I reached out and was supported really well.
 This made me very enthusiast going into the end of the first week and really allowed me to grow into this work.
+
+## Second week: a rudimentary wrapper implementation
+
+During my second week of working, I laid the foundations of what ultimately became the wrapper.
+I started by decoupling some code I wrote for the ``infinite-server``, based on the ideas that were given to me
+in our meeting and Mattermost-chats.
+I also kept documenting some more details in client behavior for this specific use case,
+but extended my testing and playing around to also include the case of a faulty or malicious redirect.
+Ultimately, I coded the ``setContentLengthHandler``, ``setNoContentLengthHandler`` and ``setRedirectHandler``.
+It was clear that this approach wasn't the most durable, so that's why I decided to ask for more feedback.
+This feedback is what led to the refactoring that took me most of my week, Wednesday through to Friday.
+
+All of this work led to the types and classes defined under ``src/handler``,
+as my earlier functions got rewritten into some examples of a more generic interface for allowing
+the user to attach handlers in different cases.
+This made me realise that I was not directly making a wrapper, yet more some examples of how my wrapper could be used.
+I would go on to fix and demonstrate this one more time in my third week.
+
+### Perception of week 2
+
+This week was probably the most valuable to me in terms of learning TypeScript's typing system
+and how to perform some very funky things with it.
+I really want to thank the people that guided me in this,
+as I would have probably given up if this was some personal side project
+-- which sounds very dramatic, but in fact is the truth.
+
+I felt more comfortable in getting stuck on something,
+and I felt more at home in this research-type of work.
+
+## Third week: ``SafeguardRequester`` - a testimony to learning TypeScript
+
+The final result of my code is the ``SafeguardRequester`` class,
+with the three most important methods being:
+
+- ``connect``
+- ``request``
+
+and their combination in
+
+- ``connectAndRequest``
+
+These methods allow for repeated use of the different ``ClientEventHandler``s and ``ResponseEventHandler``s
+that the user can define and set through the constructor and the respective methods.
+
+Also in the final week, I fixed broken tests and bumped the coverage for all my files to 100%,
+with both integration tests and unit tests for the wrapper.
+I even included a more detailed example, albeit very rudimentary, flawed and NOT FIT FOR REAL USE.
+However, it is tested, shows the functionality of the wrapper and the possibilities included through its use.
+
+In short, the wrapper makes adding a complex amount of event handlers a bit easier for the user,
+yet I still believe there is more possible work and improvements to be built in the wrapper and its usage.
+
+### Perception of the third week
+
+The third week was a bit more difficult, as it came with a bunch of
+-- in my eyes complicated -- testing,
+but in the end I managed to develop a strong set of tests that cover a plethora of possible
+situations. I was very happy about my results, as I could compare to myself three weeks prior
+and see what improvements I had made
+in terms of practical experience.
+
+## A word of thanks
+
+I still wish to thank everyone who helped me in achieving this code.
+To me, it was my first experience I got working in my own sector.
+This work managed to convince myself entirely again of why I study this field and what sparked my interest in it.
+I will enter the new year as a more complete and better computer scientist.
+I also wish to thank prof. Verborgh again for introducing me in Web Development
+and all its interesting and complex ideas and concepts.
+I yearn to returning next summer and paving my way further into the open world of software development and research.

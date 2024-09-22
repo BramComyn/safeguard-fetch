@@ -5,15 +5,15 @@ import type { ResponseGenerator } from '../../response-generator/ResponseGenerat
 /**
  * Interface for initializing the attack server.
  *
- * @method initialize - initializes the server with the necessary event listeners
+ * @method initialise - initialises the server with the necessary event listeners
  */
-export interface AttackServerInitializer<T extends Server> {
+export interface AttackServerInitialiser<T extends Server> {
   /**
-   * Initializes a server with the necessary event listeners.
+   * Initialises a server with the necessary event listeners.
    *
-   * @param server The server to be initialized.
+   * @param server The server to be initialised.
    */
-  initialize: (server: T) => void;
+  initialise: (server: T) => void;
 }
 
 /**

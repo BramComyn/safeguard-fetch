@@ -3,7 +3,7 @@ import type { Server as HttpServer } from 'node:http';
 import type { Http2Server } from 'node:http2';
 
 import type { AttackServerFactory } from '../attack-server-factory/AttackServerFactory';
-import type { AttackServerInitializer } from '../attack-server-initializer/AttackServerInitializer';
+import type { AttackServerInitialiser } from '../attack-server-initialiser/AttackServerInitialiser';
 
 /**
  * An attack server for testing purposes
@@ -23,20 +23,20 @@ export class AttackServer<T extends Server> {
    *
    * @param port - the desired port to start the server on
    * @param attackServerFactory - the factory to create the server
-   * @param attackServerInitializers - the initializers to initialise the server
+   * @param attackServerInitialisers - the initialisers to initialise the server
    * @param options - options to pass to the server factory
    */
   public constructor(
     port: number,
     attackServerFactory: AttackServerFactory<T>,
-    attackServerInitializers: AttackServerInitializer<T>[],
+    attackServerInitialisers: AttackServerInitialiser<T>[],
     options?: object,
   ) {
     this.port = port;
     this.server = attackServerFactory.createServer(options ?? {});
 
-    for (const initializer of attackServerInitializers) {
-      initializer.initialize(this.server);
+    for (const initialiser of attackServerInitialisers) {
+      initialiser.initialise(this.server);
     }
   }
 

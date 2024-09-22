@@ -35,7 +35,7 @@ describe('TurtleDownloader', (): void => {
     responseHandler = (downloader as any).createResponseHandler(maxDownloadSize);
   });
 
-  it('should initialize correctly.', (): void => {
+  it('should initialise correctly.', (): void => {
     expect(downloader).toBeDefined();
   });
 
