@@ -7,7 +7,7 @@ export class RedirectResponseGenerator implements ResponseGenerator {
   public constructor(private readonly status: number, private readonly location: string | URL) {}
   public generateResponse(): {
     headers: OutgoingHttpHeaders;
-    body: Readable | undefined;
+    body?: Readable;
   } {
     const headers: OutgoingHttpHeaders = {
       ':status': this.status?.toString(),
@@ -15,7 +15,6 @@ export class RedirectResponseGenerator implements ResponseGenerator {
     };
     return {
       headers,
-      body: undefined,
     };
   }
 }

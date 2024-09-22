@@ -14,6 +14,6 @@ export interface ResponseGenerator {
    */
   generateResponse: () => {
     headers: OutgoingHttpHeaders;
-    body: Readable | undefined;
+    body?: Readable;
   };
 }
