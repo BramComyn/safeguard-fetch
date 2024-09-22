@@ -1,39 +1,45 @@
 import { connect } from 'node:http2';
-
 import { once } from 'node:events';
+
+import { createRefuseContentLongerThanHandler } from '../../src/handler/examples/RefuseContentLengthLongerThanHandler';
+import type { ResponseGeneratorMap } from '../../src/attack-server/attack-server-initializer/AttackServerInitializer';
+import { createRefuseNoContentLengthHandler } from '../../src/handler/examples/RefuseNoContentLengthHandler';
+import { createAllowedRedirectDetector } from '../../src/handler/examples/AllowedRedirectDetector';
+import { createBannedRedirectDetector } from '../../src/handler/examples/BannedRedirectDetector';
+import { AttackServer } from '../../src/attack-server/attack-server/AttackServer';
+import { SafeguardRequester } from '../../src/wrapper/SafeguardRequester';
+import { getPort, secureServerOptions } from '../../src/util';
 
 import {
   AttackServerHttp2SecureFactory,
 } from '../../src/attack-server/attack-server-factory/AttackServerHttp2SecureFactory';
 
 import {
-  ContentLengthAttackServerHttp2Initializer,
-} from '../../src/attack-server/attack-server-initializer/ContentLengthAttackServerHttp2Initializer';
+  AttackServerHttp2Initializer,
+} from '../../src/attack-server/attack-server-initializer/AttackServerHttp2Initializer';
 
 import {
-  RedirectAttackServerHttp2Initializer,
-} from '../../src/attack-server/attack-server-initializer/RedirectAttackServerHttp2Initializer';
-
-import { AttackServer } from '../../src/attack-server/attack-server/AttackServer';
-import { getPort, secureServerOptions } from '../../src/util';
-import { SafeguardRequester } from '../../src/wrapper/SafeguardRequester';
-import { createRefuseContentLongerThanHandler } from '../../src/handler/examples/RefuseContentLengthLongerThanHandler';
-import { createAllowedRedirectDetector } from '../../src/handler/examples/AllowedRedirectDetector';
-import { MALICIOUS_REDIRECT_URL, NON_MALICIOUS_REDIRECT_URL } from '../../src/attack-server/attackServerConstants';
-import { createBannedRedirectDetector } from '../../src/handler/examples/BannedRedirectDetector';
-import { createRefuseNoContentLengthHandler } from '../../src/handler/examples/RefuseNoContentLengthHandler';
+  CONTENT_LENGTH_PATHS,
+  HTTP2_SERVER_PATHS,
+  MALICIOUS_REDIRECT_PATHS,
+  MALICIOUS_REDIRECT_URL,
+  NON_MALICIOUS_REDIRECT_URL,
+} from '../../src/attack-server/attackServerConstants';
 
 const port = getPort('WrapperIntegration');
 
 describe('The whole codebase', (): void => {
   const factory = new AttackServerHttp2SecureFactory();
-  const contentLengthInitializer = new ContentLengthAttackServerHttp2Initializer();
-  const redirectInitializer = new RedirectAttackServerHttp2Initializer();
+  const generators: ResponseGeneratorMap = {
+    ...HTTP2_SERVER_PATHS,
+    ...CONTENT_LENGTH_PATHS,
+    ...MALICIOUS_REDIRECT_PATHS,
+  };
 
   const server = new AttackServer(
     port,
     factory,
-    [ contentLengthInitializer, redirectInitializer ],
+    [ new AttackServerHttp2Initializer(generators) ],
     secureServerOptions,
   );
 
@@ -42,7 +48,8 @@ describe('The whole codebase', (): void => {
   const requester = new SafeguardRequester();
 
   afterAll((): void => {
-    client.close();
+    // We need to destroy the client because of the infinite responses
+    client.destroy();
     server.stop();
   });
 

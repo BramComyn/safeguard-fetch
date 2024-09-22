@@ -1,4 +1,4 @@
-import type { IncomingHttpHeaders } from 'node:http2';
+import type { IncomingHttpHeaders, OutgoingHttpHeaders } from 'node:http2';
 import * as path from 'node:path';
 import { readFileSync } from 'node:fs';
 
@@ -27,6 +27,7 @@ const TEST_NAME = [
   'AttackServerHttp2SecureFactoryUnit',
   'AttackServerHttpFactoryUnit',
   'WrapperIntegration',
+  'TurtleIntegration',
 ] as const;
 
 /**
@@ -62,18 +63,18 @@ const HTTP_VERSION_NOT_SUPPORTED = 505;
  *
  * @returns - The status code as integer
  */
-export function getStatusCode(headers: IncomingHttpHeaders): number {
-  return sanitiseStatusCode(Number.parseInt(headers[':status'] as string | undefined ?? '0', 10));
+export function getStatusCode(headers: IncomingHttpHeaders | OutgoingHttpHeaders): number {
+  return sanitizeStatusCode(Number.parseInt(headers[':status'] as string | undefined ?? '0', 10));
 }
 
 /**
  * Return the correct status code to act upon as [https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes] states
  *
- * @param statusCode - The status code to sanitise
+ * @param statusCode - The status code to sanitize
  *
- * @returns - The sanitised status code
+ * @returns - The sanitized status code
  */
-export function sanitiseStatusCode(statusCode: number): number {
+export function sanitizeStatusCode(statusCode: number): number {
   if (statusCode >= 100 && statusCode <= 199) {
     return statusCode === SWITCHING_PROTOCOLS ? statusCode : 100;
   }
@@ -96,7 +97,7 @@ export function sanitiseStatusCode(statusCode: number): number {
   }
 
   // Throw an error here?
-  throw new Error(`Invalid HTTP status code not asignable to status code class: ${statusCode}`);
+  throw new Error(`Invalid HTTP status code not assignable to status code class: ${statusCode}`);
 }
 
 /**

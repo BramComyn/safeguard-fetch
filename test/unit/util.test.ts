@@ -4,62 +4,62 @@ import {
   getStatusCodeClass,
   isRedirection,
   isSuccessful,
-  sanitiseStatusCode,
+  sanitizeStatusCode,
 } from '../../src/util';
 
 describe('Utility functions', (): void => {
-  describe('sanitiseStatusCode', (): void => {
+  describe('sanitizeStatusCode', (): void => {
     it('should return the status code if it is valid.', (): void => {
       for (let i = 100; i < 102; i++) {
-        expect(sanitiseStatusCode(i)).toBe(i);
+        expect(sanitizeStatusCode(i)).toBe(i);
       }
 
       for (let i = 200; i < 207; i++) {
-        expect(sanitiseStatusCode(i)).toBe(i);
+        expect(sanitizeStatusCode(i)).toBe(i);
       }
 
       for (let i = 300; i < 309; i++) {
-        expect(sanitiseStatusCode(i)).toBe(i);
+        expect(sanitizeStatusCode(i)).toBe(i);
       }
 
       for (let i = 400; i < 427; i++) {
-        expect(sanitiseStatusCode(i)).toBe(i === 418 ? 400 : i);
+        expect(sanitizeStatusCode(i)).toBe(i === 418 ? 400 : i);
       }
 
       for (let i = 500; i < 506; i++) {
-        expect(sanitiseStatusCode(i)).toBe(i);
+        expect(sanitizeStatusCode(i)).toBe(i);
       }
     });
 
     it('should throw an error if the status code is invalid.', (): void => {
       expect((): void => {
-        sanitiseStatusCode(0);
-      }).toThrow('Invalid HTTP status code not asignable to status code class: 0');
+        sanitizeStatusCode(0);
+      }).toThrow('Invalid HTTP status code not assignable to status code class: 0');
 
       expect((): void => {
-        sanitiseStatusCode(1000);
-      }).toThrow('Invalid HTTP status code not asignable to status code class: 1000');
+        sanitizeStatusCode(1000);
+      }).toThrow('Invalid HTTP status code not assignable to status code class: 1000');
     });
 
     it('should return the base code of the status class if the status code is valid, but unknown.', (): void => {
       for (let i = 102; i < 200; i++) {
-        expect(sanitiseStatusCode(i)).toBe(100);
+        expect(sanitizeStatusCode(i)).toBe(100);
       }
 
       for (let i = 207; i < 300; i++) {
-        expect(sanitiseStatusCode(i)).toBe(200);
+        expect(sanitizeStatusCode(i)).toBe(200);
       }
 
       for (let i = 309; i < 400; i++) {
-        expect(sanitiseStatusCode(i)).toBe(300);
+        expect(sanitizeStatusCode(i)).toBe(300);
       }
 
       for (let i = 427; i < 500; i++) {
-        expect(sanitiseStatusCode(i)).toBe(400);
+        expect(sanitizeStatusCode(i)).toBe(400);
       }
 
       for (let i = 506; i < 600; i++) {
-        expect(sanitiseStatusCode(i)).toBe(500);
+        expect(sanitizeStatusCode(i)).toBe(500);
       }
     });
   });
@@ -110,11 +110,11 @@ describe('Utility functions', (): void => {
     it('should throw an error if the status code is invalid.', (): void => {
       expect((): void => {
         getStatusCode({});
-      }).toThrow('Invalid HTTP status code not asignable to status code class: 0');
+      }).toThrow('Invalid HTTP status code not assignable to status code class: 0');
 
       expect((): void => {
         getStatusCode({ ':status': '0' });
-      }).toThrow('Invalid HTTP status code not asignable to status code class: 0');
+      }).toThrow('Invalid HTTP status code not assignable to status code class: 0');
     });
   });
 

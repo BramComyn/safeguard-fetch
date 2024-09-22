@@ -1,7 +1,6 @@
 import type { OutgoingHttpHeaders } from 'node:http';
 import { Readable } from 'node:stream';
 
-import { STDHTTP1MSSG, STDHTTP2MSSG } from '../attack-server/attackServerConstants';
 import type { ResponseGenerator } from './ResponseGenerator';
 
 /**
@@ -31,6 +30,9 @@ export class StandardResponseGenerator implements ResponseGenerator {
     };
   }
 }
+
+export const STDHTTP1MSSG = 'Infinite server endpoint (HTTP/1.1)\n';
+export const STDHTTP2MSSG = 'Infinite server endpoint (HTTP/2.0)\n';
 
 /**
  * @returns a standard response generator for HTTP/1.1
