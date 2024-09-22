@@ -1,3 +1,4 @@
+/* eslint-disable jest/prefer-spy-on */
 import type { ClientHttp2Stream } from 'node:http2';
 import { EventEmitter } from 'node:events';
 
@@ -5,16 +6,13 @@ import { TurtleDownloader } from '../../../src/turtle-downloader/TurtleDownloade
 
 // Mocking constructor of ``SafeguardRequester`` class
 import { SafeguardRequester } from '../../../src/wrapper/SafeguardRequester';
+
 let mockRequester: SafeguardRequester;
 let request: jest.Mocked<ClientHttp2Stream>;
 
-jest.mock('../../../src/wrapper/SafeguardRequester', (): any => {
-  return {
-    SafeguardRequester: jest.fn().mockImplementation((): any => {
-      return mockRequester;
-    }),
-  }
-});
+jest.mock('../../../src/wrapper/SafeguardRequester', (): any => ({
+  SafeguardRequester: jest.fn().mockImplementation((): any => mockRequester),
+}));
 
 describe('TurtleDownloader', (): void => {
   let downloader: TurtleDownloader;
@@ -25,128 +23,129 @@ describe('TurtleDownloader', (): void => {
     // because the mockReturnValue would otherwise return ``undefined``
     request = new EventEmitter() as any;
     request.close = jest.fn();
+    jest.spyOn(request, 'emit');
 
     mockRequester = new SafeguardRequester();
     mockRequester.connectAndRequest = jest.fn().mockReturnValue(request);
-    
+
     downloader = new TurtleDownloader();
   });
-  
+
   it('should initialize correctly.', (): void => {
     expect(downloader).toBeDefined();
   });
 
-  it('should close a request if the total data size exceeds the maximum.', async (): Promise<void> => {
+  it('should close a request if the total data size exceeds the maximum.', async(): Promise<void> => {
     request.on = jest.fn().mockImplementation((event: string, callback: any): any => {
       if (event === 'data') {
-        callback(Buffer.alloc(10 * maxDownloadSize, 'a'));
+        return callback(Buffer.alloc(10 * maxDownloadSize, 'a'));
       }
 
       if (event === 'close') {
-        callback();
+        return callback();
       }
     });
 
     await expect(
-      downloader.download(maxDownloadSize, { authority: 'http://example.org' })
+      downloader.download(maxDownloadSize, { authority: 'http://example.org' }),
     ).resolves.toBeDefined();
 
     expect(request.close).toHaveBeenCalledTimes(1);
   });
 
-  it('should return the correct amount of data when the download is successful.', async (): Promise<void> => {
+  it('should return the correct amount of data when the download is successful.', async(): Promise<void> => {
     request.on = jest.fn().mockImplementation((event: string, callback: any): any => {
       if (event === 'data') {
-        callback(Buffer.alloc(maxDownloadSize, 'a'));
+        return callback(Buffer.alloc(maxDownloadSize, 'a'));
       }
 
       if (event === 'close') {
-        callback();
+        return callback();
       }
     });
 
     await expect(
-      downloader.download(maxDownloadSize, { authority: 'http://example.org' })
+      downloader.download(maxDownloadSize, { authority: 'http://example.org' }),
     ).resolves.toHaveLength(maxDownloadSize);
   });
 
-  it('should throw an error when the response is not successful.', async (): Promise<void> => {
+  it('should throw an error when the response is not successful.', async(): Promise<void> => {
     request.on = jest.fn().mockImplementation((event: string, callback: any): any => {
-      let headers = { ':status': 400 };
+      const headers = { ':status': 400 };
       if (event === 'response') {
-        callback(request, headers);
+        return callback(request, headers);
       }
 
       if (event === 'error') {
-        callback(new Error('Response is not as expected'));
+        return callback(new Error('Response is not as expected'));
       }
     });
 
     await expect(
-      downloader.download(maxDownloadSize, { authority: 'http://example.org' })
+      downloader.download(maxDownloadSize, { authority: 'http://example.org' }),
     ).rejects.toThrow('Response is not as expected');
   });
 
-  it('should throw an error when the content type is not `text/turtle`.', async (): Promise<void> => {
+  it('should throw an error when the content type is not `text/turtle`.', async(): Promise<void> => {
     request.on = jest.fn().mockImplementation((event: string, callback: any): any => {
-      let headers = { ':status': 200, 'content-type': 'text/plain' };
+      const headers = { ':status': 200, 'content-type': 'text/plain' };
       if (event === 'response') {
-        callback(request, headers);
+        return callback(request, headers);
       }
 
       if (event === 'error') {
-        callback(new Error('Response is not as expected'));
+        return callback(new Error('Response is not as expected'));
       }
     });
 
     await expect(
-      downloader.download(maxDownloadSize, { authority: 'http://example.org' })
+      downloader.download(maxDownloadSize, { authority: 'http://example.org' }),
     ).rejects.toThrow('Response is not as expected');
   });
 
-  it('should throw an error when the content length exceeds the maximum.', async (): Promise<void> => {
+  it('should throw an error when the content length exceeds the maximum.', async(): Promise<void> => {
     request.on = jest.fn().mockImplementation((event: string, callback: any): any => {
-      let headers = { ':status': 200, 'content-type': 'text/turtle', 'content-length': maxDownloadSize + 1 };
+      const headers = { ':status': 200, 'content-type': 'text/turtle', 'content-length': maxDownloadSize + 1 };
       if (event === 'response') {
-        callback(request, headers);
+        return callback(request, headers);
       }
 
       if (event === 'error') {
-        callback(new Error('Response is not as expected'));
+        return callback(new Error('Response is not as expected'));
       }
     });
 
     await expect(
-      downloader.download(maxDownloadSize, { authority: 'http://example.org' })
+      downloader.download(maxDownloadSize, { authority: 'http://example.org' }),
     ).rejects.toThrow('Response is not as expected');
   });
 
-  it('should throw an error if the download fails.', async (): Promise<void> => {
+  it('should throw an error if the download fails.', async(): Promise<void> => {
     request.on = jest.fn().mockImplementation((event: string, callback: any): any => {
       if (event === 'error') {
-        callback(new Error('Download failed'));
+        return callback(new Error('Download failed'));
       }
     });
 
     await expect(
-      downloader.download(maxDownloadSize, { authority: 'http://example.org' })
+      downloader.download(maxDownloadSize, { authority: 'http://example.org' }),
     ).rejects.toThrow('Download failed');
   });
 
-  it('should not throw an error when the content length is not set.', async (): Promise<void> => {
+  it('should not throw an error when the content length is not set.', async(): Promise<void> => {
     request.on = jest.fn().mockImplementation((event: string, callback: any): any => {
-      let headers = { ':status': 200, 'content-type': 'text/turtle' };
+      const headers = { ':status': 200, 'content-type': 'text/turtle' };
       if (event === 'response') {
-        callback(request, headers);
+        return callback(request, headers);
       }
 
       if (event === 'close') {
-        callback();
+        return callback();
       }
     });
 
     await expect(
-      downloader.download(maxDownloadSize, { authority: 'http://example.org' })
+      downloader.download(maxDownloadSize, { authority: 'http://example.org' }),
     ).resolves.toBeDefined();
   });
 });

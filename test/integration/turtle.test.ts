@@ -58,7 +58,8 @@ describe('TurtleDownloader', (): void => {
           requestHeaders: {
             ':path': '/turtle',
           },
-        }),
+        },
+      ),
     ).resolves.toHaveLength(maxDownloadSize);
   });
 });

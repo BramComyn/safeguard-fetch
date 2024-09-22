@@ -33,9 +33,9 @@ export class TurtleDownloader {
    * Creates a handler for the `response` event of an HTTP request sent by this downloader.
    * Will close the request if the response is not successful, the content type is not `text/turtle`,
    * or the content length exceeds the set maximum.
-   * 
+   *
    * @param maxDownloadSize - The maximum size of the downloaded data.
-   * 
+   *
    * @returns The handler for the `response` event, which is of the type `ResponseEventHandler`.
    */
   protected createResponseHandler(maxDownloadSize: number): ResponseEventHandler {
@@ -43,19 +43,33 @@ export class TurtleDownloader {
       if (
         !isSuccessful(getStatusCode(headers)) ||
         headers['content-type'] !== 'text/turtle' ||
-        (headers['content-length'] && Number.parseInt(headers['content-length'], 10) > maxDownloadSize)
+        (headers['content-length'] !== undefined && Number.parseInt(headers['content-length'], 10) > maxDownloadSize)
       ) {
-        request.emit('error', new Error('Response is not as expected: ' + headers));
+        console.log('emitting');
+        request.emit(
+          'error',
+          new Error(
+            `Response is not as expected: 
+            ${headers[':status'] as string ?? 'no-status'}, 
+            ${headers['content-type'] ?? 'no-content-type'}, 
+            ${headers['content-length'] ?? 'no-content-length'}`,
+          ),
+        );
       }
     };
   }
 
   /**
    * Downloads a maximum of `maxDownloadSize` bytes from the given url
-   * 
+   *
    * @param maxDownloadSize - The maximum size of the downloaded data.
    * @param configuration - The configuration for the download.
-   * 
+   * @param configuration.authority - The authority to download from.
+   * @param configuration.sessionOptions - The options for the HTTP2 session.
+   * @param configuration.listener - The listener for the HTTP2 session.
+   * @param configuration.requestHeaders - The headers for the HTTP2 request.
+   * @param configuration.requestOptions - The options for the HTTP2 request.
+   *
    * @returns The downloaded data as a `Uint8Array`.
    */
   public async download(
@@ -66,11 +80,11 @@ export class TurtleDownloader {
       listener?: (session: ClientHttp2Session, socket: Socket | TLSSocket) => void;
       requestHeaders?: OutgoingHttpHeaders;
       requestOptions?: ClientSessionRequestOptions;
-    }
+    },
   ): Promise<Uint8Array> {
     const requester = new SafeguardRequester(
       {},
-      { response: [ this.createResponseHandler(maxDownloadSize) ] },
+      { response: [ this.createResponseHandler(maxDownloadSize) ]},
     );
 
     const buffer = new Uint8Array(maxDownloadSize);
