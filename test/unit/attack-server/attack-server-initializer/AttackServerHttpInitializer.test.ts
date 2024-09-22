@@ -6,11 +6,11 @@ import { PassThrough } from 'node:stream';
 import type { ResponseGenerator } from '../../../../src/response-generator/ResponseGenerator';
 
 import {
-  AttackServerHttpInitializer,
-} from '../../../../src/attack-server/attack-server-initializer/AttackServerHttpInitializer';
+  AttackServerHttpInitialiser,
+} from '../../../../src/attack-server/attack-server-initialiser/AttackServerHttpInitialiser';
 
-describe('AttackServerHttpInitializer', (): void => {
-  let initializer: AttackServerHttpInitializer;
+describe('AttackServerHttpInitialiser', (): void => {
+  let initialiser: AttackServerHttpInitialiser;
   let responseGenerator: jest.Mocked<ResponseGenerator>;
   let server: jest.Mocked<Server>;
   let response: jest.Mocked<ServerResponse>;
@@ -30,13 +30,13 @@ describe('AttackServerHttpInitializer', (): void => {
     body = new PassThrough() as any;
     jest.spyOn(body, 'pipe').mockImplementation();
 
-    initializer = new AttackServerHttpInitializer({ '/': responseGenerator });
-    initializer.initialize(server);
+    initialiser = new AttackServerHttpInitialiser({ '/': responseGenerator });
+    initialiser.initialise(server);
   });
 
   it('should create an instance.', (): void => {
-    const initializer = new AttackServerHttpInitializer();
-    expect(initializer).toBeDefined();
+    const initialiser = new AttackServerHttpInitialiser();
+    expect(initialiser).toBeDefined();
   });
 
   it('should make the server respond to known paths.', (): void => {

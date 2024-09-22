@@ -144,7 +144,7 @@ rather than only the ``on(event, ...)`` per session or stream.
 
 ## Attack Server
 
-This repository also contains a way to quickly initialize HTTP/1.1- and HTTP/2.0-servers for certain
+This repository also contains a way to quickly initialise HTTP/1.1- and HTTP/2.0-servers for certain
 malicious configurations.
 The code is structured so that it is possible to expand upon this.
 It is all based around the ``AttackServer`` class.
@@ -158,18 +158,18 @@ import type { Http2SecureServer } from 'node:http2'
 const httpPort = 8080;
 const http2SecurePort = 8443;
 
-// Initialize an unsecured HTTP/1.1-server
+// Initialise an unsecured HTTP/1.1-server
 const httpServer = new AttackServer<Server>(
   httpPort,
   new AttackServerHttpFactory(),
-  [], // the initializers
+  [], // the initialisers
 );
 
-// Initialize a secured HTTP/2.0-server
+// Initialise a secured HTTP/2.0-server
 const http2Server = new AttackServer<Http2SecureServer>(
   http2SecurePort,
   new AttackServerHttp2SecureFactory(),
-  [], // the initializers
+  [], // the initialisers
 );
 ```
 
@@ -179,13 +179,13 @@ Although the specs allow it, almost all major browsers (and even cURL)
 will refuse to talk to an unsecured HTTP/2.0-server.
 This was, however, included in an earlier phase of development.
 
-To make a server attack in certain ways, the server initializer array
-can be populated with ``AttackServerInitializer``s,
-of which some examples are included under ``src/attack-server/attack-server-initializer``.
+To make a server attack in certain ways, the server initialiser array
+can be populated with ``AttackServerInitialiser``s,
+of which some examples are included under ``src/attack-server/attack-server-initialiser``.
 
 ## Response Generator
 
-Some of the ``AttackServerInitializer``s rely on instances of ``ResponseGenerator`` to
+Some of the ``AttackServerInitialiser``s rely on instances of ``ResponseGenerator`` to
 form the necessary ``headers`` and ``body`` objects.
 There are two ``StandardResponseGenerator`` factory functions to make the distinction between HTTP/1.1 and HTTP/2.0
 
