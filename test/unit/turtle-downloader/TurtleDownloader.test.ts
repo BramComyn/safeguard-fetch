@@ -6,6 +6,7 @@ import { TurtleDownloader } from '../../../src/turtle-downloader/TurtleDownloade
 
 // Mocking constructor of ``SafeguardRequester`` class
 import { SafeguardRequester } from '../../../src/wrapper/SafeguardRequester';
+import type { ResponseEventHandler } from '../../../src/handler/RequestEventHandler';
 
 let mockRequester: SafeguardRequester;
 let request: jest.Mocked<ClientHttp2Stream>;
@@ -16,6 +17,7 @@ jest.mock('../../../src/wrapper/SafeguardRequester', (): any => ({
 
 describe('TurtleDownloader', (): void => {
   let downloader: TurtleDownloader;
+  let responseHandler: ResponseEventHandler;
   const maxDownloadSize = 1000;
 
   beforeEach((): void => {
@@ -29,6 +31,8 @@ describe('TurtleDownloader', (): void => {
     mockRequester.connectAndRequest = jest.fn().mockReturnValue(request);
 
     downloader = new TurtleDownloader();
+    // Hacky way to get around the protected method
+    responseHandler = (downloader as any).createResponseHandler(maxDownloadSize);
   });
 
   it('should initialize correctly.', (): void => {
@@ -70,54 +74,18 @@ describe('TurtleDownloader', (): void => {
   });
 
   it('should throw an error when the response is not successful.', async(): Promise<void> => {
-    request.on = jest.fn().mockImplementation((event: string, callback: any): any => {
-      const headers = { ':status': 400 };
-      if (event === 'response') {
-        return callback(request, headers);
-      }
-
-      if (event === 'error') {
-        return callback(new Error('Response is not as expected'));
-      }
-    });
-
-    await expect(
-      downloader.download(maxDownloadSize, { authority: 'http://example.org' }),
-    ).rejects.toThrow('Response is not as expected');
+    const headers = { ':status': '400' };
+    expect((): void => responseHandler(request, headers)).toThrow('Response is not as expected.');
   });
 
   it('should throw an error when the content type is not `text/turtle`.', async(): Promise<void> => {
-    request.on = jest.fn().mockImplementation((event: string, callback: any): any => {
-      const headers = { ':status': 200, 'content-type': 'text/plain' };
-      if (event === 'response') {
-        return callback(request, headers);
-      }
-
-      if (event === 'error') {
-        return callback(new Error('Response is not as expected'));
-      }
-    });
-
-    await expect(
-      downloader.download(maxDownloadSize, { authority: 'http://example.org' }),
-    ).rejects.toThrow('Response is not as expected');
+    const headers = { ':status': '200', 'content-type': 'application/json' };
+    expect((): void => responseHandler(request, headers)).toThrow('Response is not as expected.');
   });
 
   it('should throw an error when the content length exceeds the maximum.', async(): Promise<void> => {
-    request.on = jest.fn().mockImplementation((event: string, callback: any): any => {
-      const headers = { ':status': 200, 'content-type': 'text/turtle', 'content-length': maxDownloadSize + 1 };
-      if (event === 'response') {
-        return callback(request, headers);
-      }
-
-      if (event === 'error') {
-        return callback(new Error('Response is not as expected'));
-      }
-    });
-
-    await expect(
-      downloader.download(maxDownloadSize, { authority: 'http://example.org' }),
-    ).rejects.toThrow('Response is not as expected');
+    const headers = { ':status': '200', 'content-type': 'text/turtle', 'content-length': '2000' };
+    expect((): void => responseHandler(request, headers)).toThrow('Response is not as expected.');
   });
 
   it('should throw an error if the download fails.', async(): Promise<void> => {
@@ -129,23 +97,11 @@ describe('TurtleDownloader', (): void => {
 
     await expect(
       downloader.download(maxDownloadSize, { authority: 'http://example.org' }),
-    ).rejects.toThrow('Download failed');
+    ).rejects.toThrow('Error during download.');
   });
 
   it('should not throw an error when the content length is not set.', async(): Promise<void> => {
-    request.on = jest.fn().mockImplementation((event: string, callback: any): any => {
-      const headers = { ':status': 200, 'content-type': 'text/turtle' };
-      if (event === 'response') {
-        return callback(request, headers);
-      }
-
-      if (event === 'close') {
-        return callback();
-      }
-    });
-
-    await expect(
-      downloader.download(maxDownloadSize, { authority: 'http://example.org' }),
-    ).resolves.toBeDefined();
+    const headers = { ':status': '200', 'content-type': 'text/turtle' };
+    expect((): void => responseHandler(request, headers)).not.toThrow();
   });
 });

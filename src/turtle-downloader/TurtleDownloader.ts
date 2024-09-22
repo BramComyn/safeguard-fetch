@@ -45,16 +45,7 @@ export class TurtleDownloader {
         headers['content-type'] !== 'text/turtle' ||
         (headers['content-length'] !== undefined && Number.parseInt(headers['content-length'], 10) > maxDownloadSize)
       ) {
-        console.log('emitting');
-        request.emit(
-          'error',
-          new Error(
-            `Response is not as expected: 
-            ${headers[':status'] as string ?? 'no-status'}, 
-            ${headers['content-type'] ?? 'no-content-type'}, 
-            ${headers['content-length'] ?? 'no-content-length'}`,
-          ),
-        );
+        request.emit('error', new Error('Response is not as expected.'));
       }
     };
   }
@@ -119,7 +110,7 @@ export class TurtleDownloader {
         resolve(buffer.slice(0, downloadedSize));
       });
 
-      request.on('error', (err): void => reject(err ?? new Error('Error during download.')));
+      request.on('error', (): void => reject(new Error('Error during download.')));
     });
   }
 }
